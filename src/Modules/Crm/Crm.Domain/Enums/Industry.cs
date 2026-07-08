@@ -1,0 +1,38 @@
+namespace Crm.Domain.Enums;
+
+public enum Industry
+{
+    None = 0,
+    Agriculture = 1,
+    Apparel = 2,
+    Banking = 3,
+    Biotechnology = 4,
+    Chemicals = 5,
+    Communications = 6,
+    Construction = 7,
+    Consulting = 8,
+    Education = 9,
+    Electronics = 10,
+    Energy = 11,
+    Engineering = 12,
+    Entertainment = 13,
+    Environmental = 14,
+    Finance = 15,
+    FoodBeverage = 16,
+    Government = 17,
+    Healthcare = 18,
+    Hospitality = 19,
+    Insurance = 20,
+    Machinery = 21,
+    Manufacturing = 22,
+    Media = 23,
+    NotForProfit = 24,
+    Recreation = 25,
+    Retail = 26,
+    Shipping = 27,
+    Technology = 28,
+    Telecommunications = 29,
+    Transportation = 30,
+    Utilities = 31,
+    Other = 32
+}

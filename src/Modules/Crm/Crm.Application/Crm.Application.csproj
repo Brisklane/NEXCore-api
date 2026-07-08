@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Crm.Domain\Crm.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\Nexcore.SharedKernel\Nexcore.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>13.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Nexcore.SharedKernel\Nexcore.SharedKernel.csproj" />
+    <ProjectReference Include="..\Sales.Domain\Sales.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

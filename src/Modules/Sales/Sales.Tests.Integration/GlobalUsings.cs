@@ -1,0 +1,11 @@
+global using System.Net;
+global using System.Net.Http.Json;
+global using FluentAssertions;
+global using Nexcore.SharedKernel.Api;
+global using Nexcore.Tests.Infrastructure.Auth;
+global using Nexcore.Tests.Infrastructure.Factory;
+global using Sales.Application.DTOs;
+global using Sales.Domain.Enums;
+global using Sales.Tests.Integration.Collections;
+global using Sales.Tests.Integration.Fixtures;
+global using Xunit;

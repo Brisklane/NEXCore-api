@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copy appsettings.Testing.json from the API project to test output -->
+    <Content Include="..\..\..\..\src\Nexcore.Api\appsettings.Testing.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Shared test infrastructure (WebApplicationFactory + TestContainers + JWT helpers) -->
+    <ProjectReference Include="..\..\..\..\tests\Nexcore.Tests.Infrastructure\Nexcore.Tests.Infrastructure.csproj" />
+
+    <!-- Sales module projects for entity/DTO/context access -->
+    <ProjectReference Include="..\Sales.Domain\Sales.Domain.csproj" />
+    <ProjectReference Include="..\Sales.Application\Sales.Application.csproj" />
+    <ProjectReference Include="..\Sales.Infrastructure\Sales.Infrastructure.csproj" />
+    <ProjectReference Include="..\Sales.Api\Sales.Api.csproj" />
+  </ItemGroup>
+
+</Project>
