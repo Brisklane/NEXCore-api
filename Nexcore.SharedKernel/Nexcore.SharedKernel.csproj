@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <ItemGroup>
+    <!-- IHttpContextAccessor / HttpContext (TenantAwareRepository, TenantContextHelper) come from
+         the shared framework on net9 — replaces the legacy ASP.NET Core 2.2 Http packages. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Accounting\" />
+  </ItemGroup>
+
+</Project>

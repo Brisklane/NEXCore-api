@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Procurement.Domain\Procurement.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\Nexcore.SharedKernel\Nexcore.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

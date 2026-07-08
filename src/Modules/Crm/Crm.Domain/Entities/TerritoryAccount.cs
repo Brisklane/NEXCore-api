@@ -1,0 +1,18 @@
+using Nexcore.SharedKernel;
+
+namespace Crm.Domain.Entities
+{
+    /// <summary>
+    /// Associates an Account with a Territory.
+    /// Aligned with Salesforce AccountTerritory2Assn, Dynamics Territory Account.
+    /// </summary>
+    public class TerritoryAccount : BaseEntity
+    {
+        // ??? Keys ??????????????????????????????????????????????????????
+        public Guid TerritoryId { get; set; }
+        public Territory Territory { get; set; } = null!;
+
+        public Guid AccountId { get; set; }
+        public Account Account { get; set; } = null!;
+    }
+}

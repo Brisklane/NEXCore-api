@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+		<UserSecretsId>a20f6969-0019-406d-9b59-073fc496dea7</UserSecretsId>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Manufacturing.Application\Manufacturing.Application.csproj" />
+    <ProjectReference Include="..\Manufacturing.Domain\Manufacturing.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\Nexcore.SharedKernel\Nexcore.SharedKernel.csproj" />
+    <ProjectReference Include="..\Manufacturing.Infrastructure\Manufacturing.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

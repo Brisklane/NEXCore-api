@@ -1,0 +1,14 @@
+<Project>
+
+  <!--
+    Solution-wide build defaults. Inherited by every project under this folder,
+    so individual .csproj files no longer repeat these. Override in a specific
+    project only when it genuinely differs.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
