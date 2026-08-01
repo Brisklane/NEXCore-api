@@ -255,31 +255,54 @@ public class ProductionStockHandler : IEventHandler<ProductionCompletedEvent>
     }
 
     /// <summary>
-    /// Warehouse fallback when a line carries none. For an issue (outbound) prefer where the material
-    /// already holds stock; for a receipt (inbound) prefer the Main/Retail warehouse.
+    /// Company-level default warehouse, used only when neither the line nor the production order
+    /// names one. Returns <see cref="Guid.Empty"/> when nothing is configured, which the caller
+    /// treats as a hard failure rather than posting somewhere arbitrary.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This deliberately does <b>not</b> look at where stock currently happens to sit. An earlier
+    /// version picked, for an issue, the warehouse holding the largest quantity of the material.
+    /// That makes the posting non-deterministic: the same BOM, run twice, issues from a different
+    /// warehouse as balances shift, and because valuation is moving-average per warehouse the two
+    /// runs then produce different COGS for identical output. It also means the stock that moves is
+    /// not the stock in the location that physically supplies the line.
+    /// </para>
+    /// <para>
+    /// SAP resolves a Production Storage Location (order line → material master → work-center supply
+    /// area → plant default) and refuses the material document if none resolves; Odoo takes the
+    /// source/destination locations from the manufacturing operation type and lets the MO override
+    /// them. Both are configuration-driven with a hard failure. This method is the last link of that
+    /// chain — the ordering below is fixed so the answer is reproducible.
+    /// </para>
+    /// </remarks>
     private async Task<Guid> ResolveFallbackWarehouseAsync(
         Guid companyId, Guid itemId, Guid? variantId, bool outbound, CancellationToken ct)
     {
-        if (outbound)
-        {
-            var stockedWarehouseId = await _ctx.InventoryBalances
-                .Where(b => b.CompanyId == companyId && b.ItemId == itemId && b.VariantId == variantId)
-                .OrderByDescending(b => b.QuantityOnHand)
-                .Select(b => b.WarehouseId)
-                .FirstOrDefaultAsync(ct);
-            if (stockedWarehouseId != Guid.Empty) return stockedWarehouseId;
-        }
-
+        // Ordered by Code then Id so a company with several candidates always resolves the same
+        // way; FirstOrDefault over an unordered set would depend on physical row order.
         var warehouses = await _ctx.Warehouses
-            .Where(w => w.CompanyId == companyId && w.IsActive)
+            .Where(w => w.CompanyId == companyId && w.IsActive && !w.IsDeleted)
+            .OrderBy(w => w.Code).ThenBy(w => w.Id)
             .Select(w => new { w.Id, w.WarehouseType })
             .ToListAsync(ct);
 
-        var chosen = warehouses.FirstOrDefault(w => w.WarehouseType == "Main")
-                  ?? warehouses.FirstOrDefault(w => w.WarehouseType == "Retail")
-                  ?? warehouses.FirstOrDefault();
+        // "Production" is the dedicated manufacturing supply/receipt location — SAP's production
+        // storage location, Odoo's manufacturing operation-type location. "Main" is the general
+        // fallback. Anything else must be chosen explicitly on the order.
+        var chosen = warehouses.FirstOrDefault(w => w.WarehouseType == "Production")
+                  ?? warehouses.FirstOrDefault(w => w.WarehouseType == "Main");
 
-        return chosen?.Id ?? Guid.Empty;
+        if (chosen is null)
+        {
+            _logger.LogError(
+                "No production or main warehouse configured for Company {CompanyId}; cannot post the " +
+                "{Direction} movement for Item {ItemId}. Configure a warehouse of type 'Production' " +
+                "or 'Main', or set the warehouse on the production order.",
+                companyId, outbound ? "issue" : "receipt", itemId);
+            return Guid.Empty;
+        }
+
+        return chosen.Id;
     }
 }

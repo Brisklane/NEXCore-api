@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Auth.Application.DTOs;
 using Auth.Application.Services.Interfaces;
+using Auth.Domain.Entities;
 using Auth.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Nexcore.SharedKernel.Api;
@@ -62,7 +63,10 @@ public class UserValidator : IUserValidator
         if (!IsValidEmail(email))
             return Fail("Invalid email format.");
 
-        var emailExists = await _context.Users.AnyAsync(u => u.Email == email);
+        // Compare on the normalized column so a differently-cased address is recognised as the
+        // same registration, matching the unique index that backs it.
+        var normalized = User.Normalize(email);
+        var emailExists = await _context.Users.AnyAsync(u => u.EmailNormalized == normalized);
         if (emailExists)
             return Fail("Email is already registered.");
 
@@ -89,7 +93,8 @@ public class UserValidator : IUserValidator
         if (string.IsNullOrWhiteSpace(username))
             return null;
 
-        var usernameExists = await _context.Users.AnyAsync(u => u.Username == username);
+        var normalized = User.Normalize(username);
+        var usernameExists = await _context.Users.AnyAsync(u => u.UsernameNormalized == normalized);
         if (usernameExists)
             return Fail("Username is already taken.");
 

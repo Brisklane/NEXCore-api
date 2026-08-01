@@ -14,8 +14,15 @@ public class OfferLetter : BaseEntity
     public Guid ReportingManagerEmployeeId { get; set; }
     public decimal BaseSalary { get; set; }
     public decimal TotalPackage { get; set; }
-    public Guid CurrencyId { get; set; }
-    public EmploymentType EmploymentType { get; set; } 
+
+    /// <summary>
+    /// ISO 4217 alpha-3 code for the offered package, e.g. "USD". The currency catalogue is
+    /// owned by the Core module; HR stores the stable natural key rather than a foreign key
+    /// into another module's schema.
+    /// </summary>
+    public string CurrencyCode { get; set; } = "USD";
+
+    public EmploymentType EmploymentType { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime ExpiryDate { get; set; }
     public int ProbationPeriodMonths { get; set; }
@@ -39,7 +46,6 @@ public class OfferLetter : BaseEntity
     public Employee? SentByEmployee { get; set; }
     public Employee? RevokedByEmployee { get; set; }
     public ApprovalRequest? ApprovalRequest { get; set; }
-    public Currency? Currency { get; set; }
     public LookupValue? CandidateResponseLookupValue { get; set; }
     public LookupValue? StatusLookupValue { get; set; }
     public OfferLetterDetail? Detail { get; set; }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Logging;
 using Sales.Application.Services.Interfaces;
 using Sales.Domain.Entities;
@@ -7,12 +8,12 @@ using Sales.Infrastructure.Persistence;
 namespace Sales.Infrastructure.Services;
 
 /// <summary>
-/// SQL Server-backed implementation of <see cref="IReceiptLogoService"/>.
+/// Database-backed implementation of <see cref="IReceiptLogoService"/>.
 ///
-/// Logo bytes are stored in the <c>sales.StoredFiles</c> table and the method
+/// Logo bytes are stored in the <c>sales.stored_files</c> table and the method
 /// returns a relative API URL (<c>/api/sales/images/{id}</c>) that
 /// <c>SalesImageController</c> serves. Replaces Azure Blob Storage so the platform
-/// runs fully locally against SQL Server with no external object store.
+/// runs fully locally against PostgreSQL with no external object store.
 /// </summary>
 public class SqlReceiptLogoService : IReceiptLogoService
 {

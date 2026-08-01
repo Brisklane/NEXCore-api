@@ -39,7 +39,13 @@ public class ProductService : IProductService
     {
         var query = _db.Products.AsNoTracking().Where(x => !x.IsDeleted);
         if (!string.IsNullOrWhiteSpace(search))
-            query = query.Where(x => x.ProductName.Contains(search) || (x.ProductCode != null && x.ProductCode.Contains(search)));
+        {
+            // Lower-cased on both sides so the match stays case-insensitive. SQL Server's
+            // default collation did this implicitly; PostgreSQL compares case-sensitively.
+            var term = search.Trim().ToLower();
+            query = query.Where(x => x.ProductName.ToLower().Contains(term)
+                                  || (x.ProductCode != null && x.ProductCode.ToLower().Contains(term)));
+        }
         var total = await query.CountAsync();
         var items = await query.OrderBy(x => x.ProductName)
             .Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();

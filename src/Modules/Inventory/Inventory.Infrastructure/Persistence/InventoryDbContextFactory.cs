@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Nexcore.SharedKernel.Persistence;
 
 namespace Inventory.Infrastructure.Persistence;
 
@@ -18,10 +19,10 @@ public class InventoryDbContextFactory : IDesignTimeDbContextFactory<InventoryDb
     {
         var connection =
             Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-            ?? "Server=localhost;Database=DesignTime;Trusted_Connection=True;TrustServerCertificate=True;";
+            ?? "Host=localhost;Port=5432;Database=nexcore;Username=postgres;Password=postgres";
 
         var options = new DbContextOptionsBuilder<InventoryDbContext>()
-            .UseSqlServer(connection)
+            .UseNexcorePostgres(connection, typeof(InventoryDbContext).Assembly)
             .Options;
 
         return new InventoryDbContext(options);

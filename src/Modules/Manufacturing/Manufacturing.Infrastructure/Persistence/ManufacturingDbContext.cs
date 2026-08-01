@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Manufacturing.Domain.Entities;
 
 namespace Manufacturing.Infrastructure.Persistence;
@@ -513,7 +514,7 @@ public class ManufacturingDbContext : DbContext
             entity.HasIndex(e => new { e.CompanyId, e.BranchId, e.BusinessUnitId, e.ProductionOrderId })
                 .HasDatabaseName("IX_WorkInProgress_Tenant_ProductionOrder")
                 .IsUnique()
-                .HasFilter("[IsDeleted] = 0");
+                .HasFilter("is_deleted = false");
 
             entity.HasOne(e => e.ProductionOrder)
                 .WithOne(p => p.WorkInProgress)
@@ -887,5 +888,10 @@ public class ManufacturingDbContext : DbContext
             entity.HasIndex(e => new { e.ProductId, e.TransactionDate })
                 .HasDatabaseName("IX_InventoryTransaction_Product_Date");
         });
+
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

@@ -147,8 +147,11 @@ public class AuthenticationService : IAuthenticationService
     {
         try
         {
+            // Sign-in matches on the normalized column, so the username is case-insensitive
+            // exactly as it was under SQL Server's collation.
+            var normalizedUsername = User.Normalize(request.Username);
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == request.Username && u.IsActive);
+                .FirstOrDefaultAsync(u => u.UsernameNormalized == normalizedUsername && u.IsActive);
 
             if (user == null)
                 return Result<LoginResponse>.Fail("Invalid username or password");

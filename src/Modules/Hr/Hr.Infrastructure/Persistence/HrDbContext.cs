@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Hr.Domain.Entities;
 
 namespace Hr.Infrastructure.Persistence;
@@ -92,8 +93,7 @@ public class HrDbContext : DbContext
 
     // NEW ENTITIES
 
-    // Currency
-    public DbSet<Currency> Currencies { get; set; } = null!;
+    // Currency is reference data owned by the Core module; HR entities carry the ISO 4217 code.
     public DbSet<PayScale> PayScales { get; set; } = null!;
     public DbSet<AllowancesProfile> AllowancesProfiles { get; set; } = null!;
     public DbSet<BenefitsPlan> BenefitsPlans { get; set; } = null!;
@@ -114,7 +114,6 @@ public class HrDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema(DefaultSchema);
-        ApplyUtcDateTimeConverters(modelBuilder);
 
         // Geo-coordinates need 6 decimal places (~0.1 m); (18,2) would round them uselessly.
         foreach (var p in modelBuilder.Model.GetEntityTypes()
@@ -272,15 +271,6 @@ public class HrDbContext : DbContext
 
         // Organisation structure
 
-        modelBuilder.Entity<Currency>(entity =>
-        {
-            entity.ToTable("Currencies", DefaultSchema);
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.CurrencyCode).IsRequired().HasMaxLength(10);
-            entity.Property(e => e.CurrencyName).IsRequired().HasMaxLength(100);
-            entity.HasIndex(e => e.CurrencyCode).IsUnique();
-        });
-
         modelBuilder.Entity<Grade>(entity =>
         {
             entity.ToTable("Grades", DefaultSchema);
@@ -364,8 +354,7 @@ public class HrDbContext : DbContext
             entity.Property(e => e.PayScaleName).IsRequired().HasMaxLength(100);
             entity.Property(e => e.MinAmount).HasPrecision(18, 2);
             entity.Property(e => e.MaxAmount).HasPrecision(18, 2);
-            entity.HasOne(e => e.Currency).WithMany(c => c.PayScales)
-                  .HasForeignKey(e => e.CurrencyId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
+            entity.Property(e => e.CurrencyCode).HasMaxLength(3).IsUnicode(false);
         });
 
         modelBuilder.Entity<Position>(entity =>
@@ -484,7 +473,9 @@ public class HrDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.HasOne(e => e.Candidate).WithOne(c => c.Profile)
                   .HasForeignKey<CandidateProfile>(e => e.CandidateId).OnDelete(DeleteBehavior.Cascade);
-            entity.HasOne(e => e.TalentPool).WithMany()
+            // Bind the inverse collection explicitly, otherwise TalentPool.CandidateProfiles
+            // produces a second relationship with a shadow TalentPoolId1 column.
+            entity.HasOne(e => e.TalentPool).WithMany(tp => tp.CandidateProfiles)
                   .HasForeignKey(e => e.TalentPoolId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.TalentPoolAddedByEmployee).WithMany()
                   .HasForeignKey(e => e.TalentPoolAddedByEmployeeId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
@@ -550,7 +541,10 @@ public class HrDbContext : DbContext
                   .HasForeignKey(e => e.ApplicationId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.CalledByEmployee).WithMany()
                   .HasForeignKey(e => e.CalledByEmployeeId).OnDelete(DeleteBehavior.NoAction);
-            entity.HasOne(e => e.CommunicationTemplate).WithMany()
+            // Bind the inverse collection explicitly. A bare WithMany() leaves
+            // CommunicationTemplate.CallLogs unmapped, so EF invents a second relationship
+            // with a shadow CommunicationTemplateId1 column duplicating this FK.
+            entity.HasOne(e => e.CommunicationTemplate).WithMany(c => c.CallLogs)
                   .HasForeignKey(e => e.CommunicationTemplateId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
         });
 
@@ -578,8 +572,7 @@ public class HrDbContext : DbContext
                   .HasForeignKey(e => e.DepartmentId).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.Designation).WithMany()
                   .HasForeignKey(e => e.DesignationId).OnDelete(DeleteBehavior.NoAction);
-            entity.HasOne(e => e.Currency).WithMany(c => c.Jobs)
-                  .HasForeignKey(e => e.CurrencyId).OnDelete(DeleteBehavior.NoAction);
+            entity.Property(e => e.CurrencyCode).IsRequired().HasMaxLength(3).IsUnicode(false);
             entity.HasOne(e => e.HiringManagerEmployee).WithMany()
                   .HasForeignKey(e => e.HiringManagerEmployeeId).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.RecruiterEmployee).WithMany()
@@ -802,7 +795,9 @@ public class HrDbContext : DbContext
                   .HasForeignKey(e => e.DeliveryStatusLookupValueId).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.ResponseActionLookupValue).WithMany()
                   .HasForeignKey(e => e.ResponseActionLookupValueId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
-            entity.HasOne(e => e.CommunicationTemplate).WithMany()
+            // Bind the inverse collection explicitly — see CallLog above. Left unbound, the
+            // two resulting FK names collide once truncated to PostgreSQL's 63-byte limit.
+            entity.HasOne(e => e.CommunicationTemplate).WithMany(c => c.InterviewNotifications)
                   .HasForeignKey(e => e.CommunicationTemplateId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
         });
 
@@ -837,8 +832,7 @@ public class HrDbContext : DbContext
                   .HasForeignKey(e => e.JobId).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.ApprovalRequest).WithMany()
                   .HasForeignKey(e => e.ApprovalRequestId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
-            entity.HasOne(e => e.Currency).WithMany(c => c.OfferLetters)
-                  .HasForeignKey(e => e.CurrencyId).OnDelete(DeleteBehavior.NoAction);
+            entity.Property(e => e.CurrencyCode).IsRequired().HasMaxLength(3).IsUnicode(false);
             entity.HasOne(e => e.ReportingManagerEmployee).WithMany()
                   .HasForeignKey(e => e.ReportingManagerEmployeeId).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.SentByEmployee).WithMany()
@@ -948,19 +942,10 @@ public class HrDbContext : DbContext
             entity.Property(e => e.TalentPoolCode).IsRequired().HasMaxLength(50);
             entity.Property(e => e.TalentPoolName).IsRequired().HasMaxLength(100);
         });
-    }
 
-    protected static void ApplyUtcDateTimeConverters(ModelBuilder modelBuilder)
-    {
-        var utc = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
-            v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-        var utcN = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
-            v => v, v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null);
-        foreach (var e in modelBuilder.Model.GetEntityTypes())
-            foreach (var p in e.GetProperties())
-            {
-                if (p.ClrType == typeof(DateTime))  p.SetValueConverter(utc);
-                if (p.ClrType == typeof(DateTime?)) p.SetValueConverter(utcN);
-            }
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

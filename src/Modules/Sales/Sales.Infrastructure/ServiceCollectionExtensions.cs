@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexcore.SharedKernel.Events;
@@ -19,13 +20,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddDbContext<SalesDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                b =>
-                {
-                    b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    b.MigrationsAssembly("Sales.Infrastructure");
-                }));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(SalesDbContext).Assembly));
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -46,6 +41,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommissionRuleRepository, CommissionRuleRepository>();
         services.AddScoped<ICommissionEntryRepository, CommissionEntryRepository>();
         services.AddScoped<ISalesTargetRepository, SalesTargetRepository>();
+        // Quota API — moved here from CRM so quota has a single owner alongside commission.
+        services.AddScoped<ISalesTargetService, SalesTargetService>();
 
         // Orders
         services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
@@ -102,7 +99,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPosCheckoutService, PosCheckoutService>();
         services.AddScoped<IPosOfflineSyncService, PosOfflineSyncService>();
         services.AddScoped<IReceiptRenderingService, ReceiptRenderingService>();
-        // SQL Server-backed file storage (sales.StoredFiles) — replaces Azure Blob Storage.
+        // Database-backed file storage (sales.stored_files) — replaces Azure Blob Storage.
         // Scoped because it uses the per-request SalesDbContext.
         services.AddScoped<IReceiptLogoService, SqlReceiptLogoService>();
         services.AddScoped<IBarcodeService, BarcodeService>();

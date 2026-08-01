@@ -3,6 +3,7 @@ using Core.Infrastructure.Events;
 using Core.Infrastructure.Persistence;
 using Core.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexcore.SharedKernel;
@@ -28,18 +29,7 @@ public static class ServiceCollectionExtensions
         // Database — ITenantContext is injected into CoreDbContext for global query filter
         services.AddDbContext<CoreDbContext>((sp, options) =>
         {
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                sqlServerOptions =>
-                {
-                    sqlServerOptions.EnableRetryOnFailure(
-                        maxRetryCount: 3,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-
-                    sqlServerOptions.MigrationsAssembly(
-                        typeof(CoreDbContext).Assembly.FullName);
-                });
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(CoreDbContext).Assembly);
         });
 
         // NOTE: IEventPublisher is registered in Program.cs (centralized, decoupled)

@@ -45,8 +45,17 @@ public abstract class BaseEntity
 
     // ── Optimistic concurrency ───────────────────────────────────────────────
 
-    /// <summary>SQL Server <c>rowversion</c>; the database bumps it on every write so lost updates can be detected.</summary>
-    public byte[]? RowVersion { get; set; }
+    /// <summary>
+    /// Maps to PostgreSQL's <c>xmin</c> system column — the id of the transaction that last
+    /// wrote the row. PostgreSQL maintains it itself on every write, so lost updates are
+    /// detected without storing an extra column or running a trigger. Never assign it.
+    /// </summary>
+    /// <remarks>
+    /// Deliberately still named <c>RowVersion</c> rather than <c>Version</c>: several entities
+    /// (BillOfMaterial, Routing, StandardCost, CommunicationTemplate) already carry a business
+    /// <c>int Version</c>, which a base member of that name would hide.
+    /// </remarks>
+    public uint RowVersion { get; set; }
 
     // ── External sync ────────────────────────────────────────────────────────
 

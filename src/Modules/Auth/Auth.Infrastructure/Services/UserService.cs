@@ -57,7 +57,8 @@ public class UserService : IUserService
     {
         try
         {
-            var user = await UsersWithRoles().FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
+            var normalized = User.Normalize(username);
+            var user = await UsersWithRoles().FirstOrDefaultAsync(u => u.UsernameNormalized == normalized && u.IsActive);
             return user == null
                 ? Result<UserDto>.Fail("User not found")
                 : Result<UserDto>.Ok(await MapToDtoAsync(user));
@@ -156,7 +157,10 @@ public class UserService : IUserService
             if (!validation.Success)
                 return Result<UserDto>.Fail(validation.Message ?? "Validation failed");
 
-            if (await _context.Users.AnyAsync(u => u.Username == request.UserName || u.Email == request.Email))
+            var normalizedUsername = User.Normalize(request.UserName);
+            var normalizedEmail = User.Normalize(request.Email);
+            if (await _context.Users.AnyAsync(u => u.UsernameNormalized == normalizedUsername
+                                                || u.EmailNormalized == normalizedEmail))
                 return Result<UserDto>.Fail("A user with that username or email already exists");
 
             var user = new User

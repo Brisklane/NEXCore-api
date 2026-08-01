@@ -76,7 +76,7 @@ public class JobService : IJobService
                 StatusLookupValueId = request.StatusLookupValueId,
                 HiringManagerEmployeeId = request.HiringManagerEmployeeId,
                 RecruiterEmployeeId = request.RecruiterEmployeeId,
-                CurrencyId = request.CurrencyId,
+                CurrencyCode = request.CurrencyCode,
                 SalaryRangeMin = request.SalaryRangeMin,
                 SalaryRangeMax = request.SalaryRangeMax,
                 TargetStartDate = request.TargetStartDate,
@@ -104,8 +104,8 @@ public class JobService : IJobService
                     PriorityLookupValueId   = request.PriorityLookupValueId ?? Guid.Empty,
                     ApprovalSubjectCode     = job.JobCode,
                     ApprovalSubjectTitle    = job.JobTitle,
-                    ApprovalSummary         = $"Job Requisition: {job.JobTitle} — Headcount: {job.Headcount}",
-                    ApprovalDisplayName     = $"{job.JobCode} – {job.JobTitle}",
+                    ApprovalSummary         = $"Job Requisition: {job.JobTitle} ï¿½ Headcount: {job.Headcount}",
+                    ApprovalDisplayName     = $"{job.JobCode} ï¿½ {job.JobTitle}",
                     // Entity data snapshot for WorkflowCondition evaluation
                     EntityData = new Dictionary<string, string>
                     {
@@ -218,7 +218,7 @@ public class JobService : IJobService
         StatusLookupValueId = j.StatusLookupValueId,
         HiringManagerEmployeeId = j.HiringManagerEmployeeId,
         RecruiterEmployeeId = j.RecruiterEmployeeId,
-        CurrencyId = j.CurrencyId,
+        CurrencyCode = j.CurrencyCode,
         SalaryRangeMin = j.SalaryRangeMin,
         SalaryRangeMax = j.SalaryRangeMax,
         TargetStartDate = j.TargetStartDate,

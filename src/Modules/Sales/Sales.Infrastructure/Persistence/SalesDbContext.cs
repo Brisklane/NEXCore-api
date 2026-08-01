@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Sales.Domain.Entities;
 
 namespace Sales.Infrastructure.Persistence;
@@ -181,19 +182,8 @@ public class SalesDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema(Schema);
 
-        ApplyUtcDateTimeConverters(modelBuilder);
-
-        // Stored File (SQL-backed image bytes)
-        modelBuilder.Entity<StoredFile>(entity =>
-        {
-            entity.ToTable("StoredFiles", Schema);
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.FileName).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.ContentType).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Content).IsRequired().HasColumnType("varbinary(max)");
-            entity.HasIndex(e => new { e.CompanyId, e.BranchId, e.BusinessUnitId })
-                .HasDatabaseName("IX_StoredFile_Tenant");
-        });
+        // Stored File (database-backed image bytes) — shared definition, module-owned table.
+        modelBuilder.ConfigureStoredFile(Schema);
 
         // CustomerGroup
         modelBuilder.Entity<CustomerGroup>(e =>
@@ -211,7 +201,7 @@ public class SalesDbContext : DbContext
             e.HasIndex(x => new { x.CompanyId, x.TradingName })
              .IsUnique()
              .HasDatabaseName("IX_PosStore_Company_TradingName")
-             .HasFilter("[IsDeleted] = 0 AND [TradingName] IS NOT NULL");
+             .HasFilter("is_deleted = false AND trading_name IS NOT NULL");
         });
 
         // SalesTerritory
@@ -334,10 +324,15 @@ public class SalesDbContext : DbContext
             e.Property(x => x.TargetQuantity).HasPrecision(18, 4);
             e.Property(x => x.ActualAmount).HasPrecision(18, 2);
             e.Property(x => x.ActualQuantity).HasPrecision(18, 4);
-            e.Property(x => x.CurrencyCode).HasMaxLength(10).HasDefaultValue("USD");
+            e.Property(x => x.CurrencyCode).HasMaxLength(3).IsUnicode(false).HasDefaultValue("USD");
             e.Ignore(x => x.AttainmentPercentage);
             e.HasIndex(x => new { x.SalesRepId, x.Period, x.PeriodStart })
              .HasDatabaseName("IX_SalesTarget_Rep_Period");
+            // Team- and territory-level quotas are queried the same way reps' are.
+            e.HasIndex(x => new { x.SalesTeamId, x.FiscalYear })
+             .HasDatabaseName("IX_SalesTarget_Team_FiscalYear");
+            e.HasIndex(x => new { x.SalesTerritoryId, x.FiscalYear })
+             .HasDatabaseName("IX_SalesTarget_Territory_FiscalYear");
         });
 
         // PriceList
@@ -673,7 +668,7 @@ public class SalesDbContext : DbContext
             // so closed/deleted sessions don't count — the DB enforces this even under a check-in race.
             e.HasIndex(x => x.PosTerminalId)
                 .IsUnique()
-                .HasFilter("[Status] = 0 AND [IsDeleted] = 0")
+                .HasFilter("status = 0 AND is_deleted = false")
                 .HasDatabaseName("UX_PosSessions_OpenPerTerminal");
         });
 
@@ -734,7 +729,9 @@ public class SalesDbContext : DbContext
             // PosCashDrawer already owns the Cascade delete - no second cascade needed here
             e.HasOne(x => x.PosCashDrawer).WithMany(d => d.Events)
              .HasForeignKey(x => x.PosCashDrawerId).OnDelete(DeleteBehavior.NoAction);
-            e.HasOne(x => x.PosSession).WithMany()
+            // Bind the inverse collection explicitly, otherwise PosSession.DrawerEvents
+            // produces a second relationship with a shadow PosSessionId1 column.
+            e.HasOne(x => x.PosSession).WithMany(s => s.DrawerEvents)
              .HasForeignKey(x => x.PosSessionId).OnDelete(DeleteBehavior.NoAction);
             e.HasOne(x => x.Cashier).WithMany()
              .HasForeignKey(x => x.CashierId).OnDelete(DeleteBehavior.NoAction);
@@ -853,7 +850,7 @@ public class SalesDbContext : DbContext
             e.Property(x => x.MinOrderAmount).HasPrecision(18, 4);
             e.Property(x => x.ScheduledDays).HasConversion<int>();
             e.HasIndex(x => new { x.CompanyId, x.BranchId, x.PromotionCode })
-             .HasFilter("[PromotionCode] IS NOT NULL")
+             .HasFilter("promotion_code IS NOT NULL")
              .IsUnique().HasDatabaseName("IX_Promotion_Tenant_Code");
             e.HasMany(x => x.Items).WithOne(i => i.Promotion)
              .HasForeignKey(i => i.PromotionId).OnDelete(DeleteBehavior.Cascade);
@@ -905,19 +902,10 @@ public class SalesDbContext : DbContext
             e.Property(x => x.AgreementNumber).IsRequired().HasMaxLength(50);
             e.HasMany(x => x.Lines).WithOne(l => l.SalesAgreement).HasForeignKey(l => l.SalesAgreementId).OnDelete(DeleteBehavior.Cascade);
         });
-    }
 
-    protected static void ApplyUtcDateTimeConverters(ModelBuilder modelBuilder)
-    {
-        var utc = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
-            v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-        var utcN = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
-            v => v, v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null);
-        foreach (var e in modelBuilder.Model.GetEntityTypes())
-            foreach (var p in e.GetProperties())
-            {
-                if (p.ClrType == typeof(DateTime))  p.SetValueConverter(utc);
-                if (p.ClrType == typeof(DateTime?)) p.SetValueConverter(utcN);
-            }
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

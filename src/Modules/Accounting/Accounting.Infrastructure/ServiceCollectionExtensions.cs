@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Accounting.Infrastructure.Persistence;
@@ -32,13 +33,7 @@ public static class ServiceCollectionExtensions
     {
         // Add DbContext
         services.AddDbContext<AccountingDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                b =>
-                {
-                    b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    b.MigrationsAssembly("Accounting.Infrastructure");
-                }));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(AccountingDbContext).Assembly));
 
         // ========== REGISTER REPOSITORIES ==========
         // Register generic repositories for direct entity access

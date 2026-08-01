@@ -11,7 +11,7 @@ namespace Sales.Tests.Integration.Fixtures;
 /// Collection-level fixture for all Sales integration tests.
 ///
 /// Lifecycle (managed by xUnit):
-///   InitializeAsync  → starts SQL Server, applies migrations, seeds the shared test store
+///   InitializeAsync  → starts PostgreSQL, applies migrations, seeds the shared test store
 ///   DisposeAsync     → stops the container and disposes the WebApplicationFactory
 ///
 /// All test classes in SalesTestCollection share this single instance:

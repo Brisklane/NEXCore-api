@@ -52,7 +52,12 @@ public class CampaignService : ICampaignService
     {
         var query = _db.Campaigns.AsNoTracking().Where(x => !x.IsDeleted);
         if (!string.IsNullOrWhiteSpace(pagination.SearchTerm))
-            query = query.Where(x => x.CampaignName.Contains(pagination.SearchTerm));
+        {
+            // Lower-cased on both sides so the match stays case-insensitive. SQL Server's
+            // default collation did this implicitly; PostgreSQL compares case-sensitively.
+            var term = pagination.SearchTerm.Trim().ToLower();
+            query = query.Where(x => x.CampaignName.ToLower().Contains(term));
+        }
         if (!string.IsNullOrWhiteSpace(status))
             query = query.Where(x => x.Status == status);
         var total = await query.CountAsync();

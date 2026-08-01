@@ -5,6 +5,7 @@ using Crm.Infrastructure.Repositories.Implementations;
 using Crm.Infrastructure.Repositories.Interfaces;
 using Crm.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexcore.SharedKernel.Events;
@@ -22,13 +23,7 @@ public static class ServiceCollectionExtensions
     {
         // Database
         services.AddDbContext<CrmDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                sql =>
-                {
-                    sql.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    sql.MigrationsAssembly(typeof(CrmDbContext).Assembly.FullName);
-                }));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(CrmDbContext).Assembly));
 
         // ========== REGISTER REPOSITORIES ==========
         // Core CRM Repositories
@@ -73,7 +68,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITerritoryAccountRepository, TerritoryAccountRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
-        services.AddScoped<ISalesTargetRepository, SalesTargetRepository>();
         services.AddScoped<IForecastRepository, ForecastRepository>();
 
         // ========== REGISTER APPLICATION SERVICES ==========
@@ -119,7 +113,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITeamService, TeamService>();
 
         // Planning Services
-        services.AddScoped<ISalesTargetService, SalesTargetService>();
         services.AddScoped<IForecastService, ForecastService>();
 
         // Initialization & Event Handlers

@@ -68,9 +68,12 @@ public class ProcurementStartupSeeder : IHostedService
             {
                 try
                 {
-                    var branchId       = await ScalarAsync(ctx, "SELECT TOP 1 b.Id AS Value FROM core.Branches b WHERE b.CompanyId = {0} AND b.IsDeleted = 0", companyId, cancellationToken);
-                    var userId         = await ScalarAsync(ctx, "SELECT TOP 1 b.CreatedByUserId AS Value FROM core.Branches b WHERE b.CompanyId = {0} AND b.IsDeleted = 0", companyId, cancellationToken);
-                    var businessUnitId = await ScalarAsync(ctx, "SELECT TOP 1 bu.Id AS Value FROM core.BusinessUnits bu WHERE bu.CompanyId = {0} AND bu.IsDeleted = 0", companyId, cancellationToken);
+                    // PostgreSQL: LIMIT 1 replaces TOP 1, and the projected column is quoted
+                    // so it keeps the exact casing SqlQueryRaw<T> looks for ("Value") rather
+                    // than being folded to lower case.
+                    var branchId       = await ScalarAsync(ctx, "SELECT b.id AS \"Value\" FROM core.branches b WHERE b.company_id = {0} AND b.is_deleted = false LIMIT 1", companyId, cancellationToken);
+                    var userId         = await ScalarAsync(ctx, "SELECT b.created_by_user_id AS \"Value\" FROM core.branches b WHERE b.company_id = {0} AND b.is_deleted = false LIMIT 1", companyId, cancellationToken);
+                    var businessUnitId = await ScalarAsync(ctx, "SELECT bu.id AS \"Value\" FROM core.business_units bu WHERE bu.company_id = {0} AND bu.is_deleted = false LIMIT 1", companyId, cancellationToken);
 
                     // 1. Master data (idempotent — skips if already present).
                     await init.InitializeAsync(companyId);

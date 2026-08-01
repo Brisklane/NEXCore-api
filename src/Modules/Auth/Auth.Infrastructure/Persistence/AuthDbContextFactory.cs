@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Nexcore.SharedKernel.Persistence;
 
 namespace Auth.Infrastructure.Persistence;
 
@@ -18,10 +19,10 @@ public class AuthDbContextFactory : IDesignTimeDbContextFactory<AuthDbContext>
     {
         var connection =
             Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-            ?? "Server=localhost;Database=DesignTime;Trusted_Connection=True;TrustServerCertificate=True;";
+            ?? "Host=localhost;Port=5432;Database=nexcore;Username=postgres;Password=postgres";
 
         var options = new DbContextOptionsBuilder<AuthDbContext>()
-            .UseSqlServer(connection)
+            .UseNexcorePostgres(connection, typeof(AuthDbContext).Assembly)
             .Options;
 
         return new AuthDbContext(options);

@@ -22,7 +22,14 @@ public class Job : BaseEntity
     public Guid? PriorityLookupValueId { get; set; }
     public Guid? ApprovalRequestId { get; set; }
     public Guid? StatusLookupValueId { get; set; }
-    public Guid CurrencyId { get; set; }
+
+    /// <summary>
+    /// ISO 4217 alpha-3 code for the salary range, e.g. "USD". The currency catalogue is owned
+    /// by the Core module; HR stores the stable natural key rather than a foreign key into
+    /// another module's schema.
+    /// </summary>
+    public string CurrencyCode { get; set; } = "USD";
+
     public Guid? HiringManagerEmployeeId { get; set; }
     public Guid? RecruiterEmployeeId { get; set; }
     public DateTime? PostingStartDate { get; set; }
@@ -37,7 +44,6 @@ public class Job : BaseEntity
     // Navigation
     public Department? Department { get; set; }
     public Designation? Designation { get; set; }
-    public Currency? Currency { get; set; }
     public Employee? HiringManagerEmployee { get; set; }
     public Employee? RecruiterEmployee { get; set; }
     public Employee? ClosedByEmployee { get; set; }

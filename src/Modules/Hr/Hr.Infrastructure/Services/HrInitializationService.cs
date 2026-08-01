@@ -14,6 +14,12 @@ public class HrInitializationService : IHrInitializationService
     private readonly HrDbContext _context;
     private readonly ILogger<HrInitializationService> _logger;
 
+    /// <summary>
+    /// ISO 4217 code used for the sample pay scales, jobs and offers. Currencies themselves live
+    /// in the Core module's catalogue; HR only records the code.
+    /// </summary>
+    private const string DefaultCurrencyCode = "USD";
+
     public HrInitializationService(HrDbContext context, ILogger<HrInitializationService> logger)
     {
         _context = context;
@@ -21,11 +27,14 @@ public class HrInitializationService : IHrInitializationService
     }
 
     public async Task<Result> InitializeHrForNewCompanyAsync(
-        Guid companyId, Guid branchId, Guid businessUnitId, Guid userId)
+        Guid companyId, Guid branchId, Guid businessUnitId, Guid userId,
+        bool includeSampleData = false)
     {
         try
         {
-            _logger.LogInformation("Initializing HR data for Company: {CompanyId}", companyId);
+            _logger.LogInformation(
+                "Initializing HR data for Company: {CompanyId} IncludeSampleData: {Include}",
+                companyId, includeSampleData);
 
             if (await HrDataExistsAsync(companyId))
             {
@@ -45,17 +54,9 @@ public class HrInitializationService : IHrInitializationService
                 var lookups = await SeedLookupDataAsync(companyId, branchId, businessUnitId, userId);
                 _logger.LogInformation("Seeded {Count} lookup values for Company: {CompanyId}", lookups.Count, companyId);
 
-                // Phase 2 – Currencies (global, unique index on CurrencyCode)
-                var usd = await EnsureCurrencyAsync("USD", "US Dollar",        "$",  t);
-                var eur = await EnsureCurrencyAsync("EUR", "Euro",              "€",  t);
-                var gbp = await EnsureCurrencyAsync("GBP", "British Pound",    "£",  t);
-                await EnsureCurrencyAsync("AED", "UAE Dirham",           "AED", t);
-                await EnsureCurrencyAsync("SAR", "Saudi Riyal",          "SAR", t);
-                await EnsureCurrencyAsync("PKR", "Pakistani Rupee",      "₨",   t);
-                await EnsureCurrencyAsync("INR", "Indian Rupee",         "₹",   t);
-                await EnsureCurrencyAsync("CAD", "Canadian Dollar",      "CA$", t);
-                await EnsureCurrencyAsync("AUD", "Australian Dollar",    "A$",  t);
-                await _context.SaveChangesAsync();
+                // Currencies are no longer seeded here: the ISO 4217 catalogue is owned by the
+                // Core module (core.currencies, seeded by GeoReferenceSeed) and HR records simply
+                // carry the alpha-3 code.
 
                 // Phase 3 – Grades
                 var grades = CreateGrades(t);
@@ -89,7 +90,7 @@ public class HrInitializationService : IHrInitializationService
                 await _context.SaveChangesAsync();
 
                 // Phase 9 – Pay Scales
-                var payScales = CreatePayScales(usd.Id, t);
+                var payScales = CreatePayScales(DefaultCurrencyCode, t);
                 _context.Set<PayScale>().AddRange(payScales);
                 await _context.SaveChangesAsync();
 
@@ -187,6 +188,18 @@ public class HrInitializationService : IHrInitializationService
                 _context.Set<Position>().AddRange(positions);
                 await _context.SaveChangesAsync();
 
+                // ═══ SAMPLE DATA (opt-in) ═════════════════════════════════════
+                // Phases 26-33 are the demo workforce and recruitment pipeline. Everything
+                // above is the org structure and configuration a real company needs before
+                // it can hire anyone, so it is always seeded.
+                if (!includeSampleData)
+                {
+                    await transaction.CommitAsync();
+                    _logger.LogInformation(
+                        "HR sample data skipped (IncludeSampleData=false) for Company: {CompanyId}", companyId);
+                    return Result.Ok("HR master data initialized successfully for new company");
+                }
+
                 // Phase 26 – Employees
                 var employees = CreateEmployees(departments, designations, positions, locations, t);
                 _context.Set<Employee>().AddRange(employees);
@@ -200,7 +213,7 @@ public class HrInitializationService : IHrInitializationService
                 var jobs = CreateJobs(departments, designations, families, functions, grades, payScales,
                     locations, shifts, allowances, employees, channelTemplates,
                     jobStatusOpenId, priorityHighId, priorityMedId, postingPublishedId,
-                    usd.Id, t);
+                    DefaultCurrencyCode, t);
                 _context.Set<Job>().AddRange(jobs.Select(j => j.Job));
                 await _context.SaveChangesAsync();
                 _context.Set<JobDetail>().AddRange(jobs.Select(j => j.Detail));
@@ -231,7 +244,7 @@ public class HrInitializationService : IHrInitializationService
                 // Phase 30 – Job Requisitions
                 var requisitions = CreateJobRequisitions(
                     departments, designations, families, functions, grades, payScales,
-                    locations, shifts, employees, jobStatusOpenId, priorityHighId, priorityMedId, usd.Id, t);
+                    locations, shifts, employees, jobStatusOpenId, priorityHighId, priorityMedId, DefaultCurrencyCode, t);
                 _context.Set<Job>().AddRange(requisitions.Select(r => r.Job));
                 await _context.SaveChangesAsync();
                 _context.Set<JobDetail>().AddRange(requisitions.Select(r => r.Detail));
@@ -274,7 +287,7 @@ public class HrInitializationService : IHrInitializationService
                 var candRespNoneId = lookups.GetValueOrDefault("CAND_RESP_NONE");
                 var offerData = CreateOfferLetters(
                     apps, jobs, candidates, employees, grades, payScales, benefits, allowances,
-                    offerSentId, offerPendingId, candRespNoneId, usd.Id, t);
+                    offerSentId, offerPendingId, candRespNoneId, DefaultCurrencyCode, t);
                 _context.Set<OfferLetter>().AddRange(offerData.Select(o => o.Offer));
                 await _context.SaveChangesAsync();
                 _context.Set<OfferLetterDetail>().AddRange(offerData.Select(o => o.Detail));
@@ -588,21 +601,7 @@ public class HrInitializationService : IHrInitializationService
     }
 
     // -------------------------------------------------------------------------
-    // Phase 2 – Currencies
     // -------------------------------------------------------------------------
-
-    private async Task<Currency> EnsureCurrencyAsync(string code, string name, string symbol,
-        (Guid companyId, Guid branchId, Guid businessUnitId, Guid userId, DateTime now) t)
-    {
-        var existing = await _context.Currencies.FirstOrDefaultAsync(c => c.CurrencyCode == code && !c.IsDeleted);
-        if (existing != null) return existing;
-        var c2 = Base(new Currency
-        {
-            CurrencyCode = code, CurrencyName = name, Symbol = symbol, IsActive = true
-        }, t);
-        _context.Currencies.Add(c2);
-        return c2;
-    }
 
     // -------------------------------------------------------------------------
     // Phase 3 – Grades
@@ -755,7 +754,7 @@ public class HrInitializationService : IHrInitializationService
     // Phase 9 – Pay Scales
     // -------------------------------------------------------------------------
 
-    private PayScale[] CreatePayScales(Guid usdId,
+    private PayScale[] CreatePayScales(string currencyCode,
         (Guid companyId, Guid branchId, Guid businessUnitId, Guid userId, DateTime now) t)
     {
         var data = new[]
@@ -769,7 +768,7 @@ public class HrInitializationService : IHrInitializationService
         {
             PayScaleCode = d.Item1, PayScaleName = d.Item2,
             MinAmount = d.Item3, MaxAmount = d.Item4,
-            CurrencyId = usdId, IsActive = true
+            CurrencyCode = currencyCode, IsActive = true
         }, t)).ToArray();
     }
 
@@ -1163,7 +1162,6 @@ public class HrInitializationService : IHrInitializationService
             if (existing != null) return existing;
             var ct = Base(new CommunicationTemplate
             {
-                CommunicationTemplateId = Guid.NewGuid(),
                 TemplateCode = code, TemplateName = name,
                 TemplateTypeLookupValueId = emailTypeId,
                 Subject = subject, Body = body,
@@ -1534,7 +1532,7 @@ public class HrInitializationService : IHrInitializationService
         AllowancesProfile[] allowances, Employee[] employees,
         ChannelTemplate[] channelTemplates,
         Guid jobStatusOpenId, Guid priorityHighId, Guid priorityMedId, Guid postingPublishedId,
-        Guid usdId,
+        string currencyCode,
         (Guid companyId, Guid branchId, Guid businessUnitId, Guid userId, DateTime now) t)
     {
         Guid Dept(string code) => depts.First(d => d.DepartmentCode == code).Id;
@@ -1561,7 +1559,7 @@ public class HrInitializationService : IHrInitializationService
             Headcount = 2, FilledCount = 0,
             EmploymentType = EmploymentType.FullTime,
             SalaryRangeMin = 70000m, SalaryRangeMax = 100000m,
-            CurrencyId = usdId,
+            CurrencyCode = currencyCode,
             TargetStartDate = t.now.AddMonths(2),
             StatusLookupValueId = jobStatusOpenId,
             PriorityLookupValueId = priorityHighId,
@@ -1620,7 +1618,7 @@ public class HrInitializationService : IHrInitializationService
             Headcount = 3, FilledCount = 0,
             EmploymentType = EmploymentType.FullTime,
             SalaryRangeMin = 50000m, SalaryRangeMax = 80000m,
-            CurrencyId = usdId,
+            CurrencyCode = currencyCode,
             TargetStartDate = t.now.AddMonths(1),
             StatusLookupValueId = jobStatusOpenId,
             PriorityLookupValueId = priorityMedId,
@@ -1889,7 +1887,7 @@ public class HrInitializationService : IHrInitializationService
         JobFamily[] families, JobFunction[] functions, Grade[] grades,
         PayScale[] payScales, JobLocation[] locations, Shift[] shifts,
         Employee[] employees,
-        Guid jobStatusOpenId, Guid priorityHighId, Guid priorityMedId, Guid usdId,
+        Guid jobStatusOpenId, Guid priorityHighId, Guid priorityMedId, string currencyCode,
         (Guid companyId, Guid branchId, Guid businessUnitId, Guid userId, DateTime now) t)
     {
         Guid Dept(string code)  => depts.First(d => d.DepartmentCode == code).Id;
@@ -1912,7 +1910,7 @@ public class HrInitializationService : IHrInitializationService
             DepartmentId = Dept("ENG"), DesignationId = Desig("LEAD_SWE"),
             Headcount = 1, FilledCount = 0,
             EmploymentType = EmploymentType.FullTime,
-            SalaryRangeMin = 100000m, SalaryRangeMax = 140000m, CurrencyId = usdId,
+            SalaryRangeMin = 100000m, SalaryRangeMax = 140000m, CurrencyCode = currencyCode,
             TargetStartDate = t.now.AddMonths(3),
             StatusLookupValueId = jobStatusOpenId,
             PriorityLookupValueId = priorityHighId,
@@ -1948,7 +1946,7 @@ public class HrInitializationService : IHrInitializationService
             DepartmentId = Dept("HR"), DesignationId = Desig("HR_MGR"),
             Headcount = 1, FilledCount = 0,
             EmploymentType = EmploymentType.FullTime,
-            SalaryRangeMin = 70000m, SalaryRangeMax = 95000m, CurrencyId = usdId,
+            SalaryRangeMin = 70000m, SalaryRangeMax = 95000m, CurrencyCode = currencyCode,
             TargetStartDate = t.now.AddMonths(2),
             StatusLookupValueId = jobStatusOpenId,
             PriorityLookupValueId = priorityMedId,
@@ -2125,7 +2123,7 @@ public class HrInitializationService : IHrInitializationService
         ApplicationData[] apps, JobData[] jobs, CandidateData[] candidates,
         Employee[] employees, Grade[] grades, PayScale[] payScales,
         BenefitsPlan[] benefits, AllowancesProfile[] allowances,
-        Guid offerSentId, Guid offerPendingId, Guid candRespNoneId, Guid usdId,
+        Guid offerSentId, Guid offerPendingId, Guid candRespNoneId, string currencyCode,
         (Guid companyId, Guid branchId, Guid businessUnitId, Guid userId, DateTime now) t)
     {
         var hrMgr     = employees.First(e => e.EmployeeCode == "EMP001");
@@ -2151,7 +2149,7 @@ public class HrInitializationService : IHrInitializationService
             ReportingManagerEmployeeId     = salesMgr.Id,
             BaseSalary                     = 68000m,
             TotalPackage                   = 76000m,
-            CurrencyId                     = usdId,
+            CurrencyCode                     = currencyCode,
             EmploymentType                 = EmploymentType.FullTime,
             StartDate                      = t.now.AddDays(30),
             ExpiryDate                     = t.now.AddDays(10),
@@ -2196,7 +2194,7 @@ public class HrInitializationService : IHrInitializationService
             ReportingManagerEmployeeId     = employees.First(e => e.EmployeeCode == "EMP003").Id,
             BaseSalary                     = 90000m,
             TotalPackage                   = 100000m,
-            CurrencyId                     = usdId,
+            CurrencyCode                     = currencyCode,
             EmploymentType                 = EmploymentType.FullTime,
             StartDate                      = t.now.AddDays(45),
             ExpiryDate                     = t.now.AddDays(14),

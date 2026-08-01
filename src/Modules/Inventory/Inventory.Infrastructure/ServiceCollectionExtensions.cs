@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Inventory.Infrastructure.Persistence;
@@ -26,13 +27,7 @@ public static class ServiceCollectionExtensions
     {
         // Add DbContext
         services.AddDbContext<InventoryDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                b =>
-                {
-                    b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    b.MigrationsAssembly("Inventory.Infrastructure");
-                }));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(InventoryDbContext).Assembly));
 
         // ========== REGISTER GENERIC REPOSITORY ==========
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -96,7 +91,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemTrackingService, ItemTrackingService>();
 
         // ========== REGISTER IMAGE STORAGE SERVICE ==========
-        // SQL Server-backed file storage (inv.StoredFiles) — replaces Azure Blob Storage.
+        // Database-backed file storage (inventory.stored_files) — replaces Azure Blob Storage.
         // Scoped because it uses the per-request InventoryDbContext.
         services.AddScoped<IBlobStorageService, SqlImageStorageService>();
 

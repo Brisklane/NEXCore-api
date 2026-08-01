@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Nexcore.SharedKernel.Persistence;
 
 namespace Manufacturing.Infrastructure.Persistence;
 
@@ -19,10 +20,10 @@ public class ManufacturingDbContextFactory : IDesignTimeDbContextFactory<Manufac
     {
         var connection =
             Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-            ?? "Server=localhost;Database=DesignTime;Trusted_Connection=True;TrustServerCertificate=True;";
+            ?? "Host=localhost;Port=5432;Database=nexcore;Username=postgres;Password=postgres";
 
         var options = new DbContextOptionsBuilder<ManufacturingDbContext>()
-            .UseSqlServer(connection, b => b.MigrationsAssembly("Manufacturing.Infrastructure"))
+            .UseNexcorePostgres(connection, typeof(ManufacturingDbContext).Assembly)
             .Options;
 
         return new ManufacturingDbContext(options);

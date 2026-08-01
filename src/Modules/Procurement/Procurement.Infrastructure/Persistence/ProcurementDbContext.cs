@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Procurement.Domain.Entities;
 
 namespace Procurement.Infrastructure.Persistence;
@@ -884,11 +885,13 @@ public class ProcurementDbContext : DbContext
              .HasForeignKey(x => x.InvoiceApprovalWorkflowId).OnDelete(DeleteBehavior.NoAction);
         });
 
-        // ── Global: neutralise DB-level cascade to avoid SQL Server "multiple cascade
-        // paths / cycles" (error 1785). This module soft-deletes everywhere, so database
-        // cascade is unnecessary. ClientCascade/ClientSetNull keep EF's in-memory orphan
-        // handling working (e.g. replacing pricelist lines) while the generated FKs use
-        // ON DELETE NO ACTION. Runs last so it overrides every explicit configuration above.
+        // ── Global: neutralise DB-level cascade. This originally worked around SQL Server's
+        // "multiple cascade paths / cycles" restriction (error 1785), which PostgreSQL does
+        // not have — but the behaviour is kept deliberately: this module soft-deletes
+        // everywhere, so database cascade is unnecessary, and changing it now would alter
+        // delete semantics rather than just the provider. ClientCascade/ClientSetNull keep
+        // EF's in-memory orphan handling working (e.g. replacing pricelist lines) while the
+        // generated FKs use ON DELETE NO ACTION.
         foreach (var fk in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetForeignKeys()))
         {
             if (fk.DeleteBehavior == DeleteBehavior.Cascade)
@@ -896,5 +899,10 @@ public class ProcurementDbContext : DbContext
             else if (fk.DeleteBehavior == DeleteBehavior.SetNull)
                 fk.DeleteBehavior = DeleteBehavior.ClientSetNull;
         }
+
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

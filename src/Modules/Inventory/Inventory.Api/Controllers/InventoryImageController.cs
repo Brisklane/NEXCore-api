@@ -2,11 +2,12 @@ using Inventory.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 
 namespace Inventory.Api.Controllers;
 
 /// <summary>
-/// Serves inventory item images that are stored in SQL Server (<c>inv.StoredFiles</c>).
+/// Serves inventory item images that are stored in the database (<c>inventory.stored_files</c>).
 ///
 /// The upload flow (<see cref="ItemController"/>) persists a URL of the form
 /// <c>/api/inventory/images/{id}</c> on each <c>ItemImage</c>; this endpoint streams

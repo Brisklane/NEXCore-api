@@ -29,7 +29,8 @@ public class CrmInitializationService : ICrmInitializationService
 
     // ?
     public async Task<Result> InitializeCrmForNewCompanyAsync(
-        Guid companyId, Guid branchId, Guid businessUnitId, Guid userId)
+        Guid companyId, Guid branchId, Guid businessUnitId, Guid userId,
+        bool includeSampleData = false)
     {
         try
         {
@@ -44,6 +45,8 @@ public class CrmInitializationService : ICrmInitializationService
             {
                 var ctx = new SeedCtx(companyId, branchId, businessUnitId, userId, DateTime.UtcNow);
 
+                // ═══ MASTER / CONFIG — always seeded ══════════════════════════
+
                 // 1. Pipelines & Stages
                 var pipelines = CreatePipelines(ctx);
                 _db.Pipelines.AddRange(pipelines);
@@ -55,20 +58,11 @@ public class CrmInitializationService : ICrmInitializationService
                 await _db.SaveChangesAsync();
                 _logger.LogInformation("CRM: {N} pipeline stages seeded", stages.Length);
 
-                // 2. Products & Pricebooks
-                var products = CreateProducts(ctx);
-                _db.Products.AddRange(products);
-                await _db.SaveChangesAsync();
-                _logger.LogInformation("CRM: {N} products seeded", products.Length);
-
+                // 2. Pricebooks (headers — entries follow the demo product catalog)
                 var pricebooks = CreatePricebooks(ctx);
                 _db.Pricebooks.AddRange(pricebooks);
                 await _db.SaveChangesAsync();
-
-                var entries = CreatePricebookEntries(ctx, products, pricebooks);
-                _db.PricebookEntries.AddRange(entries);
-                await _db.SaveChangesAsync();
-                _logger.LogInformation("CRM: {N} pricebook entries seeded", entries.Length);
+                _logger.LogInformation("CRM: {N} pricebooks seeded", pricebooks.Length);
 
                 // 3. Tags
                 var tags = CreateTags(ctx);
@@ -92,7 +86,33 @@ public class CrmInitializationService : ICrmInitializationService
                 await _db.SaveChangesAsync();
                 _logger.LogInformation("CRM: {N} teams + {M} members seeded", teams.Length, teamMembers.Length);
 
-                // 6. Accounts
+                // 6. Walk-in Customer — POS cannot ring up a counter sale without it,
+                //    so it is master data, not sample data.
+                _db.Contacts.Add(CreateWalkInContact(ctx));
+                await _db.SaveChangesAsync();
+                _logger.LogInformation("CRM: walk-in customer seeded");
+
+                // ═══ SAMPLE DATA (opt-in) ═════════════════════════════════════
+                if (!includeSampleData)
+                {
+                    await tx.CommitAsync();
+                    _logger.LogInformation(
+                        "CRM sample data skipped (IncludeSampleData=false) for Company:{CompanyId}", companyId);
+                    return Result.Ok("CRM master data initialized successfully.");
+                }
+
+                // 7. Demo product catalog + pricebook entries
+                var products = CreateProducts(ctx);
+                _db.Products.AddRange(products);
+                await _db.SaveChangesAsync();
+                _logger.LogInformation("CRM: {N} products seeded", products.Length);
+
+                var entries = CreatePricebookEntries(ctx, products, pricebooks);
+                _db.PricebookEntries.AddRange(entries);
+                await _db.SaveChangesAsync();
+                _logger.LogInformation("CRM: {N} pricebook entries seeded", entries.Length);
+
+                // 8. Accounts
                 var accounts = CreateAccounts(ctx);
                 _db.Accounts.AddRange(accounts);
                 await _db.SaveChangesAsync();
@@ -170,11 +190,7 @@ public class CrmInitializationService : ICrmInitializationService
                 _db.EntityTags.AddRange(entityTags);
                 await _db.SaveChangesAsync();
 
-                // 19. Sales Targets
-                var targets = CreateSalesTargets(ctx, teams, territories);
-                _db.SalesTargets.AddRange(targets);
-                await _db.SaveChangesAsync();
-                _logger.LogInformation("CRM: {N} sales targets seeded", targets.Length);
+                // 19. Sales targets are seeded by the Sales module, which owns the quota record.
 
                 // 20. Forecasts
                 var forecasts = CreateForecasts(ctx);
@@ -198,8 +214,11 @@ public class CrmInitializationService : ICrmInitializationService
         }
     }
 
+    // Keyed off Pipelines, not Accounts: accounts are sample data and are absent for
+    // companies that declined it, which would make this report "not initialized" and
+    // re-seed the master data on every event.
     public async Task<bool> CrmDataExistsAsync(Guid companyId)
-        => await _db.Accounts.AnyAsync(a => a.CompanyId == companyId);
+        => await _db.Pipelines.AnyAsync(p => p.CompanyId == companyId);
 
     public async Task EnsureWalkInCustomersAsync()
     {
@@ -679,6 +698,32 @@ public class CrmInitializationService : ICrmInitializationService
         ];
     }
 
+    /// <summary>
+    /// The anonymous walk-in customer POS uses for counter sales with no named customer.
+    /// Master data, not sample data — POS cannot ring up a sale without it, so this is
+    /// seeded for every company regardless of the sample-data choice.
+    /// Not tied to a business Account. CustomerType.WalkIn + IsAnonymous.
+    /// </summary>
+    private Contact CreateWalkInContact(SeedCtx ctx)
+    {
+        var walkIn = new Contact
+        {
+            FirstName      = "Walk-in",
+            LastName       = "Customer",
+            FullName       = "Walk-in Customer",
+            ShortName      = "Walk-in",
+            CustomerType   = CustomerType.WalkIn,
+            CustomerNumber = "CUS-000000",
+            IsAnonymous    = true,
+            IsActive       = true,
+            EmailOptOut    = true,
+            OwnerId        = ctx.UserId,
+            Description    = "Default anonymous walk-in customer for POS / counter sales",
+        };
+        SetBase(walkIn, ctx);
+        return walkIn;
+    }
+
     // ?
     // 10. Contacts
     // ?
@@ -701,27 +746,8 @@ public class CrmInitializationService : ICrmInitializationService
             return c;
         }
 
-        // Default anonymous walk-in customer — the contact POS uses for counter sales with no
-        // named customer. Not tied to a business Account. CustomerType.WalkIn + IsAnonymous.
-        var walkIn = new Contact
-        {
-            FirstName      = "Walk-in",
-            LastName       = "Customer",
-            FullName       = "Walk-in Customer",
-            ShortName      = "Walk-in",
-            CustomerType   = CustomerType.WalkIn,
-            CustomerNumber = "CUS-000000",
-            IsAnonymous    = true,
-            IsActive       = true,
-            EmailOptOut    = true,
-            OwnerId        = ctx.UserId,
-            Description    = "Default anonymous walk-in customer for POS / counter sales",
-        };
-        SetBase(walkIn, ctx);
-
         return
         [
-            walkIn,
             C("James",   "Carter",    "VP of Sales",            "j.carter@apextechnologies.com",     "+1-415-555-0111", accounts[0].Id,  "Primary contact at Apex"),
             C("Sarah",   "Mitchell",  "Director of IT",         "s.mitchell@apextechnologies.com",   "+1-415-555-0112", accounts[0].Id),
             C("Robert",  "Thompson",  "CEO",                    "r.thompson@globaldynamics.com",     "+1-312-555-0211", accounts[1].Id,  "Executive sponsor"),
@@ -1262,58 +1288,7 @@ public class CrmInitializationService : ICrmInitializationService
     // ?
     // 21. Sales Targets
     // ?
-    private SalesTarget[] CreateSalesTargets(SeedCtx ctx, Team[] teams, Territory[] territories)
-    {
-        var now  = ctx.Now;
-        var year = now.Year;
-
-        SalesTarget T(Guid? teamId, Guid? territoryId, Guid? ownerId,
-                      int fiscYear, int? quarter, decimal target, string currency)
-        {
-            int startMonth = quarter.HasValue ? (quarter.Value - 1) * 3 + 1 : 1;
-            int endMonth   = quarter.HasValue ? quarter.Value * 3 : 12;
-            var s = new SalesTarget
-            {
-                TeamId          = teamId,
-                TerritoryId     = territoryId,
-                UserId          = ownerId,
-                FiscalYear      = fiscYear,
-                FiscalQuarter   = quarter,
-                TargetAmount    = target,
-                CurrencyCode    = currency,
-                PeriodStartDate = new DateTime(fiscYear, startMonth, 1),
-                PeriodEndDate   = new DateTime(fiscYear, endMonth, DateTime.DaysInMonth(fiscYear, endMonth))
-            };
-            SetBase(s, ctx);
-            return s;
-        }
-
-        var usEast = territories.First(t => t.TerritoryName == "US East");
-        var usWest = territories.First(t => t.TerritoryName == "US West");
-        var uk     = territories.First(t => t.TerritoryName == "UK & Ireland");
-
-        return
-        [
-            // Annual team targets
-            T(teams[0].Id, null, null, year, null, 2_000_000m, "USD"),   // NA Sales
-            T(teams[1].Id, null, null, year, null, 1_500_000m, "USD"),   // EMEA Sales
-            T(teams[2].Id, null, null, year, null, 5_000_000m, "USD"),   // Enterprise
-            T(teams[3].Id, null, null, year, null,   800_000m, "USD"),   // SMB
-
-            // Quarterly personal targets
-            T(null, null, ctx.UserId, year, 1, 150_000m, "USD"),
-            T(null, null, ctx.UserId, year, 2, 175_000m, "USD"),
-            T(null, null, ctx.UserId, year, 3, 200_000m, "USD"),
-            T(null, null, ctx.UserId, year, 4, 225_000m, "USD"),
-
-            // Territory annual targets
-            T(null, usEast.Id, null, year, null, 1_200_000m, "USD"),
-            T(null, usWest.Id, null, year, null, 1_000_000m, "USD"),
-            T(null, uk.Id,     null, year, null,   600_000m, "GBP"),
-        ];
-    }
-
-    // ?
+        // ?
     // 22. Forecasts
     // ?
     private Forecast[] CreateForecasts(SeedCtx ctx)

@@ -2,7 +2,7 @@ namespace Inventory.Application.Services.Interfaces;
 
 /// <summary>
 /// Uploads and manages inventory images. The active implementation
-/// (<c>SqlImageStorageService</c>) stores the bytes in SQL Server and returns a
+/// (<c>SqlImageStorageService</c>) stores the bytes in the database and returns a
 /// relative API URL (<c>/api/inventory/images/{id}</c>) that the image endpoint serves.
 ///
 /// This interface lives in Application so controllers and services can depend

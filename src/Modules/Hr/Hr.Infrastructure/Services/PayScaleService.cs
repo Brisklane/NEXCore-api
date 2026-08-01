@@ -33,7 +33,7 @@ public class PayScaleService : IPayScaleService
             var entity = new PayScale
             {
                 PayScaleCode = request.PayScaleCode, PayScaleName = request.PayScaleName,
-                CurrencyId = request.CurrencyId, MinAmount = request.MinAmount, MaxAmount = request.MaxAmount,
+                CurrencyCode = request.CurrencyCode, MinAmount = request.MinAmount, MaxAmount = request.MaxAmount,
                 IsActive = true, CreatedAt = DateTime.UtcNow, CreatedByUserId = userId
             };
             await _repo.AddAsync(entity); await _repo.SaveChangesAsync();
@@ -49,7 +49,7 @@ public class PayScaleService : IPayScaleService
         {
             var entity = await _repo.GetByIdAsync(id) ?? throw new InvalidOperationException("Pay scale not found");
             if (!string.IsNullOrWhiteSpace(request.PayScaleName)) entity.PayScaleName = request.PayScaleName;
-            if (request.CurrencyId.HasValue) entity.CurrencyId = request.CurrencyId;
+            if (!string.IsNullOrWhiteSpace(request.CurrencyCode)) entity.CurrencyCode = request.CurrencyCode;
             if (request.MinAmount.HasValue) entity.MinAmount = request.MinAmount;
             if (request.MaxAmount.HasValue) entity.MaxAmount = request.MaxAmount;
             if (request.IsActive.HasValue) entity.IsActive = request.IsActive.Value;
@@ -74,7 +74,7 @@ public class PayScaleService : IPayScaleService
     private static PayScaleDto Map(PayScale e) => new()
     {
         Id = e.Id, CompanyId = e.CompanyId, PayScaleCode = e.PayScaleCode,
-        PayScaleName = e.PayScaleName, CurrencyId = e.CurrencyId,
+        PayScaleName = e.PayScaleName, CurrencyCode = e.CurrencyCode,
         MinAmount = e.MinAmount, MaxAmount = e.MaxAmount,
         IsActive = e.IsActive, CreatedAt = e.CreatedAt, UpdatedAt = e.UpdatedAt
     };
