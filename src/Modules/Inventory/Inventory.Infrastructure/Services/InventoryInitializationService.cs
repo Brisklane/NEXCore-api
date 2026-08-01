@@ -30,13 +30,14 @@ public partial class InventoryInitializationService : IInventoryInitializationSe
     // ── public API ────────────────────────────────────────────────────────────
 
     public async Task<Result> InitializeInventoryForNewCompanyAsync(
-        Guid companyId, Guid branchId, Guid businessUnitId, Guid userId)
+        Guid companyId, Guid branchId, Guid businessUnitId, Guid userId,
+        bool includeSampleData = false)
     {
         try
         {
             _logger.LogInformation(
-                "Initializing inventory data for Company:{CompanyId} Branch:{BranchId} BU:{BusinessUnitId}",
-                companyId, branchId, businessUnitId);
+                "Initializing inventory data for Company:{CompanyId} Branch:{BranchId} BU:{BusinessUnitId} IncludeSampleData:{Include}",
+                companyId, branchId, businessUnitId, includeSampleData);
 
             if (await InventoryDataExistsAsync(companyId))
             {
@@ -105,6 +106,18 @@ public partial class InventoryInitializationService : IInventoryInitializationSe
                 _ctx.TaxDefinitions.AddRange(taxes);
                 await _ctx.SaveChangesAsync();
                 _logger.LogInformation("Seeded {N} tax definitions", taxes.Length);
+
+                // ═══ SAMPLE DATA (opt-in) ═════════════════════════════════════
+                // Everything below is the demo product catalog and its stock movements.
+                // Skipped entirely when the user declined sample data at registration —
+                // the master data above is all a real company needs to start trading.
+                if (!includeSampleData)
+                {
+                    await tx.CommitAsync();
+                    _logger.LogInformation(
+                        "Inventory sample data skipped (IncludeSampleData=false) for Company:{CompanyId}", companyId);
+                    return Result.Ok("Inventory master data initialized successfully");
+                }
 
                 // ── 10. Items (batched) — GL accounts injected ─────────────────
                 var (items, barcodes, images) = SeedItems(T, units, categories, brands, gl);

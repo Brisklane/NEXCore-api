@@ -1,6 +1,7 @@
 using Crm.Domain.Entities;
 using Crm.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Nexcore.SharedKernel.Audit;
 
 namespace Crm.Infrastructure.Persistence;
@@ -66,7 +67,6 @@ public class CrmDbContext : AuditDbContextBase
     public DbSet<TeamMember> TeamMembers => Set<TeamMember>();
 
     // Planning
-    public DbSet<SalesTarget> SalesTargets => Set<SalesTarget>();
     public DbSet<Forecast> Forecasts => Set<Forecast>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -88,7 +88,6 @@ public class CrmDbContext : AuditDbContextBase
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("crm");
-        ApplyUtcDateTimeConverters(modelBuilder);
 
         // Prices and quantities carry 4 decimals (consistent with the Inventory module).
         foreach (var p in modelBuilder.Model.GetEntityTypes()
@@ -111,7 +110,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.Phone).HasMaxLength(50);
             e.Property(x => x.Type).HasMaxLength(100);
             e.Property(x => x.Industry).HasMaxLength(100);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.ParentAccount).WithMany(x => x.ChildAccounts)
                 .HasForeignKey(x => x.ParentAccountId).OnDelete(DeleteBehavior.Restrict);
         });
@@ -133,7 +131,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.DefaultPaymentTerms).HasMaxLength(50);
             e.Property(x => x.CreditLimit).HasPrecision(18, 2);
             e.Property(x => x.OutstandingBalance).HasPrecision(18, 2);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Account).WithMany(x => x.Contacts)
                 .HasForeignKey(x => x.AccountId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.ReportsTo).WithMany(x => x.DirectReports)
@@ -143,7 +140,7 @@ public class CrmDbContext : AuditDbContextBase
             e.HasMany(x => x.Addresses).WithOne(a => a.Contact)
                 .HasForeignKey(a => a.ContactId).OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(x => new { x.CompanyId, x.BranchId, x.BusinessUnitId, x.CustomerNumber })
-                .HasFilter("[CustomerNumber] IS NOT NULL")
+                .HasFilter("customer_number IS NOT NULL")
                 .IsUnique().HasDatabaseName("IX_Contact_Tenant_CustomerNumber");
         });
 
@@ -169,7 +166,7 @@ public class CrmDbContext : AuditDbContextBase
              .HasDatabaseName("IX_ContactAddress_Contact");
             // Enforce one default per contact per tenant
             e.HasIndex(x => new { x.CompanyId, x.ContactId, x.IsDefault })
-             .HasFilter("[IsDefault] = 1")
+             .HasFilter("is_default = true")
              .IsUnique()
              .HasDatabaseName("IX_ContactAddress_Contact_Default");
         });
@@ -186,7 +183,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.Phone).HasMaxLength(50);
             e.Property(x => x.Status).IsRequired().HasMaxLength(50);
             e.Property(x => x.AnnualRevenue).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.ConvertedAccount).WithMany()
                 .HasForeignKey(x => x.ConvertedAccountId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.ConvertedContact).WithMany()
@@ -203,7 +199,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.OpportunityName).IsRequired().HasMaxLength(255);
             e.Property(x => x.Stage).IsRequired().HasMaxLength(100);
             e.Property(x => x.Amount).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Account).WithMany(x => x.Deals)
                 .HasForeignKey(x => x.AccountId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Pipeline).WithMany(x => x.Deals)
@@ -219,7 +214,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.Subject).IsRequired().HasMaxLength(255);
             e.Property(x => x.Type).IsRequired().HasMaxLength(50);
-            e.Property(x => x.RowVersion).IsRowVersion();
             // Polymorphic - no FK constraints on RelatedToId / NameId
             e.HasOne(x => x.Lead).WithMany(x => x.Activities)
                 .HasForeignKey(x => x.NameId).OnDelete(DeleteBehavior.Restrict);
@@ -249,7 +243,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.Body).IsRequired();
             e.Property(x => x.ParentType).IsRequired().HasMaxLength(50);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.Ignore(x => x.Lead);
             e.Ignore(x => x.Account);
             e.Ignore(x => x.Contact);
@@ -265,7 +258,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.FileName).IsRequired().HasMaxLength(255);
             e.Property(x => x.StoragePath).IsRequired().HasMaxLength(1000);
             e.Property(x => x.ParentType).IsRequired().HasMaxLength(50);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.Ignore(x => x.Lead);
             e.Ignore(x => x.Account);
             e.Ignore(x => x.Contact);
@@ -281,7 +273,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.CaseNumber).IsRequired().HasMaxLength(50);
             e.Property(x => x.Status).IsRequired().HasMaxLength(50);
             e.Property(x => x.Priority).IsRequired().HasMaxLength(50);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Contact).WithMany(x => x.Cases)
                 .HasForeignKey(x => x.ContactId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Account).WithMany()
@@ -296,7 +287,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("CaseComments");
             e.HasKey(x => x.Id);
             e.Property(x => x.CommentBody).IsRequired();
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Case).WithMany(x => x.Comments)
                 .HasForeignKey(x => x.CaseId).OnDelete(DeleteBehavior.Cascade);
         });
@@ -309,7 +299,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.ArticleNumber).IsRequired().HasMaxLength(50);
             e.Property(x => x.Title).IsRequired().HasMaxLength(500);
             e.Property(x => x.Body).IsRequired();
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // Entitlement
@@ -318,7 +307,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("Entitlements");
             e.HasKey(x => x.Id);
             e.Property(x => x.EntitlementName).IsRequired().HasMaxLength(255);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Account).WithMany()
                 .HasForeignKey(x => x.AccountId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Contact).WithMany()
@@ -335,7 +323,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.ExpectedRevenue).HasColumnType("decimal(18,2)");
             e.Property(x => x.BudgetedCost).HasColumnType("decimal(18,2)");
             e.Property(x => x.ActualCost).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.ParentCampaign).WithMany(x => x.ChildCampaigns)
                 .HasForeignKey(x => x.ParentCampaignId).OnDelete(DeleteBehavior.Restrict);
         });
@@ -345,7 +332,6 @@ public class CrmDbContext : AuditDbContextBase
         {
             e.ToTable("CampaignMembers");
             e.HasKey(x => x.Id);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Campaign).WithMany(x => x.Members)
                 .HasForeignKey(x => x.CampaignId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Lead).WithMany()
@@ -360,7 +346,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("ContactLists");
             e.HasKey(x => x.Id);
             e.Property(x => x.ListName).IsRequired().HasMaxLength(255);
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // ContactListMember
@@ -369,7 +354,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("ContactListMembers");
             e.HasKey(x => x.Id);
             e.Property(x => x.MemberType).IsRequired().HasMaxLength(20);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.ContactList).WithMany(x => x.Members)
                 .HasForeignKey(x => x.ContactListId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Contact).WithMany()
@@ -386,7 +370,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.ProductName).IsRequired().HasMaxLength(255);
             e.Property(x => x.ProductCode).HasMaxLength(100);
             e.Property(x => x.QuantityUnitPrice).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // Pricebook
@@ -396,7 +379,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.PricebookName).IsRequired().HasMaxLength(255);
             e.Property(x => x.CurrencyCode).HasMaxLength(3);
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // PricebookEntry
@@ -406,7 +388,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.UnitPrice).HasColumnType("decimal(18,2)");
             e.Property(x => x.CurrencyCode).HasMaxLength(3);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Pricebook).WithMany(x => x.Entries)
                 .HasForeignKey(x => x.PricebookId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Product).WithMany(x => x.PricebookEntries)
@@ -423,7 +404,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.ListPrice).HasColumnType("decimal(18,2)");
             e.Property(x => x.Discount).HasColumnType("decimal(5,2)");
             e.Property(x => x.TotalPrice).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Deal).WithMany(x => x.DealProducts)
                 .HasForeignKey(x => x.DealId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Product).WithMany(x => x.DealProducts)
@@ -436,7 +416,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("DealContacts");
             e.HasKey(x => x.Id);
             e.Property(x => x.Role).HasMaxLength(100);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Deal).WithMany(x => x.DealContacts)
                 .HasForeignKey(x => x.DealId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Contact).WithMany()
@@ -455,7 +434,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.Tax).HasColumnType("decimal(18,2)");
             e.Property(x => x.ShippingAndHandling).HasColumnType("decimal(18,2)");
             e.Property(x => x.GrandTotal).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Deal).WithMany()
                 .HasForeignKey(x => x.DealId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Pricebook).WithMany()
@@ -476,7 +454,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.ListPrice).HasColumnType("decimal(18,2)");
             e.Property(x => x.Discount).HasColumnType("decimal(5,2)");
             e.Property(x => x.TotalPrice).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Quote).WithMany(x => x.LineItems)
                 .HasForeignKey(x => x.QuoteId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Product).WithMany(x => x.QuoteLineItems)
@@ -493,7 +470,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.Tax).HasColumnType("decimal(18,2)");
             e.Property(x => x.ShippingAndHandling).HasColumnType("decimal(18,2)");
             e.Property(x => x.GrandTotal).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Account).WithMany()
                 .HasForeignKey(x => x.AccountId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Contract).WithMany(x => x.Orders)
@@ -512,7 +488,6 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.ListPrice).HasColumnType("decimal(18,2)");
             e.Property(x => x.Discount).HasColumnType("decimal(5,2)");
             e.Property(x => x.TotalPrice).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Order).WithMany(x => x.LineItems)
                 .HasForeignKey(x => x.OrderId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Product).WithMany(x => x.OrderLineItems)
@@ -526,7 +501,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.ContractNumber).IsRequired().HasMaxLength(50);
             e.Property(x => x.ContractValue).HasColumnType("decimal(18,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Account).WithMany()
                 .HasForeignKey(x => x.AccountId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.BillingContact).WithMany()
@@ -539,7 +513,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("Pipelines");
             e.HasKey(x => x.Id);
             e.Property(x => x.PipelineName).IsRequired().HasMaxLength(255);
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // PipelineStage
@@ -549,7 +522,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.StageName).IsRequired().HasMaxLength(100);
             e.Property(x => x.ProbabilityPercent).HasColumnType("decimal(5,2)");
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Pipeline).WithMany(x => x.Stages)
                 .HasForeignKey(x => x.PipelineId).OnDelete(DeleteBehavior.Cascade);
         });
@@ -560,7 +532,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("EmailMessages");
             e.HasKey(x => x.Id);
             e.Property(x => x.Subject).IsRequired().HasMaxLength(500);
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // Tag
@@ -570,7 +541,6 @@ public class CrmDbContext : AuditDbContextBase
             e.HasKey(x => x.Id);
             e.Property(x => x.TagName).IsRequired().HasMaxLength(100);
             e.Property(x => x.Color).HasMaxLength(20);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasIndex(x => new { x.CompanyId, x.TagName }).IsUnique();
         });
 
@@ -580,7 +550,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("EntityTags");
             e.HasKey(x => x.Id);
             e.Property(x => x.EntityType).IsRequired().HasMaxLength(50);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Tag).WithMany(x => x.EntityTags)
                 .HasForeignKey(x => x.TagId).OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(x => new { x.TagId, x.EntityId, x.EntityType }).IsUnique();
@@ -592,7 +561,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("Territories");
             e.HasKey(x => x.Id);
             e.Property(x => x.TerritoryName).IsRequired().HasMaxLength(255);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.ParentTerritory).WithMany(x => x.ChildTerritories)
                 .HasForeignKey(x => x.ParentTerritoryId).OnDelete(DeleteBehavior.Restrict);
         });
@@ -602,7 +570,6 @@ public class CrmDbContext : AuditDbContextBase
         {
             e.ToTable("TerritoryAccounts");
             e.HasKey(x => x.Id);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Territory).WithMany(x => x.TerritoryAccounts)
                 .HasForeignKey(x => x.TerritoryId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Account).WithMany()
@@ -616,7 +583,6 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("Teams");
             e.HasKey(x => x.Id);
             e.Property(x => x.TeamName).IsRequired().HasMaxLength(255);
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
 
         // TeamMember
@@ -625,21 +591,13 @@ public class CrmDbContext : AuditDbContextBase
             e.ToTable("TeamMembers");
             e.HasKey(x => x.Id);
             e.Property(x => x.TeamRole).HasMaxLength(100);
-            e.Property(x => x.RowVersion).IsRowVersion();
             e.HasOne(x => x.Team).WithMany(x => x.Members)
                 .HasForeignKey(x => x.TeamId).OnDelete(DeleteBehavior.Cascade);
         });
 
-        // SalesTarget
-        modelBuilder.Entity<SalesTarget>(e =>
-        {
-            e.ToTable("SalesTargets");
-            e.HasKey(x => x.Id);
-            e.Property(x => x.TargetAmount).HasColumnType("decimal(18,2)");
-            e.Property(x => x.ActualAmount).HasColumnType("decimal(18,2)");
-            e.Property(x => x.CurrencyCode).HasMaxLength(3);
-            e.Property(x => x.RowVersion).IsRowVersion();
-        });
+        // SalesTarget is owned by the Sales module (sales.sales_targets) — quota drives
+        // commission, and one record avoids commission and forecast attainment disagreeing.
+        // Forecast below stays here: pipeline projection is a genuinely CRM concern.
 
         // Forecast
         modelBuilder.Entity<Forecast>(e =>
@@ -653,21 +611,11 @@ public class CrmDbContext : AuditDbContextBase
             e.Property(x => x.AdjustedAmount).HasColumnType("decimal(18,2)");
             e.Property(x => x.QuotaAmount).HasColumnType("decimal(18,2)");
             e.Property(x => x.CurrencyCode).HasMaxLength(3);
-            e.Property(x => x.RowVersion).IsRowVersion();
         });
-    }
 
-    private static void ApplyUtcDateTimeConverters(ModelBuilder modelBuilder)
-    {
-        var utc = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
-            v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-        var utcN = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
-            v => v, v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null);
-        foreach (var e in modelBuilder.Model.GetEntityTypes())
-            foreach (var p in e.GetProperties())
-            {
-                if (p.ClrType == typeof(DateTime))  p.SetValueConverter(utc);
-                if (p.ClrType == typeof(DateTime?)) p.SetValueConverter(utcN);
-            }
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

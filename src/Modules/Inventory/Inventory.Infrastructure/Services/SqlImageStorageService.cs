@@ -2,17 +2,18 @@ using Inventory.Application.Services.Interfaces;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Logging;
 
 namespace Inventory.Infrastructure.Services;
 
 /// <summary>
-/// SQL Server-backed implementation of <see cref="IBlobStorageService"/>.
+/// Database-backed implementation of <see cref="IBlobStorageService"/>.
 ///
-/// Image bytes are stored in the <c>inv.StoredFiles</c> table and the method
+/// Image bytes are stored in the <c>inventory.stored_files</c> table and the method
 /// returns a relative API URL (<c>/api/inventory/images/{id}</c>) that
 /// <c>InventoryImageController</c> serves. This replaces Azure Blob Storage so
-/// the platform runs fully locally against SQL Server with no external object store.
+/// the platform runs fully locally against PostgreSQL with no external object store.
 /// </summary>
 public class SqlImageStorageService : IBlobStorageService
 {
@@ -59,7 +60,7 @@ public class SqlImageStorageService : IBlobStorageService
         await _db.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
-            "Stored inventory image {Id} ({Size} bytes) in SQL Server", file.Id, bytes.LongLength);
+            "Stored inventory image {Id} ({Size} bytes) in the database", file.Id, bytes.LongLength);
 
         return $"{UrlPrefix}{file.Id}";
     }

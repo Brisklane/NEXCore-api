@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Inventory.Domain.Entities;
 
 namespace Inventory.Infrastructure.Persistence;
@@ -89,7 +90,6 @@ public class InventoryDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema(DefaultSchema);
-        ApplyUtcDateTimeConverters(modelBuilder);
 
         // Brand
         modelBuilder.Entity<Brand>(entity =>
@@ -191,17 +191,8 @@ public class InventoryDbContext : DbContext
             entity.HasIndex(e => e.ItemType).HasDatabaseName("IX_Item_Type");
         });
 
-        // Stored File (SQL-backed image bytes)
-        modelBuilder.Entity<StoredFile>(entity =>
-        {
-            entity.ToTable("StoredFiles", DefaultSchema);
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.FileName).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.ContentType).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Content).IsRequired().HasColumnType("varbinary(max)");
-            entity.HasIndex(e => new { e.CompanyId, e.BranchId, e.BusinessUnitId })
-                .HasDatabaseName("IX_StoredFile_Tenant");
-        });
+        // Stored File (database-backed image bytes) — shared definition, module-owned table.
+        modelBuilder.ConfigureStoredFile(DefaultSchema);
 
         // Item Image
         modelBuilder.Entity<ItemImage>(entity =>
@@ -215,7 +206,7 @@ public class InventoryDbContext : DbContext
             entity.HasOne(e => e.Item)
                 .WithMany(i => i.Images).HasForeignKey(e => e.ItemId).OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(e => new { e.ItemId, e.IsPrimary })
-                .HasFilter("[IsPrimary] = 1").IsUnique().HasDatabaseName("IX_ItemImage_Item_Primary");
+                .HasFilter("is_primary = true").IsUnique().HasDatabaseName("IX_ItemImage_Item_Primary");
             entity.HasIndex(e => new { e.ItemId, e.Resolution })
                 .HasDatabaseName("IX_ItemImage_Item_Resolution");
         });
@@ -236,7 +227,7 @@ public class InventoryDbContext : DbContext
                 .IsUnique().HasDatabaseName("IX_ItemBarcode_TenantBarcode");
             // One primary barcode per item
             entity.HasIndex(e => new { e.ItemId, e.IsPrimary })
-                .HasFilter("[IsPrimary] = 1").IsUnique().HasDatabaseName("IX_ItemBarcode_Item_Primary");
+                .HasFilter("is_primary = true").IsUnique().HasDatabaseName("IX_ItemBarcode_Item_Primary");
         });
 
         // Item Price
@@ -366,7 +357,7 @@ public class InventoryDbContext : DbContext
                 .IsUnique().HasDatabaseName("IX_ItemColor_Item_Color");
             // One default color per item
             entity.HasIndex(e => new { e.ItemId, e.IsDefault })
-                .HasFilter("[IsDefault] = 1").IsUnique().HasDatabaseName("IX_ItemColor_Item_Default");
+                .HasFilter("is_default = true").IsUnique().HasDatabaseName("IX_ItemColor_Item_Default");
         });
 
         // Documents
@@ -451,11 +442,23 @@ public class InventoryDbContext : DbContext
             entity.HasOne(e => e.Warehouse).WithMany(w => w.Balances).HasForeignKey(e => e.WarehouseId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.Bin).WithMany(b => b.Balances).HasForeignKey(e => e.BinId).OnDelete(DeleteBehavior.ClientSetNull);
             entity.HasOne(e => e.Variant).WithMany(v => v.Balances).HasForeignKey(e => e.VariantId).OnDelete(DeleteBehavior.ClientSetNull);
-            // No filter (HasFilter(null)) so SQL Server treats NULL Bin/Variant as equal — enforcing
-            // exactly ONE balance row per (Item, Warehouse, Bin, Variant), including the common
-            // warehouse-level row where Bin and Variant are both NULL. (EF's default would otherwise
-            // add `WHERE BinId IS NOT NULL AND VariantId IS NOT NULL`, leaving that row unconstrained.)
-            entity.HasIndex(e => new { e.ItemId, e.WarehouseId, e.BinId, e.VariantId }).IsUnique().HasFilter(null).HasDatabaseName("IX_InventoryBalance_Item_Warehouse_Bin_Variant");
+            // Exactly ONE balance row per (Item, Warehouse, Bin, Variant), including the common
+            // warehouse-level row where Bin and Variant are both NULL.
+            //
+            // Two provider behaviours have to be overridden to get that:
+            //   HasFilter(null)          — drops EF's default `WHERE BinId IS NOT NULL AND
+            //                              VariantId IS NOT NULL`, which would leave that row
+            //                              outside the index entirely.
+            //   AreNullsDistinct(false)  — PostgreSQL treats NULLs as DISTINCT in a unique index,
+            //                              so without NULLS NOT DISTINCT it would happily accept
+            //                              unlimited duplicate warehouse-level rows and corrupt
+            //                              on-hand quantities. SQL Server compared NULLs as equal,
+            //                              which is why the filter alone used to be sufficient.
+            entity.HasIndex(e => new { e.ItemId, e.WarehouseId, e.BinId, e.VariantId })
+                  .IsUnique()
+                  .HasFilter(null)
+                  .AreNullsDistinct(false)
+                  .HasDatabaseName("IX_InventoryBalance_Item_Warehouse_Bin_Variant");
             entity.HasIndex(e => e.QuantityOnHand).HasDatabaseName("IX_InventoryBalance_QuantityOnHand");
         });
 
@@ -521,7 +524,7 @@ public class InventoryDbContext : DbContext
             entity.HasOne(e => e.ItemBarcode).WithMany().HasForeignKey(e => e.ItemBarcodeId).OnDelete(DeleteBehavior.ClientSetNull);
             entity.HasIndex(e => new { e.ItemId, e.SizeId }).IsUnique().HasDatabaseName("IX_ItemSize_Item_Size");
             entity.HasIndex(e => new { e.ItemId, e.IsDefault })
-                .HasFilter("[IsDefault] = 1").IsUnique().HasDatabaseName("IX_ItemSize_Item_Default");
+                .HasFilter("is_default = true").IsUnique().HasDatabaseName("IX_ItemSize_Item_Default");
         });
 
         // Item Variant
@@ -576,7 +579,7 @@ public class InventoryDbContext : DbContext
             entity.Property(e => e.Slug).HasMaxLength(500);
             entity.Property(e => e.CanonicalUrl).HasMaxLength(2000);
             entity.HasIndex(e => e.Slug).IsUnique()
-                .HasFilter("[Slug] IS NOT NULL").HasDatabaseName("IX_ItemSeo_Slug");
+                .HasFilter("slug IS NOT NULL").HasDatabaseName("IX_ItemSeo_Slug");
         });
 
         // Item Channel Listing
@@ -612,7 +615,7 @@ public class InventoryDbContext : DbContext
             entity.HasOne(e => e.Item).WithMany(i => i.Suppliers).HasForeignKey(e => e.ItemId).OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(e => new { e.ItemId, e.SupplierId }).IsUnique().HasDatabaseName("IX_ItemSupplier_Item_Supplier");
             entity.HasIndex(e => new { e.ItemId, e.IsPrimary })
-                .HasFilter("[IsPrimary] = 1").IsUnique().HasDatabaseName("IX_ItemSupplier_Item_Primary");
+                .HasFilter("is_primary = true").IsUnique().HasDatabaseName("IX_ItemSupplier_Item_Primary");
         });
 
         // Item Bundle
@@ -679,11 +682,23 @@ public class InventoryDbContext : DbContext
             entity.HasOne(e => e.Warehouse).WithMany(w => w.Balances).HasForeignKey(e => e.WarehouseId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.Bin).WithMany(b => b.Balances).HasForeignKey(e => e.BinId).OnDelete(DeleteBehavior.ClientSetNull);
             entity.HasOne(e => e.Variant).WithMany(v => v.Balances).HasForeignKey(e => e.VariantId).OnDelete(DeleteBehavior.ClientSetNull);
-            // No filter (HasFilter(null)) so SQL Server treats NULL Bin/Variant as equal — enforcing
-            // exactly ONE balance row per (Item, Warehouse, Bin, Variant), including the common
-            // warehouse-level row where Bin and Variant are both NULL. (EF's default would otherwise
-            // add `WHERE BinId IS NOT NULL AND VariantId IS NOT NULL`, leaving that row unconstrained.)
-            entity.HasIndex(e => new { e.ItemId, e.WarehouseId, e.BinId, e.VariantId }).IsUnique().HasFilter(null).HasDatabaseName("IX_InventoryBalance_Item_Warehouse_Bin_Variant");
+            // Exactly ONE balance row per (Item, Warehouse, Bin, Variant), including the common
+            // warehouse-level row where Bin and Variant are both NULL.
+            //
+            // Two provider behaviours have to be overridden to get that:
+            //   HasFilter(null)          — drops EF's default `WHERE BinId IS NOT NULL AND
+            //                              VariantId IS NOT NULL`, which would leave that row
+            //                              outside the index entirely.
+            //   AreNullsDistinct(false)  — PostgreSQL treats NULLs as DISTINCT in a unique index,
+            //                              so without NULLS NOT DISTINCT it would happily accept
+            //                              unlimited duplicate warehouse-level rows and corrupt
+            //                              on-hand quantities. SQL Server compared NULLs as equal,
+            //                              which is why the filter alone used to be sufficient.
+            entity.HasIndex(e => new { e.ItemId, e.WarehouseId, e.BinId, e.VariantId })
+                  .IsUnique()
+                  .HasFilter(null)
+                  .AreNullsDistinct(false)
+                  .HasDatabaseName("IX_InventoryBalance_Item_Warehouse_Bin_Variant");
             entity.HasIndex(e => e.QuantityOnHand).HasDatabaseName("IX_InventoryBalance_QuantityOnHand");
         });
 
@@ -737,7 +752,7 @@ public class InventoryDbContext : DbContext
             entity.HasIndex(e => new { e.CompanyId, e.BranchId, e.BusinessUnitId, e.ItemId, e.SerialNumber })
                 .IsUnique().HasDatabaseName("IX_ItemSerial_Tenant_Item_Serial");
             entity.HasIndex(e => new { e.CompanyId, e.BranchId, e.BusinessUnitId, e.Imei })
-                .HasFilter("[Imei] IS NOT NULL").HasDatabaseName("IX_ItemSerial_Tenant_Imei");
+                .HasFilter("imei IS NOT NULL").HasDatabaseName("IX_ItemSerial_Tenant_Imei");
             entity.HasIndex(e => new { e.ItemId, e.Status }).HasDatabaseName("IX_ItemSerial_Item_Status");
             entity.HasIndex(e => new { e.WarehouseId, e.Status }).HasDatabaseName("IX_ItemSerial_Warehouse_Status");
         });
@@ -793,23 +808,19 @@ public class InventoryDbContext : DbContext
             entity.HasOne(e => e.Batch).WithMany(b => b.LotStocks).HasForeignKey(e => e.ItemBatchId).OnDelete(DeleteBehavior.NoAction);
             entity.HasOne(e => e.Warehouse).WithMany().HasForeignKey(e => e.WarehouseId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.Bin).WithMany().HasForeignKey(e => e.BinId).OnDelete(DeleteBehavior.ClientSetNull);
-            // Exactly one row per (Batch, Warehouse, Bin) — NULL bin treated as a distinct value.
+            // Exactly one row per (Batch, Warehouse, Bin), including the bin-less row where BinId
+            // is NULL. AreNullsDistinct(false) is required for that on PostgreSQL — see the
+            // InventoryBalance index above for why.
             entity.HasIndex(e => new { e.ItemBatchId, e.WarehouseId, e.BinId })
-                .IsUnique().HasFilter(null).HasDatabaseName("IX_ItemLotStock_Batch_Warehouse_Bin");
+                .IsUnique()
+                .HasFilter(null)
+                .AreNullsDistinct(false)
+                .HasDatabaseName("IX_ItemLotStock_Batch_Warehouse_Bin");
         });
-    }
 
-    protected static void ApplyUtcDateTimeConverters(ModelBuilder modelBuilder)
-    {
-        var utc = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
-            v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-        var utcN = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
-            v => v, v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null);
-        foreach (var e in modelBuilder.Model.GetEntityTypes())
-            foreach (var p in e.GetProperties())
-            {
-                if (p.ClrType == typeof(DateTime))  p.SetValueConverter(utc);
-                if (p.ClrType == typeof(DateTime?)) p.SetValueConverter(utcN);
-            }
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

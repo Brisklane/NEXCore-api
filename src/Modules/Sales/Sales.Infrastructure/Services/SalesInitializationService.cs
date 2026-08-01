@@ -108,13 +108,19 @@ public partial class SalesInitializationService : ISalesInitializationService
                 _logger.LogInformation("Seeded barcode label template");
 
                 // ?? 2. Price Lists ????????????????????????????????????????????
+                // The price list headers are master data, but their lines are priced against
+                // the demo item catalog that Inventory only seeds as sample data. Adding them
+                // when sample data is off would leave rows pointing at items that don't exist.
                 (priceLists, var priceListItems) = SeedPriceLists(T);
                 _ctx.PriceLists.AddRange(priceLists);
                 await _ctx.SaveChangesAsync();
-                _ctx.PriceListItems.AddRange(priceListItems);
-                await _ctx.SaveChangesAsync();
+                if (includeSampleData)
+                {
+                    _ctx.PriceListItems.AddRange(priceListItems);
+                    await _ctx.SaveChangesAsync();
+                }
                 _logger.LogInformation("Seeded {N} price lists, {I} price list items",
-                    priceLists.Length, priceListItems.Length);
+                    priceLists.Length, includeSampleData ? priceListItems.Length : 0);
 
                 // ?? 3. Customer Groups + Sales Territories ????????????????????
                 var customerGroups = SeedCustomerGroups(T);
@@ -168,13 +174,18 @@ public partial class SalesInitializationService : ISalesInitializationService
                     discountSchemes.Length, coupons.Length);
 
                 // ?? 7b. Promotions (auto-applied combo deal) ??????????????????
-                var (promotions, promotionItems) = SeedPromotions(T);
-                _ctx.Promotions.AddRange(promotions);
-                await _ctx.SaveChangesAsync();
-                _ctx.PromotionItems.AddRange(promotionItems);
-                await _ctx.SaveChangesAsync();
-                _logger.LogInformation("Seeded {N} promotions with {I} items",
-                    promotions.Length, promotionItems.Length);
+                // A combo deal is defined entirely in terms of the demo items it bundles,
+                // so the whole promotion is sample data — skipped along with the catalog.
+                if (includeSampleData)
+                {
+                    var (promotions, promotionItems) = SeedPromotions(T);
+                    _ctx.Promotions.AddRange(promotions);
+                    await _ctx.SaveChangesAsync();
+                    _ctx.PromotionItems.AddRange(promotionItems);
+                    await _ctx.SaveChangesAsync();
+                    _logger.LogInformation("Seeded {N} promotions with {I} items",
+                        promotions.Length, promotionItems.Length);
+                }
 
                 // ?? 8. Loyalty Program ????????????????????????????????????????
                 loyaltyProgram = SeedLoyaltyProgram(T);

@@ -8,7 +8,7 @@ namespace Inventory.Infrastructure.Events;
 /// Handles CompanyCreatedEvent by seeding inventory master data
 /// (units, categories, warehouses, brands, colors, sizes, attributes, taxes)
 /// for the newly created company.
-/// Maintains loose coupling — Inventory module subscribes to Core events only.
+/// Maintains loose coupling ï¿½ Inventory module subscribes to Core events only.
 /// </summary>
 public class InventoryCompanyCreatedEventHandler : IEventHandler<CompanyCreatedEvent>
 {
@@ -28,26 +28,27 @@ public class InventoryCompanyCreatedEventHandler : IEventHandler<CompanyCreatedE
         try
         {
             _logger.LogInformation(
-                "Handling CompanyCreatedEvent — initializing inventory for Company:{CompanyId} ({Name})",
+                "Handling CompanyCreatedEvent ï¿½ initializing inventory for Company:{CompanyId} ({Name})",
                 domainEvent.CompanyId, domainEvent.CompanyName);
 
             var result = await _inventoryInitService.InitializeInventoryForNewCompanyAsync(
                 domainEvent.CompanyId,
                 domainEvent.BranchId,
                 domainEvent.BusinessUnitId,
-                domainEvent.CreatedByUserId);
+                domainEvent.CreatedByUserId,
+                domainEvent.IncludeSampleData);
 
             if (result.Success)
                 _logger.LogInformation(
                     "Inventory data initialized successfully for Company:{CompanyId}", domainEvent.CompanyId);
             else
                 _logger.LogWarning(
-                    "Inventory initialization failed for Company:{CompanyId} — {Message}",
+                    "Inventory initialization failed for Company:{CompanyId} ï¿½ {Message}",
                     domainEvent.CompanyId, result.Message);
         }
         catch (Exception ex)
         {
-            // Non-blocking — do not rethrow; log and continue
+            // Non-blocking ï¿½ do not rethrow; log and continue
             _logger.LogError(ex,
                 "Error in InventoryCompanyCreatedEventHandler for Company:{CompanyId}", domainEvent.CompanyId);
         }

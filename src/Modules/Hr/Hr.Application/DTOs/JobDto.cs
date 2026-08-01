@@ -20,7 +20,7 @@ public class JobDto
     public Guid? StatusLookupValueId { get; set; }
     public Guid? HiringManagerEmployeeId { get; set; }
     public Guid? RecruiterEmployeeId { get; set; }
-    public Guid CurrencyId { get; set; }
+    public string CurrencyCode { get; set; } = "USD";
     public decimal SalaryRangeMin { get; set; }
     public decimal SalaryRangeMax { get; set; }
     public DateTime? TargetStartDate { get; set; }
@@ -48,7 +48,7 @@ public class CreateJobDto
     public Guid? StatusLookupValueId { get; set; }
     public Guid? HiringManagerEmployeeId { get; set; }
     public Guid? RecruiterEmployeeId { get; set; }
-    public Guid CurrencyId { get; set; }
+    public string CurrencyCode { get; set; } = "USD";
     public decimal SalaryRangeMin { get; set; }
     public decimal SalaryRangeMax { get; set; }
     public DateTime? TargetStartDate { get; set; }

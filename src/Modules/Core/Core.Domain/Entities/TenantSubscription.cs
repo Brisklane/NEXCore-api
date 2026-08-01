@@ -1,4 +1,4 @@
-using Core.Domain.Enums;
+﻿using Core.Domain.Enums;
 
 namespace Core.Domain.Entities;
 
@@ -38,7 +38,7 @@ public class TenantSubscription
     public Guid CreatedByUserId { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public Guid? UpdatedByUserId { get; set; }
-    public byte[]? RowVersion { get; set; }
+    public uint RowVersion { get; set; }
 
     // Navigation
     public Tenant Tenant { get; set; } = null!;

@@ -47,8 +47,11 @@ public abstract class UserBaseEntity
 
     // ── Optimistic concurrency ───────────────────────────────────────────────
 
-    /// <summary>SQL Server <c>rowversion</c>, bumped by the database on every write.</summary>
-    public byte[]? RowVersion { get; set; }
+    /// <summary>
+    /// Maps to PostgreSQL's <c>xmin</c> system column, maintained by the database on every
+    /// write. See <see cref="BaseEntity.RowVersion"/>. Never assign it.
+    /// </summary>
+    public uint RowVersion { get; set; }
 
     // ── External sync ────────────────────────────────────────────────────────
 

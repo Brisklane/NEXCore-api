@@ -8,11 +8,18 @@ namespace Crm.Application.Services.Interfaces;
 /// </summary>
 public interface ICrmInitializationService
 {
+    /// <summary>
+    /// When <paramref name="includeSampleData"/> is false, only master/config data is
+    /// seeded (pipelines, stages, pricebooks, tags, territories, teams and the anonymous
+    /// Walk-in Customer that POS requires) — demo accounts, contacts, leads, deals,
+    /// campaigns, cases and activities are skipped.
+    /// </summary>
     Task<Result> InitializeCrmForNewCompanyAsync(
         Guid companyId,
         Guid branchId,
         Guid businessUnitId,
-        Guid userId);
+        Guid userId,
+        bool includeSampleData = false);
 
     Task<bool> CrmDataExistsAsync(Guid companyId);
 

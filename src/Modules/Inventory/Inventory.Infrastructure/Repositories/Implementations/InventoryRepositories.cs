@@ -1242,11 +1242,14 @@ public class ItemSerialRepository : TenantAwareRepository<ItemSerial>, IItemSeri
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var term = search.Trim();
-            query = query.Where(s => s.SerialNumber.Contains(term)
-                                  || (s.Imei != null && s.Imei.Contains(term))
-                                  || (s.Imei2 != null && s.Imei2.Contains(term))
-                                  || (s.MacAddress != null && s.MacAddress.Contains(term)));
+            // Lower-cased on both sides so the match stays case-insensitive. SQL Server's
+            // default collation did this implicitly; PostgreSQL compares case-sensitively,
+            // which matters here because serials and MAC addresses are entered in mixed case.
+            var term = search.Trim().ToLower();
+            query = query.Where(s => s.SerialNumber.ToLower().Contains(term)
+                                  || (s.Imei != null && s.Imei.ToLower().Contains(term))
+                                  || (s.Imei2 != null && s.Imei2.ToLower().Contains(term))
+                                  || (s.MacAddress != null && s.MacAddress.ToLower().Contains(term)));
         }
 
         var total = await query.CountAsync();

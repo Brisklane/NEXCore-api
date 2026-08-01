@@ -4,7 +4,9 @@ namespace Hr.Domain.Entities;
 
 public class CommunicationTemplate : BaseEntity
 {
-    public Guid CommunicationTemplateId { get; set; }
+    // Note: the primary key is BaseEntity.Id. A separate CommunicationTemplateId column used to
+    // sit here, but nothing read it and the seeder filled it with a throwaway GUID, so every
+    // foreign key already pointed at Id. Removed rather than left as a second, meaningless key.
 
     /// <summary>
     /// Unique template code (EMAIL_OFFER, SMS_INTERVIEW_REMINDER)

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Accounting.Domain.Entities;
 using Accounting.Infrastructure.Persistence.Seeders;
 using Nexcore.SharedKernel.Enums;
@@ -61,7 +62,6 @@ public class AccountingDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema(DefaultSchema);
-        ApplyUtcDateTimeConverters(modelBuilder);
 
         // Ledger configuration
         modelBuilder.Entity<Ledger>(entity =>
@@ -201,10 +201,10 @@ public class AccountingDbContext : DbContext
                 .HasDatabaseName("IX_JournalLine_Source");
             // AR/AP aging: only index rows that actually carry a customer/vendor.
             entity.HasIndex(e => e.CustomerId)
-                .HasFilter("[CustomerId] IS NOT NULL")
+                .HasFilter("customer_id IS NOT NULL")
                 .HasDatabaseName("IX_JournalLine_Customer");
             entity.HasIndex(e => e.VendorId)
-                .HasFilter("[VendorId] IS NOT NULL")
+                .HasFilter("vendor_id IS NOT NULL")
                 .HasDatabaseName("IX_JournalLine_Vendor");
         });
 
@@ -418,19 +418,10 @@ public class AccountingDbContext : DbContext
         // Chart of accounts is seeded per company at runtime (AccountingInitializationService),
         // not here, so real company/branch IDs are used. To switch to migration-time seeding
         // instead, call AccountingSeeder.SeedAll(modelBuilder) at this point.
-    }
 
-    protected static void ApplyUtcDateTimeConverters(ModelBuilder modelBuilder)
-    {
-        var utc = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
-            v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-        var utcN = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
-            v => v, v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null);
-        foreach (var e in modelBuilder.Model.GetEntityTypes())
-            foreach (var p in e.GetProperties())
-            {
-                if (p.ClrType == typeof(DateTime))  p.SetValueConverter(utc);
-                if (p.ClrType == typeof(DateTime?)) p.SetValueConverter(utcN);
-            }
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 }

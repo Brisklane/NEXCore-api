@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Hr.Infrastructure.Persistence;
@@ -22,13 +23,7 @@ public static class ServiceCollectionExtensions
     {
         // DbContext
         services.AddDbContext<HrDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                b =>
-                {
-                    b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    b.MigrationsAssembly("Hr.Infrastructure");
-                }));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(HrDbContext).Assembly));
 
         // Generic repository
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -55,7 +50,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICostCenterRepository, CostCenterRepository>();
         services.AddScoped<IJobLocationRepository, JobLocationRepository>();
         services.AddScoped<IShiftRepository, ShiftRepository>();
-        services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         services.AddScoped<IPayScaleRepository, PayScaleRepository>();
         services.AddScoped<IAllowancesProfileRepository, AllowancesProfileRepository>();
         services.AddScoped<IBenefitsPlanRepository, BenefitsPlanRepository>();
@@ -84,7 +78,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICostCenterService, CostCenterService>();
         services.AddScoped<IJobLocationService, JobLocationService>();
         services.AddScoped<IShiftService, ShiftService>();
-        services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IPayScaleService, PayScaleService>();
         services.AddScoped<IAllowancesProfileService, AllowancesProfileService>();
         services.AddScoped<IBenefitsPlanService, BenefitsPlanService>();

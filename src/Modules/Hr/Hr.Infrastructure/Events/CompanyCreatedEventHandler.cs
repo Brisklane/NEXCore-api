@@ -29,7 +29,8 @@ public class CompanyCreatedEventHandler : IEventHandler<CompanyCreatedEvent>
                 domainEvent.CompanyId,
                 domainEvent.BranchId,
                 domainEvent.BusinessUnitId,
-                domainEvent.CreatedByUserId);
+                domainEvent.CreatedByUserId,
+                domainEvent.IncludeSampleData);
 
             if (result.Success)
             {

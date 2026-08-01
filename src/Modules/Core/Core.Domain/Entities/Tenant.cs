@@ -27,7 +27,7 @@ public class Tenant
     public DateTime? DeletedAt { get; set; }
     public Guid? DeletedByUserId { get; set; }
     public bool IsDeleted { get; set; }
-    public byte[]? RowVersion { get; set; }
+    public uint RowVersion { get; set; }
 
     // ── Navigation ───────────────────────────────────────────────────────────
     public ICollection<Company> Companies { get; set; } = [];

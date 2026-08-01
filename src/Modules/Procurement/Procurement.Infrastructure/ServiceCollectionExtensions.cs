@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexcore.SharedKernel.Events;
@@ -19,9 +20,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddDbContext<ProcurementDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("Procurement.Infrastructure")));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(ProcurementDbContext).Assembly));
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

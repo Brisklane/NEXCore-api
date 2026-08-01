@@ -193,10 +193,21 @@ public class DocumentSequenceService : IDocumentSequenceService
             using var tx = await _db.Database.BeginTransactionAsync(IsolationLevel.Serializable);
             try
             {
-                // Re-read inside the transaction with a write lock
+                // Re-read inside the transaction with a write lock. PostgreSQL's row-level
+                // FOR UPDATE replaces SQL Server's UPDLOCK/ROWLOCK hint: it blocks concurrent
+                // writers of this row until the transaction commits.
+                //
+                // xmin must be selected explicitly — it is the optimistic-concurrency token
+                // this entity maps RowVersion to, and PostgreSQL omits system columns from
+                // "s.*", which would leave EF unable to materialise the row.
                 var locked = await _db.DocumentSequences
                     .FromSqlRaw(
-                        "SELECT * FROM sales.DocumentSequences WITH (UPDLOCK, ROWLOCK) WHERE Id = {0} AND IsDeleted = 0",
+                        """
+                        SELECT s.*, s.xmin
+                        FROM sales.document_sequences AS s
+                        WHERE s.id = {0} AND s.is_deleted = false
+                        FOR UPDATE
+                        """,
                         seq.Id)
                     .FirstOrDefaultAsync()
                     ?? throw new InvalidOperationException($"Sequence '{seq.DocumentType}' not found");

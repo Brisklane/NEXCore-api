@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Nexcore.SharedKernel.Persistence;
 
 namespace Core.Infrastructure.Persistence;
 
@@ -20,10 +21,10 @@ public class CoreDbContextFactory : IDesignTimeDbContextFactory<CoreDbContext>
         var connection =
             Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
             ?? Environment.GetEnvironmentVariable("CORE_DB_CONNECTION")
-            ?? "Server=localhost;Database=DesignTime;Trusted_Connection=True;TrustServerCertificate=True;";
+            ?? "Host=localhost;Port=5432;Database=nexcore;Username=postgres;Password=postgres";
 
         var options = new DbContextOptionsBuilder<CoreDbContext>()
-            .UseSqlServer(connection)
+            .UseNexcorePostgres(connection, typeof(CoreDbContext).Assembly)
             .Options;
 
         return new CoreDbContext(options);

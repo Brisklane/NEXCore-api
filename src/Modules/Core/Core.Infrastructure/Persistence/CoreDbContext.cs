@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Core.Domain.Entities;
 using Core.Domain.Enums;
 using Nexcore.SharedKernel;
@@ -54,7 +55,6 @@ public class CoreDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("core");
-        ApplyUtcDateTimeConverters(modelBuilder);
 
         // ── Tenant ─────────────────────────────────────────────────────────────
         modelBuilder.Entity<Tenant>(entity =>
@@ -65,7 +65,6 @@ public class CoreDbContext : DbContext
             entity.Property(e => e.Slug).IsRequired().HasMaxLength(100).IsUnicode(false);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-            entity.Property(e => e.RowVersion).IsRowVersion();
             entity.HasIndex(e => e.Slug).IsUnique();
 
             entity.HasMany(e => e.Companies)
@@ -110,7 +109,6 @@ public class CoreDbContext : DbContext
             entity.Property(e => e.BillingCycle).IsRequired();
             entity.Property(e => e.LicenseKey).IsRequired().HasMaxLength(100).IsUnicode(false);
             entity.Property(e => e.Notes).HasMaxLength(2000);
-            entity.Property(e => e.RowVersion).IsRowVersion();
             entity.HasIndex(e => e.LicenseKey).IsUnique();
             entity.HasIndex(e => new { e.TenantId, e.Status });
         });
@@ -133,15 +131,14 @@ public class CoreDbContext : DbContext
             entity.Property(e => e.ContactPerson).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
             entity.Property(e => e.WebsiteUrl).IsRequired().HasMaxLength(500);
-            entity.Property(e => e.CompanyLogo).HasColumnType("varbinary(max)").IsRequired();
+            entity.Property(e => e.CompanyLogo).HasColumnType("bytea").IsRequired();
             entity.Property(e => e.Latitude).HasColumnType("decimal(9,6)").IsRequired();
             entity.Property(e => e.Longitude).HasColumnType("decimal(9,6)").IsRequired();
             entity.Property(e => e.RadiusInMeters).IsRequired();
-            entity.Property(e => e.RowVersion).IsRowVersion();
-            entity.HasIndex(e => e.Code).IsUnique().HasFilter("[Code] IS NOT NULL");
+            entity.HasIndex(e => e.Code).IsUnique().HasFilter("code IS NOT NULL");
             entity.HasIndex(e => e.TenantId);
             // Company name unique within the tenant (live rows only).
-            entity.HasIndex(e => new { e.TenantId, e.CompanyName }).IsUnique().HasFilter("[IsDeleted] = 0");
+            entity.HasIndex(e => new { e.TenantId, e.CompanyName }).IsUnique().HasFilter("is_deleted = false");
 
             entity.OwnsOne(e => e.Address, a =>
             {
@@ -174,13 +171,12 @@ public class CoreDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.ManagerName).HasMaxLength(255);
             entity.Property(e => e.BranchType).HasMaxLength(50);
-            entity.Property(e => e.RowVersion).IsRowVersion();
-            entity.Property(e => e.BranchLogo).HasColumnType("varbinary(max)").IsRequired();
+            entity.Property(e => e.BranchLogo).HasColumnType("bytea").IsRequired();
             entity.Property(e => e.Latitude).HasColumnType("decimal(9,6)").IsRequired();
             entity.Property(e => e.Longitude).HasColumnType("decimal(9,6)").IsRequired();
-            entity.HasIndex(e => new { e.CompanyId, e.Code }).IsUnique().HasFilter("[Code] IS NOT NULL");
+            entity.HasIndex(e => new { e.CompanyId, e.Code }).IsUnique().HasFilter("code IS NOT NULL");
             // Branch name unique within the company (live rows only).
-            entity.HasIndex(e => new { e.CompanyId, e.Name }).IsUnique().HasFilter("[IsDeleted] = 0");
+            entity.HasIndex(e => new { e.CompanyId, e.Name }).IsUnique().HasFilter("is_deleted = false");
 
             entity.OwnsOne(e => e.Address, a =>
             {
@@ -208,10 +204,9 @@ public class CoreDbContext : DbContext
             entity.Property(e => e.ManagerEmail).HasMaxLength(255);
             entity.Property(e => e.CostCenterCode).HasMaxLength(50);
             entity.Property(e => e.ProfitCenterCode).HasMaxLength(50);
-            entity.Property(e => e.RowVersion).IsRowVersion();
-            entity.HasIndex(e => new { e.CompanyId, e.Code }).IsUnique().HasFilter("[Code] IS NOT NULL");
+            entity.HasIndex(e => new { e.CompanyId, e.Code }).IsUnique().HasFilter("code IS NOT NULL");
             // Business unit name unique within the branch (live rows only).
-            entity.HasIndex(e => new { e.BranchId, e.Name }).IsUnique().HasFilter("[IsDeleted] = 0");
+            entity.HasIndex(e => new { e.BranchId, e.Name }).IsUnique().HasFilter("is_deleted = false");
         });
 
         // ── Reference data (unchanged) ─────────────────────────────────────────
@@ -221,6 +216,11 @@ public class CoreDbContext : DbContext
         ConfigureCurrency(modelBuilder);
         ConfigureLanguage(modelBuilder);
         ConfigureTranslations(modelBuilder);
+
+        // Cross-cutting rules shared by every module: UTC normalisation for all
+        // DateTime properties and the xmin optimistic-concurrency token. Must stay
+        // last so it sees owned-type and DbSet-less properties configured above.
+        modelBuilder.ApplyNexcoreConventions();
     }
 
     // ── Subscription plan seed data ────────────────────────────────────────────
@@ -362,7 +362,7 @@ public class CoreDbContext : DbContext
         {
             entity.ToTable("Cities", "core");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).UseIdentityColumn();
+            entity.Property(e => e.Id).UseIdentityByDefaultColumn();
             entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
             entity.Property(e => e.CityCode).HasMaxLength(3).IsUnicode(false);
             entity.Property(e => e.CountryCode).IsRequired().HasMaxLength(2).IsUnicode(false);
@@ -449,19 +449,5 @@ public class CoreDbContext : DbContext
             entity.HasOne(e => e.Currency).WithMany(c => c.Translations).HasForeignKey(e => e.CurrencyId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(e => e.Language).WithMany(l => l.CurrencyTranslations).HasForeignKey(e => e.LanguageCode).OnDelete(DeleteBehavior.Restrict);
         });
-    }
-
-    protected static void ApplyUtcDateTimeConverters(ModelBuilder modelBuilder)
-    {
-        var utc = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
-            v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-        var utcN = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
-            v => v, v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null);
-        foreach (var e in modelBuilder.Model.GetEntityTypes())
-            foreach (var p in e.GetProperties())
-            {
-                if (p.ClrType == typeof(DateTime))  p.SetValueConverter(utc);
-                if (p.ClrType == typeof(DateTime?)) p.SetValueConverter(utcN);
-            }
     }
 }

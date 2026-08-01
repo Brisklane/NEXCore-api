@@ -36,7 +36,8 @@ public class CrmCompanyCreatedEventHandler : IEventHandler<CompanyCreatedEvent>
                 domainEvent.CompanyId,
                 domainEvent.BranchId,
                 domainEvent.BusinessUnitId,
-                domainEvent.CreatedByUserId);
+                domainEvent.CreatedByUserId,
+                domainEvent.IncludeSampleData);
 
             if (result.Success)
                 _logger.LogInformation(

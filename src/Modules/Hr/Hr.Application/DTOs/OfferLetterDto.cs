@@ -14,7 +14,7 @@ public class OfferLetterDto
     public Guid ReportingManagerEmployeeId { get; set; }
     public decimal BaseSalary { get; set; }
     public decimal TotalPackage { get; set; }
-    public Guid CurrencyId { get; set; }
+    public string CurrencyCode { get; set; } = "USD";
     public EmploymentType EmploymentType { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime ExpiryDate { get; set; }
@@ -58,7 +58,7 @@ public class CreateOfferLetterDto
     public int ProbationPeriodMonths { get; set; } = 3;
     public int NoticePeriodDays { get; set; } = 30;
 
-    // CurrencyId, JobTitle, EmploymentType, ReportingManagerEmployeeId
+    // CurrencyCode, JobTitle, EmploymentType, ReportingManagerEmployeeId
     // are derived automatically from the Job record — do not send from frontend
 }
 

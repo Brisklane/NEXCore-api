@@ -3,7 +3,15 @@
 namespace Manufacturing.Domain.Entities;
 
 /// <summary>
-/// Inventory Transaction - unified ledger of all stock movements.
+/// Manufacturing's own journal of shop-floor material movements, surfaced by the
+/// manufacturing inventory-transactions screen.
+/// <para>
+/// This is <b>not</b> the stock ledger. <c>Inventory.Domain.Entities.InventoryTransaction</c> is
+/// the source of truth for on-hand quantities and valuation: completing a production order
+/// publishes <see cref="Nexcore.SharedKernel.Events.ProductionCompletedEvent"/>, which
+/// Inventory's <c>ProductionStockHandler</c> posts as real MFGISS/MFGRCP documents with
+/// moving-average costing. Rows here do not move stock — do not treat them as a balance source.
+/// </para>
 /// </summary>
 public class InventoryTransaction : BaseEntity
 {

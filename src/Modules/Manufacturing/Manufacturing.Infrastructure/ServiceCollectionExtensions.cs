@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Manufacturing.Infrastructure.Persistence;
@@ -27,13 +28,7 @@ public static class ServiceCollectionExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<ManufacturingDbContext>(options =>
-            options.UseSqlServer(
-                connectionString,
-                b =>
-                {
-                    b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    b.MigrationsAssembly("Manufacturing.Infrastructure");
-                }));
+            options.UseNexcorePostgres(connectionString, typeof(ManufacturingDbContext).Assembly));
 
         // ========== REPOSITORIES ==========
         // Master Data

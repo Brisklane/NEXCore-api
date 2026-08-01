@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Testcontainers.MsSql;
+using Testcontainers.PostgreSql;
 
 namespace Nexcore.Tests.Infrastructure.Factory;
 
 /// <summary>
-/// Shared WebApplicationFactory that spins up a real SQL Server container via TestContainers.
+/// Shared WebApplicationFactory that spins up a real PostgreSQL container via TestContainers.
 /// All module integration test collections derive from this or use it directly.
 ///
 /// Usage:
@@ -17,23 +17,27 @@ namespace Nexcore.Tests.Infrastructure.Factory;
 /// </summary>
 public class NexcoreWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    // SQL Server 2022 requires TLS by default; the old sqlcmd-based health check fails.
-    // Wait for port 1433 + TCP connect is sufficient — EF MigrateAsync retries until ready.
-    private readonly MsSqlContainer _sql = new MsSqlBuilder()
-        .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+    // Pinned to the same major version as the local/dev server (17) so tests exercise the
+    // behaviour developers actually run against. Waiting on the port is enough — EF
+    // MigrateAsync retries while the server finishes its first-start initialisation.
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
+        .WithImage("postgres:17-alpine")
+        .WithDatabase("nexcore_test")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
         .Build();
 
-    public string ConnectionString => _sql.GetConnectionString();
+    public string ConnectionString => _postgres.GetConnectionString();
 
     // ── IAsyncLifetime ────────────────────────────────────────────────────────
 
-    public virtual async Task InitializeAsync() => await _sql.StartAsync();
+    public virtual async Task InitializeAsync() => await _postgres.StartAsync();
 
     // Explicit implementation avoids hiding WebApplicationFactory.DisposeAsync() (ValueTask)
     async Task IAsyncLifetime.DisposeAsync()
     {
-        await _sql.DisposeAsync();
+        await _postgres.DisposeAsync();
         await base.DisposeAsync();
     }
 
@@ -46,7 +50,7 @@ public class NexcoreWebApplicationFactory : WebApplicationFactory<Program>, IAsy
         builder.ConfigureAppConfiguration((_, cfg) =>
             cfg.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                // Point every module DbContext at the TestContainers SQL Server
+                // Point every module DbContext at the TestContainers PostgreSQL
                 ["ConnectionStrings:DefaultConnection"] = ConnectionString,
 
                 // JWT settings used to sign and validate test tokens

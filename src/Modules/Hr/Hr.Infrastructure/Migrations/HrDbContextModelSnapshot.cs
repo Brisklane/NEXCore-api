@@ -3,8 +3,8 @@ using System;
 using Hr.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -18,6800 +18,8938 @@ namespace Hr.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("hr")
-                .HasAnnotation("ProductVersion", "9.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Hr.Domain.Entities.AllowancesProfile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("AllowancesProfileCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("allowances_profile_code");
 
                     b.Property<string>("AllowancesProfileName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("allowances_profile_name");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_allowances_profiles");
 
-                    b.ToTable("AllowancesProfiles", "hr");
+                    b.ToTable("allowances_profiles", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Application", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ApplicationCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("application_code");
 
                     b.Property<DateTime>("AppliedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("applied_date");
 
                     b.Property<Guid?>("AssignedRecruiterEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("assigned_recruiter_employee_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<Guid?>("ConvertedToEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("converted_to_employee_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<Guid>("CurrentStageLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("current_stage_lookup_value_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("HiredDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("hired_date");
 
                     b.Property<decimal?>("InternalScore")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("internal_score");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsShortlisted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_shortlisted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_id");
 
                     b.Property<Guid>("JobPostingChannelId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_posting_channel_id");
 
                     b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("offer_id");
 
                     b.Property<Guid?>("PriorityLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("priority_lookup_value_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<decimal?>("ScreeningScore")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("screening_score");
 
                     b.Property<DateTime?>("StageChangedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("stage_changed_at");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_applications");
 
-                    b.HasIndex("AssignedRecruiterEmployeeId");
+                    b.HasIndex("AssignedRecruiterEmployeeId")
+                        .HasDatabaseName("ix_applications_assigned_recruiter_employee_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_applications_candidate_id");
 
-                    b.HasIndex("ConvertedToEmployeeId");
+                    b.HasIndex("ConvertedToEmployeeId")
+                        .HasDatabaseName("ix_applications_converted_to_employee_id");
 
-                    b.HasIndex("CurrentStageLookupValueId");
+                    b.HasIndex("CurrentStageLookupValueId")
+                        .HasDatabaseName("ix_applications_current_stage_lookup_value_id");
 
-                    b.HasIndex("JobId");
+                    b.HasIndex("JobId")
+                        .HasDatabaseName("ix_applications_job_id");
 
-                    b.HasIndex("JobPostingChannelId");
+                    b.HasIndex("JobPostingChannelId")
+                        .HasDatabaseName("ix_applications_job_posting_channel_id");
 
-                    b.HasIndex("PriorityLookupValueId");
+                    b.HasIndex("PriorityLookupValueId")
+                        .HasDatabaseName("ix_applications_priority_lookup_value_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_applications_status_lookup_value_id");
 
-                    b.ToTable("Applications", "hr");
+                    b.ToTable("applications", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.ApplicationCompliance", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<DateTime?>("BackgroundCheckDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("background_check_date");
 
                     b.Property<Guid?>("BackgroundCheckStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("background_check_status_lookup_value_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DataConsentDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_consent_date");
 
                     b.Property<bool>("DataConsentGiven")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("data_consent_given");
 
                     b.Property<DateTime?>("DataRetentionExpiryDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_retention_expiry_date");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("DrugTestDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("drug_test_date");
 
                     b.Property<Guid?>("DrugTestStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("drug_test_status_lookup_value_id");
 
                     b.Property<bool>("EEODataCaptured")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("eeo_data_captured");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("RightToWorkDocumentUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("right_to_work_document_url");
 
                     b.Property<bool>("RightToWorkVerified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("right_to_work_verified");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<bool>("VisaSponsorshipRequired")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("visa_sponsorship_required");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_application_compliances");
 
                     b.HasIndex("ApplicationId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_application_compliances_application_id");
 
-                    b.HasIndex("BackgroundCheckStatusLookupValueId");
+                    b.HasIndex("BackgroundCheckStatusLookupValueId")
+                        .HasDatabaseName("ix_application_compliances_background_check_status_lookup_valu");
 
-                    b.HasIndex("DrugTestStatusLookupValueId");
+                    b.HasIndex("DrugTestStatusLookupValueId")
+                        .HasDatabaseName("ix_application_compliances_drug_test_status_lookup_value_id");
 
-                    b.ToTable("ApplicationCompliances", "hr");
+                    b.ToTable("application_compliances", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.ApplicationDetail", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime?>("ActualJoinDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_join_date");
 
                     b.Property<DateTime?>("ApplicationDeadline")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("application_deadline");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<string>("ApplicationPortalNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("application_portal_notes");
 
                     b.Property<Guid?>("AssignedHiringManagerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("assigned_hiring_manager_employee_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<DateTime?>("CandidateResponseDeadline")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("candidate_response_deadline");
 
                     b.Property<decimal?>("CandidateSatisfactionScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("candidate_satisfaction_score");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("CoverLetterUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("cover_letter_url");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("ExpectedJoinDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expected_join_date");
 
                     b.Property<string>("HiringCommitteeNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("hiring_committee_notes");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("LastContactedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("last_contacted_by_employee_id");
 
                     b.Property<DateTime?>("LastContactedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_contacted_date");
 
                     b.Property<string>("LegacyApplicationId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_application_id");
 
                     b.Property<string>("LegacySourceSystem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_source_system");
 
                     b.Property<string>("MinQualificationsMet")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("min_qualifications_met");
 
                     b.Property<DateTime?>("NextFollowUpDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_follow_up_date");
 
                     b.Property<string>("OverallRating")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("overall_rating");
 
                     b.Property<string>("RecruiterNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("recruiter_notes");
 
                     b.Property<DateTime?>("RejectedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("rejected_date");
 
                     b.Property<bool>("RejectionNotificationSent")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("rejection_notification_sent");
 
                     b.Property<Guid?>("RejectionReasonLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("rejection_reason_lookup_value_id");
 
                     b.Property<Guid?>("RejectionSentByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("rejection_sent_by_employee_id");
 
                     b.Property<decimal?>("ResumeParseScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("resume_parse_score");
 
                     b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_at");
 
                     b.Property<Guid?>("ReviewedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("reviewed_by_employee_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid?>("ScreeningCompletedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("screening_completed_by_employee_id");
 
                     b.Property<DateTime?>("ScreeningCompletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("screening_completed_date");
 
                     b.Property<Guid?>("ScreeningQuestionnaireId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("screening_questionnaire_id");
 
                     b.Property<decimal?>("ScreeningQuestionnaireScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("screening_questionnaire_score");
 
                     b.Property<Guid?>("ScreeningStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("screening_status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TagsList")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("tags_list");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<Guid?>("WithdrawalReasonLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("withdrawal_reason_lookup_value_id");
 
                     b.Property<DateTime?>("WithdrawnDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("withdrawn_date");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_application_details");
 
                     b.HasIndex("ApplicationId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_application_details_application_id");
 
-                    b.HasIndex("AssignedHiringManagerEmployeeId");
+                    b.HasIndex("AssignedHiringManagerEmployeeId")
+                        .HasDatabaseName("ix_application_details_assigned_hiring_manager_employee_id");
 
-                    b.HasIndex("LastContactedByEmployeeId");
+                    b.HasIndex("LastContactedByEmployeeId")
+                        .HasDatabaseName("ix_application_details_last_contacted_by_employee_id");
 
-                    b.HasIndex("RejectionReasonLookupValueId");
+                    b.HasIndex("RejectionReasonLookupValueId")
+                        .HasDatabaseName("ix_application_details_rejection_reason_lookup_value_id");
 
-                    b.HasIndex("RejectionSentByEmployeeId");
+                    b.HasIndex("RejectionSentByEmployeeId")
+                        .HasDatabaseName("ix_application_details_rejection_sent_by_employee_id");
 
-                    b.HasIndex("ReviewedByEmployeeId");
+                    b.HasIndex("ReviewedByEmployeeId")
+                        .HasDatabaseName("ix_application_details_reviewed_by_employee_id");
 
-                    b.HasIndex("ScreeningCompletedByEmployeeId");
+                    b.HasIndex("ScreeningCompletedByEmployeeId")
+                        .HasDatabaseName("ix_application_details_screening_completed_by_employee_id");
 
-                    b.HasIndex("ScreeningQuestionnaireId");
+                    b.HasIndex("ScreeningQuestionnaireId")
+                        .HasDatabaseName("ix_application_details_screening_questionnaire_id");
 
-                    b.HasIndex("ScreeningStatusLookupValueId");
+                    b.HasIndex("ScreeningStatusLookupValueId")
+                        .HasDatabaseName("ix_application_details_screening_status_lookup_value_id");
 
-                    b.HasIndex("WithdrawalReasonLookupValueId");
+                    b.HasIndex("WithdrawalReasonLookupValueId")
+                        .HasDatabaseName("ix_application_details_withdrawal_reason_lookup_value_id");
 
-                    b.ToTable("ApplicationDetails", "hr");
+                    b.ToTable("application_details", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.ApprovalRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ApprovalDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approval_display_name");
 
                     b.Property<string>("ApprovalRequestCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approval_request_code");
 
                     b.Property<string>("ApprovalSubjectCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approval_subject_code");
 
                     b.Property<string>("ApprovalSubjectTitle")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approval_subject_title");
 
                     b.Property<string>("ApprovalSummary")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approval_summary");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("comments");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<int>("CurrentLevel")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("current_level");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid>("EntityId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("entity_id");
 
                     b.Property<string>("EntityType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("entity_type");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("OverallStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("overall_status_lookup_value_id");
 
                     b.Property<Guid>("PriorityLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("priority_lookup_value_id");
 
                     b.Property<string>("ReferenceNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("reference_notes");
 
                     b.Property<DateTime>("RequestedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("requested_at");
 
                     b.Property<Guid>("RequestedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("requested_by_employee_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<int>("TotalLevels")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("total_levels");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<Guid>("WorkflowConfigId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("workflow_config_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_approval_requests");
 
-                    b.HasIndex("OverallStatusLookupValueId");
+                    b.HasIndex("OverallStatusLookupValueId")
+                        .HasDatabaseName("ix_approval_requests_overall_status_lookup_value_id");
 
-                    b.HasIndex("PriorityLookupValueId");
+                    b.HasIndex("PriorityLookupValueId")
+                        .HasDatabaseName("ix_approval_requests_priority_lookup_value_id");
 
-                    b.HasIndex("RequestedByEmployeeId");
+                    b.HasIndex("RequestedByEmployeeId")
+                        .HasDatabaseName("ix_approval_requests_requested_by_employee_id");
 
-                    b.HasIndex("WorkflowConfigId");
+                    b.HasIndex("WorkflowConfigId")
+                        .HasDatabaseName("ix_approval_requests_workflow_config_id");
 
-                    b.ToTable("ApprovalRequests", "hr");
+                    b.ToTable("approval_requests", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.ApprovalRequestStep", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime?>("ActionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("action_date");
 
                     b.Property<Guid>("ApprovalRequestId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("approval_request_id");
 
                     b.Property<Guid?>("ApproverEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("approver_employee_id");
 
                     b.Property<string>("ApproverType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approver_type");
 
                     b.Property<string>("ApproverValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approver_value");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("comments");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("ConditionNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("condition_notes");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<Guid?>("DelegatedToEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("delegated_to_employee_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("EscalatedFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("escalated_flag");
 
                     b.Property<Guid?>("EscalatedToEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("escalated_to_employee_id");
 
                     b.Property<string>("ExecutionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("execution_type");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsConditional")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_conditional");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("Mandatory")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("mandatory");
 
                     b.Property<string>("RejectionCategory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("rejection_category");
 
                     b.Property<string>("RejectionReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("rejection_reason");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("SLAHours")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sla_hours");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<int>("StepLevel")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("step_level");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<Guid>("WorkflowConfigStepId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("workflow_config_step_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_approval_request_steps");
 
-                    b.HasIndex("ApprovalRequestId");
+                    b.HasIndex("ApprovalRequestId")
+                        .HasDatabaseName("ix_approval_request_steps_approval_request_id");
 
-                    b.HasIndex("ApproverEmployeeId");
+                    b.HasIndex("ApproverEmployeeId")
+                        .HasDatabaseName("ix_approval_request_steps_approver_employee_id");
 
-                    b.HasIndex("DelegatedToEmployeeId");
+                    b.HasIndex("DelegatedToEmployeeId")
+                        .HasDatabaseName("ix_approval_request_steps_delegated_to_employee_id");
 
-                    b.HasIndex("EscalatedToEmployeeId");
+                    b.HasIndex("EscalatedToEmployeeId")
+                        .HasDatabaseName("ix_approval_request_steps_escalated_to_employee_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_approval_request_steps_status_lookup_value_id");
 
-                    b.HasIndex("WorkflowConfigStepId");
+                    b.HasIndex("WorkflowConfigStepId")
+                        .HasDatabaseName("ix_approval_request_steps_workflow_config_step_id");
 
-                    b.ToTable("ApprovalRequestSteps", "hr");
+                    b.ToTable("approval_request_steps", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.BenefitsPlan", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("BenefitsPlanCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("benefits_plan_code");
 
                     b.Property<string>("BenefitsPlanName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("benefits_plan_name");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_benefits_plans");
 
-                    b.ToTable("BenefitsPlans", "hr");
+                    b.ToTable("benefits_plans", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CallLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<DateTime>("CallDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("call_date");
 
                     b.Property<string>("CallDirection")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("call_direction");
 
                     b.Property<string>("CallType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("call_type");
 
                     b.Property<Guid>("CalledByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("called_by_employee_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid?>("CommunicationTemplateId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CommunicationTemplateId1")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("communication_template_id");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("ContactMethod")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("contact_method");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int?>("DurationMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("duration_minutes");
 
                     b.Property<DateTime?>("FollowUpCompletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("follow_up_completed_at");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsFollowUpDone")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_follow_up_done");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<DateTime?>("NextActionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_action_date");
 
                     b.Property<string>("NextActionType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("next_action_type");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<string>("Outcome")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("outcome");
 
                     b.Property<string>("PhoneNumberUsed")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("phone_number_used");
 
                     b.Property<string>("RecordingUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("recording_url");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<decimal?>("SentimentScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("sentiment_score");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TelephonyProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("telephony_provider");
 
                     b.Property<string>("TelephonySessionId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("telephony_session_id");
 
                     b.Property<string>("TranscriptUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("transcript_url");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_call_logs");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_call_logs_application_id");
 
-                    b.HasIndex("CalledByEmployeeId");
+                    b.HasIndex("CalledByEmployeeId")
+                        .HasDatabaseName("ix_call_logs_called_by_employee_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_call_logs_candidate_id");
 
-                    b.HasIndex("CommunicationTemplateId");
+                    b.HasIndex("CommunicationTemplateId")
+                        .HasDatabaseName("ix_call_logs_communication_template_id");
 
-                    b.HasIndex("CommunicationTemplateId1");
-
-                    b.ToTable("CallLogs", "hr");
+                    b.ToTable("call_logs", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Candidate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("BlacklistReasonLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("blacklist_reason_lookup_value_id");
 
                     b.Property<DateTime?>("BlacklistedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("blacklisted_at");
 
                     b.Property<Guid?>("BlacklistedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("blacklisted_by_employee_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CandidateCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("candidate_code");
 
                     b.Property<string>("CandidateRating")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("candidate_rating");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<bool>("ConsentGiven")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("consent_given");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<string>("CurrentCompany")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("current_company");
 
                     b.Property<Guid?>("CurrentDesignationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("current_designation_id");
 
                     b.Property<decimal?>("CurrentSalary")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("current_salary");
 
                     b.Property<DateTime?>("DataRetentionExpiryDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_retention_expiry_date");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid?>("DuplicateOfCandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("duplicate_of_candidate_id");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("email");
 
                     b.Property<decimal?>("ExpectedSalary")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("expected_salary");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("first_name");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsBlacklisted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_blacklisted");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("LegacyCandidateId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_candidate_id");
 
                     b.Property<string>("LegacySourceSystem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_source_system");
 
                     b.Property<Guid?>("MergedIntoCandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("merged_into_candidate_id");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
 
                     b.Property<string>("ResumeUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("resume_url");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("Source")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("source");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<decimal?>("TotalExperienceYears")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("total_experience_years");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidates");
 
-                    b.HasIndex("BlacklistReasonLookupValueId");
+                    b.HasIndex("BlacklistReasonLookupValueId")
+                        .HasDatabaseName("ix_candidates_blacklist_reason_lookup_value_id");
 
-                    b.HasIndex("BlacklistedByEmployeeId");
+                    b.HasIndex("BlacklistedByEmployeeId")
+                        .HasDatabaseName("ix_candidates_blacklisted_by_employee_id");
 
-                    b.HasIndex("CurrentDesignationId");
+                    b.HasIndex("CurrentDesignationId")
+                        .HasDatabaseName("ix_candidates_current_designation_id");
 
-                    b.HasIndex("DuplicateOfCandidateId");
+                    b.HasIndex("DuplicateOfCandidateId")
+                        .HasDatabaseName("ix_candidates_duplicate_of_candidate_id");
 
-                    b.HasIndex("MergedIntoCandidateId");
+                    b.HasIndex("MergedIntoCandidateId")
+                        .HasDatabaseName("ix_candidates_merged_into_candidate_id");
 
-                    b.ToTable("Candidates", "hr");
+                    b.ToTable("candidates", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateAddress", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AddressTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("address_type_lookup_value_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("city");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("country");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_primary");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_verified");
 
                     b.Property<decimal?>("Latitude")
                         .HasPrecision(9, 6)
-                        .HasColumnType("decimal(9,6)");
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("latitude");
 
                     b.Property<string>("Line1")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("line1");
 
                     b.Property<string>("Line2")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("line2");
 
                     b.Property<decimal?>("Longitude")
                         .HasPrecision(9, 6)
-                        .HasColumnType("decimal(9,6)");
+                        .HasColumnType("numeric(9,6)")
+                        .HasColumnName("longitude");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("postal_code");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("StateProvince")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("state_province");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("verified_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_addresses");
 
-                    b.HasIndex("AddressTypeLookupValueId");
+                    b.HasIndex("AddressTypeLookupValueId")
+                        .HasDatabaseName("ix_candidate_addresses_address_type_lookup_value_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_addresses_candidate_id");
 
-                    b.ToTable("CandidateAddresses", "hr");
+                    b.ToTable("candidate_addresses", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateContact", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<Guid>("ContactTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("contact_type_lookup_value_id");
 
                     b.Property<string>("ContactValue")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("contact_value");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_primary");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_verified");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("verified_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_contacts");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_contacts_candidate_id");
 
-                    b.HasIndex("ContactTypeLookupValueId");
+                    b.HasIndex("ContactTypeLookupValueId")
+                        .HasDatabaseName("ix_candidate_contacts_contact_type_lookup_value_id");
 
-                    b.ToTable("CandidateContacts", "hr");
+                    b.ToTable("candidate_contacts", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateMediaLink", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_primary");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_verified");
 
                     b.Property<Guid>("MediaTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("media_type_lookup_value_id");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("url");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_media_links");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_media_links_candidate_id");
 
-                    b.HasIndex("MediaTypeLookupValueId");
+                    b.HasIndex("MediaTypeLookupValueId")
+                        .HasDatabaseName("ix_candidate_media_links_media_type_lookup_value_id");
 
-                    b.ToTable("CandidateMediaLinks", "hr");
+                    b.ToTable("candidate_media_links", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateProfile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("address");
 
                     b.Property<string>("AlternateEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("alternate_email");
 
                     b.Property<DateTime?>("AvailableFromDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("available_from_date");
 
                     b.Property<string>("BlacklistNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("blacklist_notes");
 
                     b.Property<string>("BlacklistRemovalReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("blacklist_removal_reason");
 
                     b.Property<DateTime?>("BlacklistRemovedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("blacklist_removed_at");
 
                     b.Property<Guid?>("BlacklistRemovedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("blacklist_removed_by_employee_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("city");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime?>("ConsentDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("consent_date");
 
                     b.Property<string>("CountryOfResidence")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("country_of_residence");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<string>("CurrentCompany")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("current_company");
 
                     b.Property<string>("CurrentDesignation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("current_designation");
 
                     b.Property<int?>("CurrentNoticePeriodDays")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("current_notice_period_days");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_of_birth");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("DisabilityStatus")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("disability_status");
 
                     b.Property<string>("DiversityData")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("diversity_data");
 
                     b.Property<string>("EEOCategory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("eeo_category");
 
                     b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("gender");
 
                     b.Property<string>("HighestEducationField")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("highest_education_field");
 
                     b.Property<string>("HighestEducationLevel")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("highest_education_level");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<DateTime?>("LastPortalLoginDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_portal_login_date");
 
                     b.Property<Guid?>("MergedIntoCandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("merged_into_candidate_id");
 
                     b.Property<string>("MiddleName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("middle_name");
 
                     b.Property<string>("MobilePhone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("mobile_phone");
 
                     b.Property<string>("Nationality")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("nationality");
 
                     b.Property<bool>("PortalRegistered")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("portal_registered");
 
                     b.Property<DateTime?>("PortalRegistrationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("portal_registration_date");
 
                     b.Property<string>("PreferredWorkLocation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("preferred_work_location");
 
                     b.Property<int?>("ProfileCompletionPercent")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("profile_completion_percent");
 
                     b.Property<string>("RecruiterNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("recruiter_notes");
 
                     b.Property<string>("ReferredBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("referred_by");
 
                     b.Property<string>("RemotePreference")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("remote_preference");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<Guid?>("TalentPoolAddedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("talent_pool_added_by_employee_id");
 
                     b.Property<DateTime?>("TalentPoolAddedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("talent_pool_added_date");
 
                     b.Property<Guid?>("TalentPoolId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TalentPoolId1")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("talent_pool_id");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<string>("VeteranStatus")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("veteran_status");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_profiles");
 
-                    b.HasIndex("BlacklistRemovedByEmployeeId");
+                    b.HasIndex("BlacklistRemovedByEmployeeId")
+                        .HasDatabaseName("ix_candidate_profiles_blacklist_removed_by_employee_id");
 
                     b.HasIndex("CandidateId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_candidate_profiles_candidate_id");
 
-                    b.HasIndex("MergedIntoCandidateId");
+                    b.HasIndex("MergedIntoCandidateId")
+                        .HasDatabaseName("ix_candidate_profiles_merged_into_candidate_id");
 
-                    b.HasIndex("TalentPoolAddedByEmployeeId");
+                    b.HasIndex("TalentPoolAddedByEmployeeId")
+                        .HasDatabaseName("ix_candidate_profiles_talent_pool_added_by_employee_id");
 
-                    b.HasIndex("TalentPoolId");
+                    b.HasIndex("TalentPoolId")
+                        .HasDatabaseName("ix_candidate_profiles_talent_pool_id");
 
-                    b.HasIndex("TalentPoolId1");
-
-                    b.ToTable("CandidateProfiles", "hr");
+                    b.ToTable("candidate_profiles", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateSkill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_verified");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<Guid>("ProficiencyLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("proficiency_lookup_value_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("skill_id");
 
                     b.Property<string>("Source")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("source");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("verified_at");
 
                     b.Property<Guid?>("VerifiedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("verified_by_employee_id");
 
                     b.Property<decimal?>("YearsExperience")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("years_experience");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_skills");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_skills_candidate_id");
 
-                    b.HasIndex("ProficiencyLookupValueId");
+                    b.HasIndex("ProficiencyLookupValueId")
+                        .HasDatabaseName("ix_candidate_skills_proficiency_lookup_value_id");
 
-                    b.HasIndex("SkillId");
+                    b.HasIndex("SkillId")
+                        .HasDatabaseName("ix_candidate_skills_skill_id");
 
-                    b.HasIndex("VerifiedByEmployeeId");
+                    b.HasIndex("VerifiedByEmployeeId")
+                        .HasDatabaseName("ix_candidate_skills_verified_by_employee_id");
 
-                    b.ToTable("CandidateSkills", "hr");
+                    b.ToTable("candidate_skills", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateStageHistory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<DateTime>("ChangedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("changed_at");
 
                     b.Property<Guid>("ChangedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("changed_by_employee_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<int?>("DaysInPreviousStage")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("days_in_previous_stage");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid?>("FromStageLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("from_stage_lookup_value_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsAutomated")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_automated");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<bool>("NotificationSent")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("notification_sent");
 
                     b.Property<DateTime?>("NotificationSentAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("notification_sent_at");
 
                     b.Property<string>("ReasonCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("reason_code");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int?>("SLABreachHours")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sla_breach_hours");
 
                     b.Property<bool>("SLABreached")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("sla_breached");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<Guid>("ToStageLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("to_stage_lookup_value_id");
 
                     b.Property<string>("TriggerEvent")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("trigger_event");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_stage_histories");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_candidate_stage_histories_application_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_stage_histories_candidate_id");
 
-                    b.HasIndex("ChangedByEmployeeId");
+                    b.HasIndex("ChangedByEmployeeId")
+                        .HasDatabaseName("ix_candidate_stage_histories_changed_by_employee_id");
 
-                    b.HasIndex("FromStageLookupValueId");
+                    b.HasIndex("FromStageLookupValueId")
+                        .HasDatabaseName("ix_candidate_stage_histories_from_stage_lookup_value_id");
 
-                    b.HasIndex("ToStageLookupValueId");
+                    b.HasIndex("ToStageLookupValueId")
+                        .HasDatabaseName("ix_candidate_stage_histories_to_stage_lookup_value_id");
 
-                    b.ToTable("CandidateStageHistories", "hr");
+                    b.ToTable("candidate_stage_histories", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<Guid>("AssignedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("assigned_by_employee_id");
 
                     b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("assigned_date");
 
                     b.Property<int>("AttemptAllowed")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt_allowed");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CancelReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("cancel_reason");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("DueDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("due_date");
 
                     b.Property<string>("ExternalProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("external_provider");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsMandatory")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_mandatory");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_id");
 
                     b.Property<decimal?>("MaxScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("max_score");
 
                     b.Property<decimal?>("PassingScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("passing_score");
 
                     b.Property<string>("ProviderReferenceId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("provider_reference_id");
 
                     b.Property<int>("ReminderSentCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("reminder_sent_count");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("SourceType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("source_type");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<string>("SubmissionMethod")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("submission_method");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TaskCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("task_code");
 
                     b.Property<Guid>("TaskTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("task_type_lookup_value_id");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_tasks");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_candidate_tasks_application_id");
 
-                    b.HasIndex("AssignedByEmployeeId");
+                    b.HasIndex("AssignedByEmployeeId")
+                        .HasDatabaseName("ix_candidate_tasks_assigned_by_employee_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_tasks_candidate_id");
 
-                    b.HasIndex("JobId");
+                    b.HasIndex("JobId")
+                        .HasDatabaseName("ix_candidate_tasks_job_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_candidate_tasks_status_lookup_value_id");
 
-                    b.HasIndex("TaskTypeLookupValueId");
+                    b.HasIndex("TaskTypeLookupValueId")
+                        .HasDatabaseName("ix_candidate_tasks_task_type_lookup_value_id");
 
-                    b.ToTable("CandidateTasks", "hr");
+                    b.ToTable("candidate_tasks", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateTaskEvaluation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateTaskId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_task_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("comments");
 
                     b.Property<decimal?>("CommunicationScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("communication_score");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<decimal?>("CreativityScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("creativity_score");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid>("EvaluatedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("evaluated_by_employee_id");
 
                     b.Property<DateTime>("EvaluationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("evaluation_date");
 
                     b.Property<bool>("FeedbackVisibleToCandidate")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("feedback_visible_to_candidate");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<decimal?>("QualityScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("quality_score");
 
                     b.Property<string>("Recommendation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("recommendation");
 
                     b.Property<Guid>("ResultLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("result_lookup_value_id");
 
                     b.Property<int?>("ReviewedDurationMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("reviewed_duration_minutes");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<decimal?>("Score")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("score");
 
                     b.Property<Guid>("SubmissionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("submission_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<decimal?>("TechnicalScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("technical_score");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<decimal?>("WeightedFinalScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("weighted_final_score");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_task_evaluations");
 
-                    b.HasIndex("CandidateTaskId");
+                    b.HasIndex("CandidateTaskId")
+                        .HasDatabaseName("ix_candidate_task_evaluations_candidate_task_id");
 
-                    b.HasIndex("EvaluatedByEmployeeId");
+                    b.HasIndex("EvaluatedByEmployeeId")
+                        .HasDatabaseName("ix_candidate_task_evaluations_evaluated_by_employee_id");
 
-                    b.HasIndex("ResultLookupValueId");
+                    b.HasIndex("ResultLookupValueId")
+                        .HasDatabaseName("ix_candidate_task_evaluations_result_lookup_value_id");
 
-                    b.HasIndex("SubmissionId");
+                    b.HasIndex("SubmissionId")
+                        .HasDatabaseName("ix_candidate_task_evaluations_submission_id");
 
-                    b.ToTable("CandidateTaskEvaluations", "hr");
+                    b.ToTable("candidate_task_evaluations", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CandidateTaskSubmission", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<int>("AttemptNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt_no");
 
                     b.Property<decimal?>("AutoScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("auto_score");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<string>("BrowserMetadata")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("browser_metadata");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<Guid>("CandidateTaskId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_task_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("ExternalLink")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("external_link");
 
                     b.Property<string>("FileUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("file_url");
 
                     b.Property<string>("IPAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("ip_address");
 
                     b.Property<decimal?>("IntegrityScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("integrity_score");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsLateSubmission")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_late_submission");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("ParsedOutput")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("parsed_output");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<string>("SubmissionText")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("submission_text");
 
                     b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<int?>("TimeSpentMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("time_spent_minutes");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_candidate_task_submissions");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_candidate_task_submissions_application_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_candidate_task_submissions_candidate_id");
 
-                    b.HasIndex("CandidateTaskId");
+                    b.HasIndex("CandidateTaskId")
+                        .HasDatabaseName("ix_candidate_task_submissions_candidate_task_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_candidate_task_submissions_status_lookup_value_id");
 
-                    b.ToTable("CandidateTaskSubmissions", "hr");
+                    b.ToTable("candidate_task_submissions", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.ChannelTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ApiEndpoint")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("api_endpoint");
 
                     b.Property<string>("AuthConfigJson")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("auth_config_json");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("ChannelCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("channel_code");
 
                     b.Property<string>("ChannelName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("channel_name");
 
                     b.Property<Guid>("ChannelTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("channel_type_lookup_value_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<Guid?>("DefaultStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("default_status_lookup_value_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("RequiresApproval")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_approval");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<bool>("SupportsAutoPosting")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("supports_auto_posting");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TrackingPrefix")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("tracking_prefix");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_channel_templates");
 
-                    b.HasIndex("ChannelTypeLookupValueId");
+                    b.HasIndex("ChannelTypeLookupValueId")
+                        .HasDatabaseName("ix_channel_templates_channel_type_lookup_value_id");
 
-                    b.HasIndex("DefaultStatusLookupValueId");
+                    b.HasIndex("DefaultStatusLookupValueId")
+                        .HasDatabaseName("ix_channel_templates_default_status_lookup_value_id");
 
-                    b.ToTable("ChannelTemplates", "hr");
+                    b.ToTable("channel_templates", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CommunicationTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("body");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("CommunicationTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsSystemTemplate")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_system_template");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("language_code");
 
                     b.Property<string>("PlaceholdersJson")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("placeholders_json");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("subject");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TemplateCode")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("template_code");
 
                     b.Property<string>("TemplateName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("template_name");
 
                     b.Property<Guid>("TemplateTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("template_type_lookup_value_id");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("Version")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_communication_templates");
 
                     b.HasIndex("TemplateCode")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_communication_templates_template_code");
 
-                    b.HasIndex("TemplateTypeLookupValueId");
+                    b.HasIndex("TemplateTypeLookupValueId")
+                        .HasDatabaseName("ix_communication_templates_template_type_lookup_value_id");
 
-                    b.ToTable("CommunicationTemplates", "hr");
+                    b.ToTable("communication_templates", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CompetencyFramework", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("EffectiveFrom")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("effective_from");
 
                     b.Property<DateTime?>("EffectiveTo")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("effective_to");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("JobFamilyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_family_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("VersionNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version_number");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_competency_frameworks");
 
-                    b.HasIndex("JobFamilyId");
+                    b.HasIndex("JobFamilyId")
+                        .HasDatabaseName("ix_competency_frameworks_job_family_id");
 
-                    b.ToTable("CompetencyFrameworks", "hr");
+                    b.ToTable("competency_frameworks", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CompetencyFrameworkItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<Guid>("CompetencyFrameworkId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("competency_framework_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsMandatory")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_mandatory");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<decimal>("MinimumRating")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("minimum_rating");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("skill_id");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<decimal>("WeightPercent")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("weight_percent");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_competency_framework_items");
 
-                    b.HasIndex("CompetencyFrameworkId");
+                    b.HasIndex("CompetencyFrameworkId")
+                        .HasDatabaseName("ix_competency_framework_items_competency_framework_id");
 
-                    b.HasIndex("SkillId");
+                    b.HasIndex("SkillId")
+                        .HasDatabaseName("ix_competency_framework_items_skill_id");
 
-                    b.ToTable("CompetencyFrameworkItems", "hr");
+                    b.ToTable("competency_framework_items", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CostCenter", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid?>("BudgetOwnerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("budget_owner_employee_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("CostCenterCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("cost_center_code");
 
                     b.Property<string>("CostCenterName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("cost_center_name");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BudgetOwnerEmployeeId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("CostCenters", "hr");
-                });
-
-            modelBuilder.Entity("Hr.Domain.Entities.Currency", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CurrencyCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("CurrencyName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
-
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Symbol")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_cost_centers");
 
-                    b.HasIndex("CurrencyCode")
-                        .IsUnique();
+                    b.HasIndex("BudgetOwnerEmployeeId")
+                        .HasDatabaseName("ix_cost_centers_budget_owner_employee_id");
 
-                    b.ToTable("Currencies", "hr");
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_cost_centers_department_id");
+
+                    b.ToTable("cost_centers", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Department", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<Guid?>("CostCenterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("cost_center_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("DepartmentCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("department_code");
 
                     b.Property<Guid?>("DepartmentHeadEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_head_employee_id");
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("department_name");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("ParentDepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_department_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_departments");
 
-                    b.HasIndex("CostCenterId");
+                    b.HasIndex("CostCenterId")
+                        .HasDatabaseName("ix_departments_cost_center_id");
 
-                    b.HasIndex("DepartmentHeadEmployeeId");
+                    b.HasIndex("DepartmentHeadEmployeeId")
+                        .HasDatabaseName("ix_departments_department_head_employee_id");
 
-                    b.HasIndex("ParentDepartmentId");
+                    b.HasIndex("ParentDepartmentId")
+                        .HasDatabaseName("ix_departments_parent_department_id");
 
-                    b.ToTable("Departments", "hr");
+                    b.ToTable("departments", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Designation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("DesignationCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("designation_code");
 
                     b.Property<string>("DesignationName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("designation_name");
 
                     b.Property<Guid?>("GradeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("grade_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("JobFamilyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_family_id");
 
                     b.Property<Guid?>("JobFunctionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_function_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_designations");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_designations_department_id");
 
-                    b.HasIndex("GradeId");
+                    b.HasIndex("GradeId")
+                        .HasDatabaseName("ix_designations_grade_id");
 
-                    b.HasIndex("JobFamilyId");
+                    b.HasIndex("JobFamilyId")
+                        .HasDatabaseName("ix_designations_job_family_id");
 
-                    b.HasIndex("JobFunctionId");
+                    b.HasIndex("JobFunctionId")
+                        .HasDatabaseName("ix_designations_job_function_id");
 
-                    b.ToTable("Designations", "hr");
+                    b.ToTable("designations", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Employee", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid?>("DesignationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("designation_id");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("email");
 
                     b.Property<string>("EmployeeCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("employee_code");
 
                     b.Property<DateTime?>("ExitDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("exit_date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("first_name");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("JobLocationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_location_id");
 
                     b.Property<DateTime?>("JoinDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("join_date");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("MiddleName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("middle_name");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
 
                     b.Property<Guid?>("PositionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("position_id");
 
                     b.Property<Guid?>("ReportingManagerId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("reporting_manager_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid?>("ShiftId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("shift_id");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_employees");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_employees_department_id");
 
-                    b.HasIndex("DesignationId");
+                    b.HasIndex("DesignationId")
+                        .HasDatabaseName("ix_employees_designation_id");
 
-                    b.HasIndex("JobLocationId");
+                    b.HasIndex("JobLocationId")
+                        .HasDatabaseName("ix_employees_job_location_id");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex("PositionId")
+                        .HasDatabaseName("ix_employees_position_id");
 
-                    b.HasIndex("ReportingManagerId");
+                    b.HasIndex("ReportingManagerId")
+                        .HasDatabaseName("ix_employees_reporting_manager_id");
 
-                    b.HasIndex("ShiftId");
+                    b.HasIndex("ShiftId")
+                        .HasDatabaseName("ix_employees_shift_id");
 
                     b.HasIndex("CompanyId", "BranchId", "BusinessUnitId", "EmployeeCode")
                         .IsUnique()
-                        .HasDatabaseName("IX_Employee_Tenant_Code");
+                        .HasDatabaseName("ix_employee_tenant_code");
 
-                    b.ToTable("Employees", "hr");
+                    b.ToTable("employees", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Grade", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("GradeCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("grade_code");
 
                     b.Property<string>("GradeName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("grade_name");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<int>("LevelNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("level_no");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_grades");
 
-                    b.ToTable("Grades", "hr");
+                    b.ToTable("grades", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Interview", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<int?>("ActualDurationMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("actual_duration_minutes");
 
                     b.Property<DateTime?>("ActualEnd")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_end");
 
                     b.Property<DateTime?>("ActualStart")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("actual_start");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CalendarEventId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("calendar_event_id");
 
                     b.Property<string>("CalendarProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("calendar_provider");
 
                     b.Property<string>("CancelReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("cancel_reason");
 
                     b.Property<bool>("CandidateConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("candidate_confirmed");
 
                     b.Property<DateTime?>("CandidateConfirmedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("candidate_confirmed_at");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<Guid?>("DecisionLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("decision_lookup_value_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int?>("DurationMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("duration_minutes");
 
                     b.Property<DateTime?>("FeedbackDueDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("feedback_due_date");
 
                     b.Property<int>("FeedbackSubmittedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("feedback_submitted_count");
 
                     b.Property<DateTime?>("FinalizedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("finalized_at");
 
                     b.Property<int>("Format")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("format");
 
                     b.Property<string>("InterviewCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("interview_code");
 
                     b.Property<Guid?>("InterviewFeedbackTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_feedback_template_id");
 
                     b.Property<int?>("InterviewSequenceNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("interview_sequence_no");
 
                     b.Property<string>("InterviewTitle")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("interview_title");
 
                     b.Property<Guid>("InterviewTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_type_lookup_value_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsMandatoryRound")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_mandatory_round");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_id");
 
                     b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("location");
 
                     b.Property<DateTime?>("OriginalScheduledStart")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("original_scheduled_start");
 
                     b.Property<DateTime?>("ProposedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("proposed_at");
 
                     b.Property<Guid?>("ProposedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("proposed_by_employee_id");
 
                     b.Property<string>("RecordingUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("recording_url");
 
                     b.Property<int>("RescheduleCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("reschedule_count");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<bool>("SLABreached")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("sla_breached");
 
                     b.Property<DateTime?>("ScheduledEnd")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("scheduled_end");
 
                     b.Property<DateTime?>("ScheduledStart")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("scheduled_start");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<string>("VideoLink")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("video_link");
 
                     b.Property<decimal?>("WeightedPanelScore")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("weighted_panel_score");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_interviews");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_interviews_application_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_interviews_candidate_id");
 
-                    b.HasIndex("DecisionLookupValueId");
+                    b.HasIndex("DecisionLookupValueId")
+                        .HasDatabaseName("ix_interviews_decision_lookup_value_id");
 
-                    b.HasIndex("InterviewFeedbackTemplateId");
+                    b.HasIndex("InterviewFeedbackTemplateId")
+                        .HasDatabaseName("ix_interviews_interview_feedback_template_id");
 
-                    b.HasIndex("InterviewTypeLookupValueId");
+                    b.HasIndex("InterviewTypeLookupValueId")
+                        .HasDatabaseName("ix_interviews_interview_type_lookup_value_id");
 
-                    b.HasIndex("JobId");
+                    b.HasIndex("JobId")
+                        .HasDatabaseName("ix_interviews_job_id");
 
-                    b.HasIndex("ProposedByEmployeeId");
+                    b.HasIndex("ProposedByEmployeeId")
+                        .HasDatabaseName("ix_interviews_proposed_by_employee_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_interviews_status_lookup_value_id");
 
-                    b.ToTable("Interviews", "hr");
+                    b.ToTable("interviews", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.InterviewFeedback", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<decimal?>("BehavioralScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("behavioral_score");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("comments");
 
                     b.Property<decimal?>("CommunicationScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("communication_score");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("CompetencyScoresJson")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("competency_scores_json");
 
                     b.Property<string>("ConcernNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("concern_notes");
 
                     b.Property<string>("ConfidentialNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("confidential_notes");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<decimal?>("CultureFitScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("culture_fit_score");
 
                     b.Property<Guid?>("DecisionLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("decision_lookup_value_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("HireReadiness")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("hire_readiness");
 
                     b.Property<Guid>("InterviewId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSubmitted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_submitted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<decimal?>("OverallScore")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("overall_score");
 
                     b.Property<Guid>("PanelMemberId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("panel_member_id");
 
                     b.Property<Guid?>("RecommendationLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("recommendation_lookup_value_id");
 
                     b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_at");
 
                     b.Property<bool>("ReviewedByHR")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("reviewed_by_hr");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("StrengthNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("strength_notes");
 
                     b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at");
 
                     b.Property<Guid>("SubmittedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("submitted_by_employee_id");
 
                     b.Property<bool>("SubmittedLate")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("submitted_late");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<decimal?>("TechnicalScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("technical_score");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<decimal?>("WeightedFinalScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("weighted_final_score");
 
                     b.Property<bool>("WouldRehire")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("would_rehire");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_interview_feedbacks");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_interview_feedbacks_application_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_interview_feedbacks_candidate_id");
 
-                    b.HasIndex("DecisionLookupValueId");
+                    b.HasIndex("DecisionLookupValueId")
+                        .HasDatabaseName("ix_interview_feedbacks_decision_lookup_value_id");
 
-                    b.HasIndex("InterviewId");
+                    b.HasIndex("InterviewId")
+                        .HasDatabaseName("ix_interview_feedbacks_interview_id");
 
-                    b.HasIndex("PanelMemberId");
+                    b.HasIndex("PanelMemberId")
+                        .HasDatabaseName("ix_interview_feedbacks_panel_member_id");
 
-                    b.HasIndex("RecommendationLookupValueId");
+                    b.HasIndex("RecommendationLookupValueId")
+                        .HasDatabaseName("ix_interview_feedbacks_recommendation_lookup_value_id");
 
-                    b.HasIndex("SubmittedByEmployeeId");
+                    b.HasIndex("SubmittedByEmployeeId")
+                        .HasDatabaseName("ix_interview_feedbacks_submitted_by_employee_id");
 
-                    b.ToTable("InterviewFeedbacks", "hr");
+                    b.ToTable("interview_feedbacks", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.InterviewFeedbackTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<Guid?>("CompetencyFrameworkId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("competency_framework_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int?>("EstimatedDurationMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("estimated_duration_minutes");
 
                     b.Property<string>("InstructionsForCandidate")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("instructions_for_candidate");
 
                     b.Property<string>("InstructionsForInterviewer")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("instructions_for_interviewer");
 
                     b.Property<Guid>("InterviewTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_type_lookup_value_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsMandatory")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_mandatory");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("JobFamilyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_family_id");
 
                     b.Property<decimal?>("PassingScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("passing_score");
 
                     b.Property<string>("QuestionsJson")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("questions_json");
 
                     b.Property<string>("RatingScale")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("rating_scale");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("SkillCriteriaJson")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_criteria_json");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TemplateCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("template_code");
 
                     b.Property<string>("TemplateName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("template_name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("VersionNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version_no");
 
                     b.Property<decimal?>("WeightInOverallScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("weight_in_overall_score");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_interview_feedback_templates");
 
-                    b.HasIndex("JobFamilyId");
+                    b.HasIndex("JobFamilyId")
+                        .HasDatabaseName("ix_interview_feedback_templates_job_family_id");
 
-                    b.ToTable("InterviewFeedbackTemplates", "hr");
+                    b.ToTable("interview_feedback_templates", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.InterviewNotification", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("body");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Channel")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("channel");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid?>("CommunicationTemplateId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CommunicationTemplateId1")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("communication_template_id");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid>("DeliveryStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("delivery_status_lookup_value_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid>("InterviewId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_id");
 
                     b.Property<Guid?>("InterviewPanelMemberId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_panel_member_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_read");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("NotificationTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("notification_type_lookup_value_id");
 
                     b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("read_at");
 
                     b.Property<Guid>("RecipientEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("recipient_employee_id");
 
                     b.Property<Guid?>("ResponseActionLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("response_action_lookup_value_id");
 
                     b.Property<DateTime?>("ResponseAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("response_at");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_at");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("subject");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_interview_notifications");
 
-                    b.HasIndex("CommunicationTemplateId");
+                    b.HasIndex("CommunicationTemplateId")
+                        .HasDatabaseName("ix_interview_notifications_communication_template_id");
 
-                    b.HasIndex("CommunicationTemplateId1");
+                    b.HasIndex("DeliveryStatusLookupValueId")
+                        .HasDatabaseName("ix_interview_notifications_delivery_status_lookup_value_id");
 
-                    b.HasIndex("DeliveryStatusLookupValueId");
+                    b.HasIndex("InterviewId")
+                        .HasDatabaseName("ix_interview_notifications_interview_id");
 
-                    b.HasIndex("InterviewId");
+                    b.HasIndex("InterviewPanelMemberId")
+                        .HasDatabaseName("ix_interview_notifications_interview_panel_member_id");
 
-                    b.HasIndex("InterviewPanelMemberId");
+                    b.HasIndex("NotificationTypeLookupValueId")
+                        .HasDatabaseName("ix_interview_notifications_notification_type_lookup_value_id");
 
-                    b.HasIndex("NotificationTypeLookupValueId");
+                    b.HasIndex("RecipientEmployeeId")
+                        .HasDatabaseName("ix_interview_notifications_recipient_employee_id");
 
-                    b.HasIndex("RecipientEmployeeId");
+                    b.HasIndex("ResponseActionLookupValueId")
+                        .HasDatabaseName("ix_interview_notifications_response_action_lookup_value_id");
 
-                    b.HasIndex("ResponseActionLookupValueId");
-
-                    b.ToTable("InterviewNotifications", "hr");
+                    b.ToTable("interview_notifications", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.InterviewPanelMember", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("AlternateInterviewerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("alternate_interviewer_employee_id");
 
                     b.Property<string>("AttendanceStatus")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("attendance_status");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("ConflictOfInterestNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("conflict_of_interest_notes");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<string>("DeclineReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("decline_reason");
 
                     b.Property<bool>("DeclinedToParticipate")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("declined_to_participate");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("FeedbackDeadline")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("feedback_deadline");
 
                     b.Property<bool>("HasConflictOfInterest")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_conflict_of_interest");
 
                     b.Property<Guid>("InterviewId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_id");
 
                     b.Property<Guid>("InterviewerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interviewer_employee_id");
 
                     b.Property<DateTime?>("InviteSentAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("invite_sent_at");
 
                     b.Property<Guid>("InviteStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("invite_status_lookup_value_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsAvailabilityConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_availability_confirmed");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsLead")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_lead");
 
                     b.Property<bool>("IsMandatory")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_mandatory");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<DateTime?>("JoinedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("joined_at");
 
                     b.Property<DateTime?>("LeftAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("left_at");
 
                     b.Property<int>("PanelSequence")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("panel_sequence");
 
                     b.Property<DateTime?>("ReminderSentAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reminder_sent_at");
 
                     b.Property<DateTime?>("RespondedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("responded_at");
 
                     b.Property<string>("ResponseComments")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("response_comments");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("role");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<decimal>("ScoreWeight")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("score_weight");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_interview_panel_members");
 
-                    b.HasIndex("AlternateInterviewerEmployeeId");
+                    b.HasIndex("AlternateInterviewerEmployeeId")
+                        .HasDatabaseName("ix_interview_panel_members_alternate_interviewer_employee_id");
 
-                    b.HasIndex("InterviewId");
+                    b.HasIndex("InterviewId")
+                        .HasDatabaseName("ix_interview_panel_members_interview_id");
 
-                    b.HasIndex("InterviewerEmployeeId");
+                    b.HasIndex("InterviewerEmployeeId")
+                        .HasDatabaseName("ix_interview_panel_members_interviewer_employee_id");
 
-                    b.HasIndex("InviteStatusLookupValueId");
+                    b.HasIndex("InviteStatusLookupValueId")
+                        .HasDatabaseName("ix_interview_panel_members_invite_status_lookup_value_id");
 
-                    b.ToTable("InterviewPanelMembers", "hr");
+                    b.ToTable("interview_panel_members", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.InterviewerAvailability", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("AvailableDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("available_date");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
+                        .HasColumnType("interval")
+                        .HasColumnName("end_time");
 
                     b.Property<Guid?>("InterviewId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interview_id");
 
                     b.Property<Guid>("InterviewerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("interviewer_employee_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_blocked");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsRecurring")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_recurring");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<string>("ReasonCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("reason_code");
 
                     b.Property<string>("RecurrencePattern")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("recurrence_pattern");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid>("SlotStatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("slot_status_lookup_value_id");
 
                     b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
+                        .HasColumnType("interval")
+                        .HasColumnName("start_time");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("time_zone");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_interviewer_availabilities");
 
-                    b.HasIndex("InterviewId");
+                    b.HasIndex("InterviewId")
+                        .HasDatabaseName("ix_interviewer_availabilities_interview_id");
 
-                    b.HasIndex("InterviewerEmployeeId");
+                    b.HasIndex("InterviewerEmployeeId")
+                        .HasDatabaseName("ix_interviewer_availabilities_interviewer_employee_id");
 
-                    b.HasIndex("SlotStatusLookupValueId");
+                    b.HasIndex("SlotStatusLookupValueId")
+                        .HasDatabaseName("ix_interviewer_availabilities_slot_status_lookup_value_id");
 
-                    b.ToTable("InterviewerAvailabilities", "hr");
+                    b.ToTable("interviewer_availabilities", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Job", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("ApprovalRequestId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("approval_request_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CancelReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("cancel_reason");
 
                     b.Property<DateTime?>("ClosedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at");
 
                     b.Property<Guid?>("ClosedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("closed_by_employee_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
-                    b.Property<Guid>("CurrencyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid>("DesignationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("designation_id");
 
                     b.Property<int>("EmploymentType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("employment_type");
 
                     b.Property<int>("FilledCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("filled_count");
 
                     b.Property<int>("Headcount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("headcount");
 
                     b.Property<Guid?>("HiringManagerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("hiring_manager_employee_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("JobCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("job_code");
 
                     b.Property<Guid?>("JobTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_template_id");
 
                     b.Property<string>("JobTitle")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("job_title");
 
                     b.Property<Guid?>("ParentJobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_job_id");
 
                     b.Property<DateTime?>("PostingCloseDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("posting_close_date");
 
                     b.Property<DateTime?>("PostingStartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("posting_start_date");
 
                     b.Property<Guid?>("PriorityLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("priority_lookup_value_id");
 
                     b.Property<int>("RecordType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("record_type");
 
                     b.Property<Guid?>("RecruiterEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("recruiter_employee_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<decimal>("SalaryRangeMax")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("salary_range_max");
 
                     b.Property<decimal>("SalaryRangeMin")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("salary_range_min");
 
                     b.Property<Guid?>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("TargetStartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("target_start_date");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_jobs");
 
-                    b.HasIndex("ApprovalRequestId");
+                    b.HasIndex("ApprovalRequestId")
+                        .HasDatabaseName("ix_jobs_approval_request_id");
 
-                    b.HasIndex("ClosedByEmployeeId");
+                    b.HasIndex("ClosedByEmployeeId")
+                        .HasDatabaseName("ix_jobs_closed_by_employee_id");
 
-                    b.HasIndex("CurrencyId");
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_jobs_department_id");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DesignationId")
+                        .HasDatabaseName("ix_jobs_designation_id");
 
-                    b.HasIndex("DesignationId");
+                    b.HasIndex("HiringManagerEmployeeId")
+                        .HasDatabaseName("ix_jobs_hiring_manager_employee_id");
 
-                    b.HasIndex("HiringManagerEmployeeId");
+                    b.HasIndex("JobTemplateId")
+                        .HasDatabaseName("ix_jobs_job_template_id");
 
-                    b.HasIndex("JobTemplateId");
+                    b.HasIndex("ParentJobId")
+                        .HasDatabaseName("ix_jobs_parent_job_id");
 
-                    b.HasIndex("ParentJobId");
+                    b.HasIndex("PriorityLookupValueId")
+                        .HasDatabaseName("ix_jobs_priority_lookup_value_id");
 
-                    b.HasIndex("PriorityLookupValueId");
+                    b.HasIndex("RecruiterEmployeeId")
+                        .HasDatabaseName("ix_jobs_recruiter_employee_id");
 
-                    b.HasIndex("RecruiterEmployeeId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_jobs_status_lookup_value_id");
 
-                    b.HasIndex("StatusLookupValueId");
-
-                    b.ToTable("Jobs", "hr");
+                    b.ToTable("jobs", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.JobDetail", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("AllowancesProfileId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("allowances_profile_id");
 
                     b.Property<bool>("BackgroundCheckRequired")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("background_check_required");
 
                     b.Property<bool>("BonusEligible")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("bonus_eligible");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<decimal?>("BudgetApprovedAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("budget_approved_amount");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CancelReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("cancel_reason");
 
                     b.Property<bool>("CareerSiteVisible")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("career_site_visible");
 
                     b.Property<DateTime?>("ClosedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at");
 
                     b.Property<Guid?>("ClosedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("closed_by_employee_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<bool>("ConfidentialJobFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("confidential_job_flag");
 
                     b.Property<Guid?>("CostCenterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("cost_center_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("DiversityTargetFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("diversity_target_flag");
 
                     b.Property<bool>("DrugTestRequired")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("drug_test_required");
 
                     b.Property<string>("EEOCategory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("eeo_category");
 
                     b.Property<string>("EducationRequirements")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("education_requirements");
 
                     b.Property<string>("ExternalJobCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("external_job_code");
 
                     b.Property<decimal?>("ForecastedHireCost")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("forecasted_hire_cost");
 
                     b.Property<Guid?>("GradeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("grade_id");
 
                     b.Property<string>("HiringType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("hiring_type");
 
                     b.Property<string>("InternalJobTitle")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("internal_job_title");
 
                     b.Property<bool>("InternalOnlyFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("internal_only_flag");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("JobFamilyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_family_id");
 
                     b.Property<Guid?>("JobFunctionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_function_id");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_id");
 
                     b.Property<Guid?>("JobLocationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_location_id");
 
                     b.Property<Guid?>("JobTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_template_id");
 
                     b.Property<string>("LanguagesRequired")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("languages_required");
 
                     b.Property<string>("LegacyRecordId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_record_id");
 
                     b.Property<string>("LegacySourceSystem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_source_system");
 
                     b.Property<decimal?>("MaxExperienceYears")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("max_experience_years");
 
                     b.Property<decimal?>("MinExperienceYears")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("min_experience_years");
 
                     b.Property<Guid?>("PayScaleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("pay_scale_id");
 
                     b.Property<Guid?>("PositionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("position_id");
 
                     b.Property<string>("PreferredSkills")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("preferred_skills");
 
                     b.Property<bool>("PublishExternallyFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("publish_externally_flag");
 
                     b.Property<bool>("ReferralBonusEligible")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("referral_bonus_eligible");
 
                     b.Property<Guid?>("ReplacedEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("replaced_employee_id");
 
                     b.Property<Guid?>("ReportingManagerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("reporting_manager_employee_id");
 
                     b.Property<string>("RequiredSkills")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("required_skills");
 
                     b.Property<string>("Requirements")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("requirements");
 
                     b.Property<string>("Responsibilities")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("responsibilities");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid?>("ScreeningQuestionnaireId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("screening_questionnaire_id");
 
                     b.Property<string>("SecurityClearanceLevel")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("security_clearance_level");
 
                     b.Property<Guid?>("ShiftId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("shift_id");
 
                     b.Property<string>("SourceCampaignCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("source_campaign_code");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("Tags")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("tags");
 
                     b.Property<decimal?>("TravelRequiredPercent")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("travel_required_percent");
 
                     b.Property<bool>("UnionRoleFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("union_role_flag");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<string>("VacancyReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("vacancy_reason");
 
                     b.Property<bool>("VisaSponsorshipAvailable")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("visa_sponsorship_available");
 
                     b.Property<string>("WorkerCategory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("worker_category");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_job_details");
 
-                    b.HasIndex("AllowancesProfileId");
+                    b.HasIndex("AllowancesProfileId")
+                        .HasDatabaseName("ix_job_details_allowances_profile_id");
 
-                    b.HasIndex("ClosedByEmployeeId");
+                    b.HasIndex("ClosedByEmployeeId")
+                        .HasDatabaseName("ix_job_details_closed_by_employee_id");
 
-                    b.HasIndex("CostCenterId");
+                    b.HasIndex("CostCenterId")
+                        .HasDatabaseName("ix_job_details_cost_center_id");
 
-                    b.HasIndex("GradeId");
+                    b.HasIndex("GradeId")
+                        .HasDatabaseName("ix_job_details_grade_id");
 
-                    b.HasIndex("JobFamilyId");
+                    b.HasIndex("JobFamilyId")
+                        .HasDatabaseName("ix_job_details_job_family_id");
 
-                    b.HasIndex("JobFunctionId");
+                    b.HasIndex("JobFunctionId")
+                        .HasDatabaseName("ix_job_details_job_function_id");
 
                     b.HasIndex("JobId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_job_details_job_id");
 
-                    b.HasIndex("JobLocationId");
+                    b.HasIndex("JobLocationId")
+                        .HasDatabaseName("ix_job_details_job_location_id");
 
-                    b.HasIndex("JobTemplateId");
+                    b.HasIndex("JobTemplateId")
+                        .HasDatabaseName("ix_job_details_job_template_id");
 
-                    b.HasIndex("PayScaleId");
+                    b.HasIndex("PayScaleId")
+                        .HasDatabaseName("ix_job_details_pay_scale_id");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex("PositionId")
+                        .HasDatabaseName("ix_job_details_position_id");
 
-                    b.HasIndex("ReplacedEmployeeId");
+                    b.HasIndex("ReplacedEmployeeId")
+                        .HasDatabaseName("ix_job_details_replaced_employee_id");
 
-                    b.HasIndex("ReportingManagerEmployeeId");
+                    b.HasIndex("ReportingManagerEmployeeId")
+                        .HasDatabaseName("ix_job_details_reporting_manager_employee_id");
 
-                    b.HasIndex("ScreeningQuestionnaireId");
+                    b.HasIndex("ScreeningQuestionnaireId")
+                        .HasDatabaseName("ix_job_details_screening_questionnaire_id");
 
-                    b.HasIndex("ShiftId");
+                    b.HasIndex("ShiftId")
+                        .HasDatabaseName("ix_job_details_shift_id");
 
-                    b.ToTable("JobDetails", "hr");
+                    b.ToTable("job_details", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.JobFamily", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("JobFamilyCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("job_family_code");
 
                     b.Property<string>("JobFamilyName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("job_family_name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_job_families");
 
-                    b.ToTable("JobFamilies", "hr");
+                    b.ToTable("job_families", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.JobFunction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("JobFunctionCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("job_function_code");
 
                     b.Property<string>("JobFunctionName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("job_function_name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_job_functions");
 
-                    b.ToTable("JobFunctions", "hr");
+                    b.ToTable("job_functions", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.JobLocation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("address");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("city");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("country");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("LocationCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("location_code");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("location_name");
 
                     b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("postal_code");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("StateProvince")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("state_province");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_job_locations");
 
-                    b.ToTable("JobLocations", "hr");
+                    b.ToTable("job_locations", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.JobPostingChannel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<decimal?>("AgencyFeePercent")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("agency_fee_percent");
 
                     b.Property<Guid?>("AgencyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("agency_id");
 
                     b.Property<int>("ApplicationsReceived")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("applications_received");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("ChannelNameSnapshot")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("channel_name_snapshot");
 
                     b.Property<Guid>("ChannelTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("channel_template_id");
 
                     b.Property<Guid>("ChannelTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("channel_type_lookup_value_id");
 
                     b.Property<int>("ClickCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("click_count");
 
                     b.Property<DateTime?>("CloseDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("close_date");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<decimal?>("ConversionRate")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("conversion_rate");
 
                     b.Property<decimal?>("CostPerApplication")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("cost_per_application");
 
                     b.Property<decimal?>("CostPerHire")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("cost_per_hire");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("ErrorMessage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("error_message");
 
                     b.Property<string>("ExternalPostingId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("external_posting_id");
 
                     b.Property<int>("HiredCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("hired_count");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSponsored")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_sponsored");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_id");
 
                     b.Property<string>("LegacySourceSystem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_source_system");
 
                     b.Property<DateTime>("OpenDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("open_date");
 
                     b.Property<string>("PostingUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("posting_url");
 
                     b.Property<decimal?>("QualityScore")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("quality_score");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("ShortlistedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("shortlisted_count");
 
                     b.Property<string>("SourceTrackingCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("source_tracking_code");
 
                     b.Property<decimal?>("SponsoredBudget")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("sponsored_budget");
 
                     b.Property<DateTime?>("SponsoredEndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sponsored_end_date");
 
                     b.Property<DateTime?>("SponsoredStartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sponsored_start_date");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("ViewCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("view_count");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_job_posting_channels");
 
-                    b.HasIndex("ChannelTemplateId");
+                    b.HasIndex("ChannelTemplateId")
+                        .HasDatabaseName("ix_job_posting_channels_channel_template_id");
 
-                    b.HasIndex("ChannelTypeLookupValueId");
+                    b.HasIndex("ChannelTypeLookupValueId")
+                        .HasDatabaseName("ix_job_posting_channels_channel_type_lookup_value_id");
 
-                    b.HasIndex("JobId");
+                    b.HasIndex("JobId")
+                        .HasDatabaseName("ix_job_posting_channels_job_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_job_posting_channels_status_lookup_value_id");
 
-                    b.ToTable("JobPostingChannels", "hr");
+                    b.ToTable("job_posting_channels", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.JobTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid?>("DesignationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("designation_id");
 
                     b.Property<string>("EducationRequirements")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("education_requirements");
 
                     b.Property<string>("EmploymentType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("employment_type");
 
                     b.Property<Guid?>("GradeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("grade_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid?>("JobFamilyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_family_id");
 
                     b.Property<Guid?>("JobFunctionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_function_id");
 
                     b.Property<string>("JobTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("job_title");
 
                     b.Property<string>("LanguagesRequired")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("languages_required");
 
                     b.Property<string>("LegacySourceSystem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_source_system");
 
                     b.Property<string>("LegacyTemplateId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_template_id");
 
                     b.Property<decimal?>("MaxExperienceYears")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("max_experience_years");
 
                     b.Property<decimal?>("MinExperienceYears")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("min_experience_years");
 
                     b.Property<Guid?>("ParentTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_template_id");
 
                     b.Property<Guid?>("PositionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("position_id");
 
                     b.Property<string>("PreferredSkills")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("preferred_skills");
 
                     b.Property<string>("RemoteType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("remote_type");
 
                     b.Property<string>("RequiredSkills")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("required_skills");
 
                     b.Property<string>("Requirements")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("requirements");
 
                     b.Property<string>("Responsibilities")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("responsibilities");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid?>("ShiftId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("shift_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TemplateCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("template_code");
 
                     b.Property<string>("TemplateName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("template_name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("VersionNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version_number");
 
                     b.Property<string>("WorkerCategory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("worker_category");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_job_templates");
 
-                    b.HasIndex("DesignationId");
+                    b.HasIndex("DesignationId")
+                        .HasDatabaseName("ix_job_templates_designation_id");
 
-                    b.HasIndex("GradeId");
+                    b.HasIndex("GradeId")
+                        .HasDatabaseName("ix_job_templates_grade_id");
 
-                    b.HasIndex("JobFamilyId");
+                    b.HasIndex("JobFamilyId")
+                        .HasDatabaseName("ix_job_templates_job_family_id");
 
-                    b.HasIndex("JobFunctionId");
+                    b.HasIndex("JobFunctionId")
+                        .HasDatabaseName("ix_job_templates_job_function_id");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex("PositionId")
+                        .HasDatabaseName("ix_job_templates_position_id");
 
-                    b.HasIndex("ShiftId");
+                    b.HasIndex("ShiftId")
+                        .HasDatabaseName("ix_job_templates_shift_id");
 
-                    b.ToTable("JobTemplates", "hr");
+                    b.ToTable("job_templates", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.LookupType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("EntityName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("entity_name");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsSystem")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_system");
 
                     b.Property<string>("ModuleName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("module_name");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_lookup_types");
 
-                    b.ToTable("LookupTypes", "hr");
+                    b.ToTable("lookup_types", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.LookupValue", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("EffectiveFrom")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("effective_from");
 
                     b.Property<DateTime?>("EffectiveTo")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("effective_to");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_default");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsTerminal")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_terminal");
 
                     b.Property<Guid>("LookupTypeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("lookup_type_id");
 
                     b.Property<string>("MetadataJson")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("metadata_json");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
                     b.Property<Guid?>("ParentLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_lookup_value_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_lookup_values");
 
-                    b.HasIndex("LookupTypeId");
+                    b.HasIndex("LookupTypeId")
+                        .HasDatabaseName("ix_lookup_values_lookup_type_id");
 
-                    b.HasIndex("ParentLookupValueId");
+                    b.HasIndex("ParentLookupValueId")
+                        .HasDatabaseName("ix_lookup_values_parent_lookup_value_id");
 
-                    b.ToTable("LookupValues", "hr");
+                    b.ToTable("lookup_values", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.OfferLetter", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<Guid?>("ApprovalRequestId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("approval_request_id");
 
                     b.Property<decimal>("BaseSalary")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("base_salary");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<Guid>("CandidateResponseLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_response_lookup_value_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid?>("CommunicationTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("communication_template_id");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
-                    b.Property<Guid>("CurrencyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int>("EmploymentType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("employment_type");
 
                     b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expiry_date");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_id");
 
                     b.Property<string>("JobTitle")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("job_title");
 
                     b.Property<int>("NoticePeriodDays")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("notice_period_days");
 
                     b.Property<string>("OfferCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("offer_code");
 
                     b.Property<int>("ProbationPeriodMonths")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("probation_period_months");
 
                     b.Property<Guid>("ReportingManagerEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("reporting_manager_employee_id");
 
                     b.Property<DateTime?>("ResponseDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("response_date");
 
                     b.Property<string>("RevokeReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("revoke_reason");
 
                     b.Property<Guid?>("RevokedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("revoked_by_employee_id");
 
                     b.Property<DateTime?>("RevokedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_date");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid?>("SentByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("sent_by_employee_id");
 
                     b.Property<DateTime?>("SentDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_date");
 
                     b.Property<string>("SentVia")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("sent_via");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_date");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<decimal>("TotalPackage")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_package");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("VersionNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version_number");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_offer_letters");
 
                     b.HasIndex("ApplicationId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_offer_letters_application_id");
 
-                    b.HasIndex("ApprovalRequestId");
+                    b.HasIndex("ApprovalRequestId")
+                        .HasDatabaseName("ix_offer_letters_approval_request_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_offer_letters_candidate_id");
 
-                    b.HasIndex("CandidateResponseLookupValueId");
+                    b.HasIndex("CandidateResponseLookupValueId")
+                        .HasDatabaseName("ix_offer_letters_candidate_response_lookup_value_id");
 
-                    b.HasIndex("CommunicationTemplateId");
+                    b.HasIndex("CommunicationTemplateId")
+                        .HasDatabaseName("ix_offer_letters_communication_template_id");
 
-                    b.HasIndex("CurrencyId");
+                    b.HasIndex("JobId")
+                        .HasDatabaseName("ix_offer_letters_job_id");
 
-                    b.HasIndex("JobId");
+                    b.HasIndex("ReportingManagerEmployeeId")
+                        .HasDatabaseName("ix_offer_letters_reporting_manager_employee_id");
 
-                    b.HasIndex("ReportingManagerEmployeeId");
+                    b.HasIndex("RevokedByEmployeeId")
+                        .HasDatabaseName("ix_offer_letters_revoked_by_employee_id");
 
-                    b.HasIndex("RevokedByEmployeeId");
+                    b.HasIndex("SentByEmployeeId")
+                        .HasDatabaseName("ix_offer_letters_sent_by_employee_id");
 
-                    b.HasIndex("SentByEmployeeId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_offer_letters_status_lookup_value_id");
 
-                    b.HasIndex("StatusLookupValueId");
-
-                    b.ToTable("OfferLetters", "hr");
+                    b.ToTable("offer_letters", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.OfferLetterDetail", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("AllowancesBreakdown")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("allowances_breakdown");
 
                     b.Property<Guid?>("AllowancesProfileId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("allowances_profile_id");
 
                     b.Property<Guid?>("BenefitsPlanId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("benefits_plan_id");
 
                     b.Property<string>("BenefitsSummary")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("benefits_summary");
 
                     b.Property<decimal?>("BonusPercent")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("bonus_percent");
 
                     b.Property<decimal?>("BonusTarget")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("bonus_target");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime?>("CounterSignedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("counter_signed_at");
 
                     b.Property<Guid?>("CounterSignedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("counter_signed_by_employee_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CurrencyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("DigitalSignatureUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("digital_signature_url");
 
                     b.Property<string>("EquityGrant")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("equity_grant");
 
                     b.Property<Guid?>("GradeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("grade_id");
 
                     b.Property<decimal?>("HousingAllowance")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("housing_allowance");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsDigitallySigned")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_digitally_signed");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("LegacyOfferId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_offer_id");
 
                     b.Property<decimal?>("MedicalAllowance")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("medical_allowance");
 
                     b.Property<Guid>("OfferLetterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("offer_letter_id");
 
                     b.Property<decimal?>("OtherAllowances")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("other_allowances");
 
                     b.Property<Guid?>("PayScaleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("pay_scale_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TermsDocumentUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("terms_document_url");
 
                     b.Property<decimal?>("TransportAllowance")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("transport_allowance");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_offer_letter_details");
 
-                    b.HasIndex("AllowancesProfileId");
+                    b.HasIndex("AllowancesProfileId")
+                        .HasDatabaseName("ix_offer_letter_details_allowances_profile_id");
 
-                    b.HasIndex("BenefitsPlanId");
+                    b.HasIndex("BenefitsPlanId")
+                        .HasDatabaseName("ix_offer_letter_details_benefits_plan_id");
 
-                    b.HasIndex("CounterSignedByEmployeeId");
+                    b.HasIndex("CounterSignedByEmployeeId")
+                        .HasDatabaseName("ix_offer_letter_details_counter_signed_by_employee_id");
 
-                    b.HasIndex("CurrencyId");
-
-                    b.HasIndex("GradeId");
+                    b.HasIndex("GradeId")
+                        .HasDatabaseName("ix_offer_letter_details_grade_id");
 
                     b.HasIndex("OfferLetterId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_offer_letter_details_offer_letter_id");
 
-                    b.HasIndex("PayScaleId");
+                    b.HasIndex("PayScaleId")
+                        .HasDatabaseName("ix_offer_letter_details_pay_scale_id");
 
-                    b.ToTable("OfferLetterDetails", "hr");
+                    b.ToTable("offer_letter_details", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.OfferNegotiation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CandidateCompetingCompany")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("candidate_competing_company");
 
                     b.Property<decimal?>("CandidateCompetingOffer")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("candidate_competing_offer");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("CounterOfferNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("counter_offer_notes");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("Deadline")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deadline");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("HRRecommendation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("hr_recommendation");
 
                     b.Property<string>("InitiatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("initiated_by");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<DateTime>("NegotiationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("negotiation_date");
 
                     b.Property<string>("NegotiationReasonCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("negotiation_reason_code");
 
                     b.Property<int>("NegotiationRound")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("negotiation_round");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<Guid>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("offer_id");
 
                     b.Property<decimal?>("PreviousSalary")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("previous_salary");
 
                     b.Property<decimal?>("ProposedSalary")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("proposed_salary");
 
                     b.Property<string>("ProposedTerms")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("proposed_terms");
 
                     b.Property<Guid?>("ReApprovalRequestId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("re_approval_request_id");
 
                     b.Property<bool>("RequiresReApproval")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_re_approval");
 
                     b.Property<DateTime?>("RespondedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("responded_at");
 
                     b.Property<Guid?>("ResponseByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("response_by_employee_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<decimal?>("SalaryDifference")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("salary_difference");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_offer_negotiations");
 
-                    b.HasIndex("OfferId");
+                    b.HasIndex("OfferId")
+                        .HasDatabaseName("ix_offer_negotiations_offer_id");
 
-                    b.HasIndex("ReApprovalRequestId");
+                    b.HasIndex("ReApprovalRequestId")
+                        .HasDatabaseName("ix_offer_negotiations_re_approval_request_id");
 
-                    b.HasIndex("ResponseByEmployeeId");
+                    b.HasIndex("ResponseByEmployeeId")
+                        .HasDatabaseName("ix_offer_negotiations_response_by_employee_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_offer_negotiations_status_lookup_value_id");
 
-                    b.ToTable("OfferNegotiations", "hr");
+                    b.ToTable("offer_negotiations", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.OnboardingTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("application_id");
 
                     b.Property<Guid>("AssignedToEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("assigned_to_employee_id");
 
                     b.Property<string>("BlockedReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("blocked_reason");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("CancelReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("cancel_reason");
 
                     b.Property<DateTime?>("CancelledAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("cancelled_at");
 
                     b.Property<Guid?>("CancelledByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("cancelled_by_employee_id");
 
                     b.Property<Guid?>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("candidate_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<Guid?>("CompletedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("completed_by_employee_id");
 
                     b.Property<DateTime?>("CompletionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completion_date");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid?>("DependsOnTaskId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("depends_on_task_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("DocumentUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("document_url");
 
                     b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("due_date");
 
                     b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("employee_id");
 
                     b.Property<DateTime?>("EscalatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("escalated_at");
 
                     b.Property<bool>("EscalatedFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("escalated_flag");
 
                     b.Property<Guid?>("EscalatedToEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("escalated_to_employee_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsAutoGenerated")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_auto_generated");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsRequired")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_required");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<DateTime?>("LastReminderSentAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_reminder_sent_at");
 
                     b.Property<DateTime?>("ManagerSignOffDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("manager_sign_off_date");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("notes");
 
                     b.Property<Guid?>("OnboardingTaskTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("onboarding_task_template_id");
 
                     b.Property<int>("ReminderSentCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("reminder_sent_count");
 
                     b.Property<bool>("RequiresDocumentUpload")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_document_upload");
 
                     b.Property<bool>("RequiresManagerSignOff")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_manager_sign_off");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int?>("SLABreachHours")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sla_breach_hours");
 
                     b.Property<bool>("SLABreached")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("sla_breached");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<Guid>("StatusLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("status_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TaskCategory")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("task_category");
 
                     b.Property<string>("TaskCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("task_code");
 
                     b.Property<string>("TaskDescription")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("task_description");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("task_name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("verified_at");
 
                     b.Property<Guid?>("VerifiedByEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("verified_by_employee_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_onboarding_tasks");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId")
+                        .HasDatabaseName("ix_onboarding_tasks_application_id");
 
-                    b.HasIndex("AssignedToEmployeeId");
+                    b.HasIndex("AssignedToEmployeeId")
+                        .HasDatabaseName("ix_onboarding_tasks_assigned_to_employee_id");
 
-                    b.HasIndex("CancelledByEmployeeId");
+                    b.HasIndex("CancelledByEmployeeId")
+                        .HasDatabaseName("ix_onboarding_tasks_cancelled_by_employee_id");
 
-                    b.HasIndex("CandidateId");
+                    b.HasIndex("CandidateId")
+                        .HasDatabaseName("ix_onboarding_tasks_candidate_id");
 
-                    b.HasIndex("CompletedByEmployeeId");
+                    b.HasIndex("CompletedByEmployeeId")
+                        .HasDatabaseName("ix_onboarding_tasks_completed_by_employee_id");
 
-                    b.HasIndex("DependsOnTaskId");
+                    b.HasIndex("DependsOnTaskId")
+                        .HasDatabaseName("ix_onboarding_tasks_depends_on_task_id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId")
+                        .HasDatabaseName("ix_onboarding_tasks_employee_id");
 
-                    b.HasIndex("EscalatedToEmployeeId");
+                    b.HasIndex("EscalatedToEmployeeId")
+                        .HasDatabaseName("ix_onboarding_tasks_escalated_to_employee_id");
 
-                    b.HasIndex("OnboardingTaskTemplateId");
+                    b.HasIndex("OnboardingTaskTemplateId")
+                        .HasDatabaseName("ix_onboarding_tasks_onboarding_task_template_id");
 
-                    b.HasIndex("StatusLookupValueId");
+                    b.HasIndex("StatusLookupValueId")
+                        .HasDatabaseName("ix_onboarding_tasks_status_lookup_value_id");
 
-                    b.HasIndex("VerifiedByEmployeeId");
+                    b.HasIndex("VerifiedByEmployeeId")
+                        .HasDatabaseName("ix_onboarding_tasks_verified_by_employee_id");
 
-                    b.ToTable("OnboardingTasks", "hr");
+                    b.ToTable("onboarding_tasks", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.OnboardingTaskTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("ApplicableDepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("applicable_department_id");
 
                     b.Property<Guid?>("ApplicableDesignationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("applicable_designation_id");
 
                     b.Property<string>("ApplicableEmploymentType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("applicable_employment_type");
 
                     b.Property<Guid?>("ApplicableLocationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("applicable_location_id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<string>("DefaultAssigneeRole")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("default_assignee_role");
 
                     b.Property<int>("DefaultDueDaysFromStart")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("default_due_days_from_start");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid?>("DependsOnTemplateId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("depends_on_template_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int?>("EscalateAfterDays")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("escalate_after_days");
 
                     b.Property<string>("EscalateToRole")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("escalate_to_role");
 
                     b.Property<decimal?>("EstimatedHours")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("estimated_hours");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsRequired")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_required");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("LegacyTemplateId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("legacy_template_id");
 
                     b.Property<bool>("NotifyAssigneeOnCreate")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("notify_assignee_on_create");
 
                     b.Property<bool>("NotifyEmployeeOnAssign")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("notify_employee_on_assign");
 
                     b.Property<bool>("RequiresDocumentUpload")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_document_upload");
 
                     b.Property<bool>("RequiresManagerSignoff")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_manager_signoff");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TaskCategory")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("task_category");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("task_name");
 
                     b.Property<string>("TemplateCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("template_code");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_onboarding_task_templates");
 
-                    b.HasIndex("ApplicableDepartmentId");
+                    b.HasIndex("ApplicableDepartmentId")
+                        .HasDatabaseName("ix_onboarding_task_templates_applicable_department_id");
 
-                    b.HasIndex("ApplicableDesignationId");
+                    b.HasIndex("ApplicableDesignationId")
+                        .HasDatabaseName("ix_onboarding_task_templates_applicable_designation_id");
 
-                    b.HasIndex("ApplicableLocationId");
+                    b.HasIndex("ApplicableLocationId")
+                        .HasDatabaseName("ix_onboarding_task_templates_applicable_location_id");
 
-                    b.HasIndex("DependsOnTemplateId");
+                    b.HasIndex("DependsOnTemplateId")
+                        .HasDatabaseName("ix_onboarding_task_templates_depends_on_template_id");
 
-                    b.ToTable("OnboardingTaskTemplates", "hr");
+                    b.ToTable("onboarding_task_templates", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.PayScale", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
-                    b.Property<Guid?>("CurrencyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CurrencyCode")
+                        .HasMaxLength(3)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<decimal?>("MaxAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("max_amount");
 
                     b.Property<decimal?>("MinAmount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("min_amount");
 
                     b.Property<string>("PayScaleCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("pay_scale_code");
 
                     b.Property<string>("PayScaleName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("pay_scale_name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_pay_scales");
 
-                    b.HasIndex("CurrencyId");
-
-                    b.ToTable("PayScales", "hr");
+                    b.ToTable("pay_scales", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Position", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<Guid>("DesignationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("designation_id");
 
                     b.Property<Guid?>("GradeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("grade_id");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<bool>("IsVacant")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_vacant");
 
                     b.Property<Guid?>("JobFamilyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_family_id");
 
                     b.Property<Guid?>("JobFunctionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("job_function_id");
 
                     b.Property<Guid?>("PayScaleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("pay_scale_id");
 
                     b.Property<string>("PositionCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("position_code");
 
                     b.Property<string>("PositionName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("position_name");
 
                     b.Property<Guid?>("ReportsToPositionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("reports_to_position_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid?>("ShiftId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("shift_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_positions");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_positions_department_id");
 
-                    b.HasIndex("DesignationId");
+                    b.HasIndex("DesignationId")
+                        .HasDatabaseName("ix_positions_designation_id");
 
-                    b.HasIndex("GradeId");
+                    b.HasIndex("GradeId")
+                        .HasDatabaseName("ix_positions_grade_id");
 
-                    b.HasIndex("JobFamilyId");
+                    b.HasIndex("JobFamilyId")
+                        .HasDatabaseName("ix_positions_job_family_id");
 
-                    b.HasIndex("JobFunctionId");
+                    b.HasIndex("JobFunctionId")
+                        .HasDatabaseName("ix_positions_job_function_id");
 
-                    b.HasIndex("PayScaleId");
+                    b.HasIndex("PayScaleId")
+                        .HasDatabaseName("ix_positions_pay_scale_id");
 
-                    b.HasIndex("ReportsToPositionId");
+                    b.HasIndex("ReportsToPositionId")
+                        .HasDatabaseName("ix_positions_reports_to_position_id");
 
-                    b.HasIndex("ShiftId");
+                    b.HasIndex("ShiftId")
+                        .HasDatabaseName("ix_positions_shift_id");
 
-                    b.ToTable("Positions", "hr");
+                    b.ToTable("positions", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.ScreeningQuestionnaire", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("QuestionnaireCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("questionnaire_code");
 
                     b.Property<string>("QuestionnaireName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("questionnaire_name");
 
                     b.Property<string>("QuestionsJson")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("questions_json");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("VersionNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version_no");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_screening_questionnaires");
 
-                    b.ToTable("ScreeningQuestionnaires", "hr");
+                    b.ToTable("screening_questionnaires", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Shift", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
+                        .HasColumnType("interval")
+                        .HasColumnName("end_time");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("ShiftCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("shift_code");
 
                     b.Property<string>("ShiftName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("shift_name");
 
                     b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
+                        .HasColumnType("interval")
+                        .HasColumnName("start_time");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("time_zone");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_shifts");
 
-                    b.ToTable("Shifts", "hr");
+                    b.ToTable("shifts", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Skill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsCoreSkill")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_core_skill");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<Guid>("SkillCategoryId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("skill_category_id");
 
                     b.Property<Guid?>("SkillTypeLookupValueId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("skill_type_lookup_value_id");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_skills");
 
-                    b.HasIndex("SkillCategoryId");
+                    b.HasIndex("SkillCategoryId")
+                        .HasDatabaseName("ix_skills_skill_category_id");
 
-                    b.HasIndex("SkillTypeLookupValueId");
+                    b.HasIndex("SkillTypeLookupValueId")
+                        .HasDatabaseName("ix_skills_skill_type_lookup_value_id");
 
-                    b.ToTable("Skills", "hr");
+                    b.ToTable("skills", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.SkillCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_skill_categories");
 
-                    b.ToTable("SkillCategories", "hr");
+                    b.ToTable("skill_categories", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.TalentPool", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<string>("CriteriaJson")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("criteria_json");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<string>("TalentPoolCode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("talent_pool_code");
 
                     b.Property<string>("TalentPoolName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("talent_pool_name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_talent_pools");
 
-                    b.ToTable("TalentPools", "hr");
+                    b.ToTable("talent_pools", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.WorkflowCondition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ActionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("action_type");
 
                     b.Property<string>("ActionValue")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("action_value");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("FieldName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("field_name");
 
                     b.Property<string>("FieldValue")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("field_value");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("JoinOperator")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("join_operator");
 
                     b.Property<int>("LogicalGroup")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("logical_group");
 
                     b.Property<string>("Operator")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("operator");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<Guid>("WorkflowConfigId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("workflow_config_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_workflow_conditions");
 
-                    b.HasIndex("WorkflowConfigId");
+                    b.HasIndex("WorkflowConfigId")
+                        .HasDatabaseName("ix_workflow_conditions_workflow_config_id");
 
-                    b.ToTable("WorkflowConditions", "hr");
+                    b.ToTable("workflow_conditions", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.WorkflowConfig", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<DateTime?>("EffectiveFrom")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("effective_from");
 
                     b.Property<DateTime?>("EffectiveTo")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("effective_to");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<string>("Module")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("module");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<int>("TotalLevels")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("total_levels");
 
                     b.Property<string>("TransactionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("transaction_type");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<int>("VersionNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("version_no");
 
                     b.Property<string>("WorkflowCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("workflow_code");
 
                     b.Property<string>("WorkflowName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("workflow_name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_workflow_configs");
 
-                    b.ToTable("WorkflowConfigs", "hr");
+                    b.ToTable("workflow_configs", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.WorkflowConfigStep", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ApproverType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approver_type");
 
                     b.Property<string>("ApproverValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("approver_value");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("ExecutionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("execution_type");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsConditional")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_conditional");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<int>("LevelNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("level_no");
 
                     b.Property<bool>("Mandatory")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("mandatory");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("SLAHours")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sla_hours");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<Guid>("WorkflowConfigId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("workflow_config_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_workflow_config_steps");
 
-                    b.HasIndex("WorkflowConfigId");
+                    b.HasIndex("WorkflowConfigId")
+                        .HasDatabaseName("ix_workflow_config_steps_workflow_config_id");
 
-                    b.ToTable("WorkflowConfigSteps", "hr");
+                    b.ToTable("workflow_config_steps", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.WorkflowEscalation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ActionTarget")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("action_target");
 
                     b.Property<string>("ActionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("action_type");
 
                     b.Property<int>("AfterHours")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("after_hours");
 
                     b.Property<bool>("AutoApproveFlag")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("auto_approve_flag");
 
                     b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("branch_id");
 
                     b.Property<Guid>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("business_unit_id");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("CodeInt")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("code_int");
 
                     b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by_user_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSynced")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_synced");
 
                     b.Property<int>("ReminderCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("reminder_count");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<DateTime?>("SyncedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("synced_at");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid?>("UpdatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
 
                     b.Property<Guid>("WorkflowConfigStepId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("workflow_config_step_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_workflow_escalations");
 
-                    b.HasIndex("WorkflowConfigStepId");
+                    b.HasIndex("WorkflowConfigStepId")
+                        .HasDatabaseName("ix_workflow_escalations_workflow_config_step_id");
 
-                    b.ToTable("WorkflowEscalations", "hr");
+                    b.ToTable("workflow_escalations", "hr");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Application", b =>
@@ -6819,46 +8957,54 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Employee", "AssignedRecruiterEmployee")
                         .WithMany()
                         .HasForeignKey("AssignedRecruiterEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_applications_employees_assigned_recruiter_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany("Applications")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_applications_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ConvertedToEmployee")
                         .WithMany()
                         .HasForeignKey("ConvertedToEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_applications_employees_converted_to_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "CurrentStageLookupValue")
                         .WithMany()
                         .HasForeignKey("CurrentStageLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_applications_lookup_values_current_stage_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Job", "Job")
                         .WithMany("Applications")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_applications_jobs_job_id");
 
                     b.HasOne("Hr.Domain.Entities.JobPostingChannel", "JobPostingChannel")
                         .WithMany()
                         .HasForeignKey("JobPostingChannelId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_applications_job_posting_channels_job_posting_channel_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "PriorityLookupValue")
                         .WithMany()
                         .HasForeignKey("PriorityLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_applications_lookup_values_priority_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_applications_lookup_values_status_lookup_value_id");
 
                     b.Navigation("AssignedRecruiterEmployee");
 
@@ -6883,15 +9029,18 @@ namespace Hr.Infrastructure.Migrations
                         .WithOne("Compliance")
                         .HasForeignKey("Hr.Domain.Entities.ApplicationCompliance", "ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_application_compliances_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "BackgroundCheckStatusLookupValue")
                         .WithMany()
-                        .HasForeignKey("BackgroundCheckStatusLookupValueId");
+                        .HasForeignKey("BackgroundCheckStatusLookupValueId")
+                        .HasConstraintName("fk_application_compliances_lookup_values_background_check_statu");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "DrugTestStatusLookupValue")
                         .WithMany()
-                        .HasForeignKey("DrugTestStatusLookupValueId");
+                        .HasForeignKey("DrugTestStatusLookupValueId")
+                        .HasConstraintName("fk_application_compliances_lookup_values_drug_test_status_looku");
 
                     b.Navigation("Application");
 
@@ -6906,43 +9055,53 @@ namespace Hr.Infrastructure.Migrations
                         .WithOne("Detail")
                         .HasForeignKey("Hr.Domain.Entities.ApplicationDetail", "ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_application_details_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "AssignedHiringManagerEmployee")
                         .WithMany()
-                        .HasForeignKey("AssignedHiringManagerEmployeeId");
+                        .HasForeignKey("AssignedHiringManagerEmployeeId")
+                        .HasConstraintName("fk_application_details_employees_assigned_hiring_manager_emplo");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "LastContactedByEmployee")
                         .WithMany()
-                        .HasForeignKey("LastContactedByEmployeeId");
+                        .HasForeignKey("LastContactedByEmployeeId")
+                        .HasConstraintName("fk_application_details_employees_last_contacted_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "RejectionReasonLookupValue")
                         .WithMany()
-                        .HasForeignKey("RejectionReasonLookupValueId");
+                        .HasForeignKey("RejectionReasonLookupValueId")
+                        .HasConstraintName("fk_application_details_lookup_values_rejection_reason_lookup_va");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "RejectionSentByEmployee")
                         .WithMany()
-                        .HasForeignKey("RejectionSentByEmployeeId");
+                        .HasForeignKey("RejectionSentByEmployeeId")
+                        .HasConstraintName("fk_application_details_employees_rejection_sent_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ReviewedByEmployee")
                         .WithMany()
-                        .HasForeignKey("ReviewedByEmployeeId");
+                        .HasForeignKey("ReviewedByEmployeeId")
+                        .HasConstraintName("fk_application_details_employees_reviewed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ScreeningCompletedByEmployee")
                         .WithMany()
-                        .HasForeignKey("ScreeningCompletedByEmployeeId");
+                        .HasForeignKey("ScreeningCompletedByEmployeeId")
+                        .HasConstraintName("fk_application_details_employees_screening_completed_by_employ");
 
                     b.HasOne("Hr.Domain.Entities.ScreeningQuestionnaire", "ScreeningQuestionnaire")
                         .WithMany("ApplicationDetails")
-                        .HasForeignKey("ScreeningQuestionnaireId");
+                        .HasForeignKey("ScreeningQuestionnaireId")
+                        .HasConstraintName("fk_application_details_screening_questionnaires_screening_quest");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ScreeningStatusLookupValue")
                         .WithMany()
-                        .HasForeignKey("ScreeningStatusLookupValueId");
+                        .HasForeignKey("ScreeningStatusLookupValueId")
+                        .HasConstraintName("fk_application_details_lookup_values_screening_status_lookup_va");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "WithdrawalReasonLookupValue")
                         .WithMany()
-                        .HasForeignKey("WithdrawalReasonLookupValueId");
+                        .HasForeignKey("WithdrawalReasonLookupValueId")
+                        .HasConstraintName("fk_application_details_lookup_values_withdrawal_reason_lookup_v");
 
                     b.Navigation("Application");
 
@@ -6971,25 +9130,29 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("OverallStatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_requests_lookup_values_overall_status_lookup_value_");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "PriorityLookupValue")
                         .WithMany()
                         .HasForeignKey("PriorityLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_requests_lookup_values_priority_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "RequestedByEmployee")
                         .WithMany()
                         .HasForeignKey("RequestedByEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_requests_employees_requested_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.WorkflowConfig", "WorkflowConfig")
                         .WithMany("ApprovalRequests")
                         .HasForeignKey("WorkflowConfigId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_requests_workflow_configs_workflow_config_id");
 
                     b.Navigation("OverallStatusLookupValue");
 
@@ -7006,34 +9169,40 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Steps")
                         .HasForeignKey("ApprovalRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_request_steps_approval_requests_approval_request_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ApproverEmployee")
                         .WithMany()
                         .HasForeignKey("ApproverEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_approval_request_steps_employees_approver_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "DelegatedToEmployee")
                         .WithMany()
                         .HasForeignKey("DelegatedToEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_approval_request_steps_employees_delegated_to_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "EscalatedToEmployee")
                         .WithMany()
                         .HasForeignKey("EscalatedToEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_approval_request_steps_employees_escalated_to_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_request_steps_lookup_values_status_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.WorkflowConfigStep", "WorkflowConfigStep")
                         .WithMany()
                         .HasForeignKey("WorkflowConfigStepId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_approval_request_steps_workflow_config_steps_workfl_a435c2a4");
 
                     b.Navigation("ApprovalRequest");
 
@@ -7053,28 +9222,28 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Application", "Application")
                         .WithMany("CallLogs")
                         .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_call_logs_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "CalledByEmployee")
                         .WithMany()
                         .HasForeignKey("CalledByEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_call_logs_employees_called_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany("CallLogs")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_call_logs_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.CommunicationTemplate", "CommunicationTemplate")
-                        .WithMany()
-                        .HasForeignKey("CommunicationTemplateId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Hr.Domain.Entities.CommunicationTemplate", null)
                         .WithMany("CallLogs")
-                        .HasForeignKey("CommunicationTemplateId1");
+                        .HasForeignKey("CommunicationTemplateId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_call_logs_communication_templates_communication_template_id");
 
                     b.Navigation("Application");
 
@@ -7090,27 +9259,32 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.LookupValue", "BlacklistReasonLookupValue")
                         .WithMany()
                         .HasForeignKey("BlacklistReasonLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidates_lookup_values_blacklist_reason_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "BlacklistedByEmployee")
                         .WithMany()
                         .HasForeignKey("BlacklistedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidates_employees_blacklisted_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Designation", "CurrentDesignation")
                         .WithMany()
                         .HasForeignKey("CurrentDesignationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidates_designations_current_designation_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "DuplicateOfCandidate")
                         .WithMany()
                         .HasForeignKey("DuplicateOfCandidateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidates_candidates_duplicate_of_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "MergedIntoCandidate")
                         .WithMany()
                         .HasForeignKey("MergedIntoCandidateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidates_candidates_merged_into_candidate_id");
 
                     b.Navigation("BlacklistReasonLookupValue");
 
@@ -7129,13 +9303,15 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("AddressTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_addresses_lookup_values_address_type_lookup_value_");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany("Addresses")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_addresses_candidates_candidate_id");
 
                     b.Navigation("AddressTypeLookupValue");
 
@@ -7148,13 +9324,15 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Contacts")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_contacts_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ContactTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("ContactTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_contacts_lookup_values_contact_type_looku_ba8c8bc4");
 
                     b.Navigation("Candidate");
 
@@ -7167,13 +9345,15 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("MediaLinks")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_media_links_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "MediaTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("MediaTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_media_links_lookup_values_media_type_lookup_value_");
 
                     b.Navigation("Candidate");
 
@@ -7185,32 +9365,33 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Employee", "BlacklistRemovedByEmployee")
                         .WithMany()
                         .HasForeignKey("BlacklistRemovedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidate_profiles_employees_blacklist_removed_by_employee_");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithOne("Profile")
                         .HasForeignKey("Hr.Domain.Entities.CandidateProfile", "CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_profiles_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "MergedIntoCandidate")
                         .WithMany()
                         .HasForeignKey("MergedIntoCandidateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidate_profiles_candidates_merged_into_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "TalentPoolAddedByEmployee")
                         .WithMany()
                         .HasForeignKey("TalentPoolAddedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidate_profiles_employees_talent_pool_added_by_employee_");
 
                     b.HasOne("Hr.Domain.Entities.TalentPool", "TalentPool")
-                        .WithMany()
-                        .HasForeignKey("TalentPoolId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Hr.Domain.Entities.TalentPool", null)
                         .WithMany("CandidateProfiles")
-                        .HasForeignKey("TalentPoolId1");
+                        .HasForeignKey("TalentPoolId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidate_profiles_talent_pools_talent_pool_id");
 
                     b.Navigation("BlacklistRemovedByEmployee");
 
@@ -7229,24 +9410,28 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("CandidateSkills")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_skills_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ProficiencyLookupValue")
                         .WithMany()
                         .HasForeignKey("ProficiencyLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_skills_lookup_values_proficiency_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Skill", "Skill")
                         .WithMany("CandidateSkills")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_skills_skills_skill_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "VerifiedByEmployee")
                         .WithMany()
                         .HasForeignKey("VerifiedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidate_skills_employees_verified_by_employee_id");
 
                     b.Navigation("Candidate");
 
@@ -7263,30 +9448,35 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("StageHistories")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_stage_histories_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany("StageHistories")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_stage_histories_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ChangedByEmployee")
                         .WithMany()
                         .HasForeignKey("ChangedByEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_stage_histories_employees_changed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "FromStageLookupValue")
                         .WithMany()
                         .HasForeignKey("FromStageLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_candidate_stage_histories_lookup_values_from_stage_lookup_va");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ToStageLookupValue")
                         .WithMany()
                         .HasForeignKey("ToStageLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_stage_histories_lookup_values_to_stage_lookup_valu");
 
                     b.Navigation("Application");
 
@@ -7305,37 +9495,43 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Tasks")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_tasks_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "AssignedByEmployee")
                         .WithMany()
                         .HasForeignKey("AssignedByEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_tasks_employees_assigned_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_tasks_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Job", "Job")
                         .WithMany()
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_tasks_jobs_job_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_tasks_lookup_values_status_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "TaskTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("TaskTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_tasks_lookup_values_task_type_lookup_value_id");
 
                     b.Navigation("Application");
 
@@ -7356,25 +9552,29 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Evaluations")
                         .HasForeignKey("CandidateTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_evaluations_candidate_tasks_candidate_task_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "EvaluatedByEmployee")
                         .WithMany()
                         .HasForeignKey("EvaluatedByEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_evaluations_employees_evaluated_by_employee_");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ResultLookupValue")
                         .WithMany()
                         .HasForeignKey("ResultLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_evaluations_lookup_values_result_lookup_value");
 
                     b.HasOne("Hr.Domain.Entities.CandidateTaskSubmission", "Submission")
                         .WithMany("Evaluations")
                         .HasForeignKey("SubmissionId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_evaluations_candidate_task_submissio_fe4ea1f5");
 
                     b.Navigation("CandidateTask");
 
@@ -7391,25 +9591,29 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_submissions_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_submissions_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.CandidateTask", "CandidateTask")
                         .WithMany("Submissions")
                         .HasForeignKey("CandidateTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_submissions_candidate_tasks_candidate_task_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_candidate_task_submissions_lookup_values_status_lookup_value");
 
                     b.Navigation("Application");
 
@@ -7426,12 +9630,14 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ChannelTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_channel_templates_lookup_values_channel_type_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "DefaultStatusLookupValue")
                         .WithMany()
                         .HasForeignKey("DefaultStatusLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_channel_templates_lookup_values_default_status_lookup_value_");
 
                     b.Navigation("ChannelTypeLookupValue");
 
@@ -7444,7 +9650,8 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("TemplateTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_communication_templates_lookup_values_template_type_lookup_v");
 
                     b.Navigation("TemplateTypeLookupValue");
                 });
@@ -7453,7 +9660,8 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.JobFamily", null)
                         .WithMany("CompetencyFrameworks")
-                        .HasForeignKey("JobFamilyId");
+                        .HasForeignKey("JobFamilyId")
+                        .HasConstraintName("fk_competency_frameworks_job_families_job_family_id");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.CompetencyFrameworkItem", b =>
@@ -7462,13 +9670,15 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Items")
                         .HasForeignKey("CompetencyFrameworkId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_competency_framework_items_competency_frameworks_competency");
 
                     b.HasOne("Hr.Domain.Entities.Skill", "Skill")
                         .WithMany("CompetencyFrameworkItems")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_competency_framework_items_skills_skill_id");
 
                     b.Navigation("CompetencyFramework");
 
@@ -7480,12 +9690,14 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Employee", "BudgetOwnerEmployee")
                         .WithMany()
                         .HasForeignKey("BudgetOwnerEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_cost_centers_employees_budget_owner_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_cost_centers_departments_department_id");
 
                     b.Navigation("BudgetOwnerEmployee");
 
@@ -7497,17 +9709,20 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.CostCenter", "CostCenter")
                         .WithMany()
                         .HasForeignKey("CostCenterId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_departments_cost_centers_cost_center_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "DepartmentHeadEmployee")
                         .WithMany()
                         .HasForeignKey("DepartmentHeadEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_departments_employees_department_head_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Department", "ParentDepartment")
                         .WithMany("ChildDepartments")
                         .HasForeignKey("ParentDepartmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_departments_departments_parent_department_id");
 
                     b.Navigation("CostCenter");
 
@@ -7520,22 +9735,26 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.Department", null)
                         .WithMany("Designations")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .HasConstraintName("fk_designations_departments_department_id");
 
                     b.HasOne("Hr.Domain.Entities.Grade", "Grade")
                         .WithMany("Designations")
                         .HasForeignKey("GradeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_designations_grades_grade_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFamily", "JobFamily")
                         .WithMany("Designations")
                         .HasForeignKey("JobFamilyId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_designations_job_families_job_family_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFunction", "JobFunction")
                         .WithMany("Designations")
                         .HasForeignKey("JobFunctionId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_designations_job_functions_job_function_id");
 
                     b.Navigation("Grade");
 
@@ -7549,31 +9768,37 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_employees_departments_department_id");
 
                     b.HasOne("Hr.Domain.Entities.Designation", "Designation")
                         .WithMany("Employees")
                         .HasForeignKey("DesignationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_employees_designations_designation_id");
 
                     b.HasOne("Hr.Domain.Entities.JobLocation", "JobLocation")
                         .WithMany("Employees")
                         .HasForeignKey("JobLocationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_employees_job_locations_job_location_id");
 
                     b.HasOne("Hr.Domain.Entities.Position", "Position")
                         .WithMany("Employees")
                         .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_employees_positions_position_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ReportingManager")
                         .WithMany("DirectReports")
                         .HasForeignKey("ReportingManagerId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_employees_employees_reporting_manager_id");
 
                     b.HasOne("Hr.Domain.Entities.Shift", null)
                         .WithMany("Employees")
-                        .HasForeignKey("ShiftId");
+                        .HasForeignKey("ShiftId")
+                        .HasConstraintName("fk_employees_shifts_shift_id");
 
                     b.Navigation("Department");
 
@@ -7592,46 +9817,54 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Interviews")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviews_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviews_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "DecisionLookupValue")
                         .WithMany()
                         .HasForeignKey("DecisionLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interviews_lookup_values_decision_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.InterviewFeedbackTemplate", "InterviewFeedbackTemplate")
                         .WithMany()
                         .HasForeignKey("InterviewFeedbackTemplateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interviews_interview_feedback_templates_interview_f_e223e41f");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "InterviewTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("InterviewTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviews_lookup_values_interview_type_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Job", "Job")
                         .WithMany()
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviews_jobs_job_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ProposedByEmployee")
                         .WithMany()
                         .HasForeignKey("ProposedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interviews_employees_proposed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviews_lookup_values_status_lookup_value_id");
 
                     b.Navigation("Application");
 
@@ -7656,41 +9889,48 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_feedbacks_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_feedbacks_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "DecisionLookupValue")
                         .WithMany()
                         .HasForeignKey("DecisionLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interview_feedbacks_lookup_values_decision_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Interview", "Interview")
                         .WithMany("Feedbacks")
                         .HasForeignKey("InterviewId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_feedbacks_interviews_interview_id");
 
                     b.HasOne("Hr.Domain.Entities.InterviewPanelMember", "PanelMember")
                         .WithMany()
                         .HasForeignKey("PanelMemberId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_feedbacks_interview_panel_members_panel_member_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "RecommendationLookupValue")
                         .WithMany()
                         .HasForeignKey("RecommendationLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interview_feedbacks_lookup_values_recommendation_lookup_valu");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "SubmittedByEmployee")
                         .WithMany()
                         .HasForeignKey("SubmittedByEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_feedbacks_employees_submitted_by_employee_id");
 
                     b.Navigation("Application");
 
@@ -7711,53 +9951,57 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.JobFamily", null)
                         .WithMany("InterviewFeedbackTemplates")
-                        .HasForeignKey("JobFamilyId");
+                        .HasForeignKey("JobFamilyId")
+                        .HasConstraintName("fk_interview_feedback_templates_job_families_job_family_id");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.InterviewNotification", b =>
                 {
                     b.HasOne("Hr.Domain.Entities.CommunicationTemplate", "CommunicationTemplate")
-                        .WithMany()
-                        .HasForeignKey("CommunicationTemplateId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Hr.Domain.Entities.CommunicationTemplate", null)
                         .WithMany("InterviewNotifications")
-                        .HasForeignKey("CommunicationTemplateId1");
+                        .HasForeignKey("CommunicationTemplateId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interview_notifications_communication_templates_communicati");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "DeliveryStatusLookupValue")
                         .WithMany()
                         .HasForeignKey("DeliveryStatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_notifications_lookup_values_delivery_status_lookup");
 
                     b.HasOne("Hr.Domain.Entities.Interview", "Interview")
                         .WithMany("Notifications")
                         .HasForeignKey("InterviewId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_notifications_interviews_interview_id");
 
                     b.HasOne("Hr.Domain.Entities.InterviewPanelMember", "PanelMember")
                         .WithMany()
                         .HasForeignKey("InterviewPanelMemberId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interview_notifications_interview_panel_members_int_636648d5");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "NotificationTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("NotificationTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_notifications_lookup_values_notification_type_look");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "RecipientEmployee")
                         .WithMany()
                         .HasForeignKey("RecipientEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_notifications_employees_recipient_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ResponseActionLookupValue")
                         .WithMany()
                         .HasForeignKey("ResponseActionLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interview_notifications_lookup_values_response_action_lookup");
 
                     b.Navigation("CommunicationTemplate");
 
@@ -7779,25 +10023,29 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Employee", "AlternateInterviewerEmployee")
                         .WithMany()
                         .HasForeignKey("AlternateInterviewerEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interview_panel_members_employees_alternate_interviewer_emp");
 
                     b.HasOne("Hr.Domain.Entities.Interview", "Interview")
                         .WithMany("PanelMembers")
                         .HasForeignKey("InterviewId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_panel_members_interviews_interview_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "InterviewerEmployee")
                         .WithMany()
                         .HasForeignKey("InterviewerEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_panel_members_employees_interviewer_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "InviteStatusLookupValue")
                         .WithMany()
                         .HasForeignKey("InviteStatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interview_panel_members_lookup_values_invite_status_lookup_v");
 
                     b.Navigation("AlternateInterviewerEmployee");
 
@@ -7813,19 +10061,22 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.Interview", "Interview")
                         .WithMany("InterviewerAvailabilities")
                         .HasForeignKey("InterviewId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_interviewer_availabilities_interviews_interview_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "InterviewerEmployee")
                         .WithMany()
                         .HasForeignKey("InterviewerEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviewer_availabilities_employees_interviewer_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "SlotStatusLookupValue")
                         .WithMany()
                         .HasForeignKey("SlotStatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_interviewer_availabilities_lookup_values_slot_status_lookup_");
 
                     b.Navigation("Interview");
 
@@ -7839,65 +10090,67 @@ namespace Hr.Infrastructure.Migrations
                     b.HasOne("Hr.Domain.Entities.ApprovalRequest", "ApprovalRequest")
                         .WithMany()
                         .HasForeignKey("ApprovalRequestId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_jobs_approval_requests_approval_request_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ClosedByEmployee")
                         .WithMany()
                         .HasForeignKey("ClosedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Hr.Domain.Entities.Currency", "Currency")
-                        .WithMany("Jobs")
-                        .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasConstraintName("fk_jobs_employees_closed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_jobs_departments_department_id");
 
                     b.HasOne("Hr.Domain.Entities.Designation", "Designation")
                         .WithMany()
                         .HasForeignKey("DesignationId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_jobs_designations_designation_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "HiringManagerEmployee")
                         .WithMany()
                         .HasForeignKey("HiringManagerEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_jobs_employees_hiring_manager_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.JobTemplate", null)
                         .WithMany("Jobs")
-                        .HasForeignKey("JobTemplateId");
+                        .HasForeignKey("JobTemplateId")
+                        .HasConstraintName("fk_jobs_job_templates_job_template_id");
 
                     b.HasOne("Hr.Domain.Entities.Job", "ParentJob")
                         .WithMany("ChildJobs")
                         .HasForeignKey("ParentJobId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_jobs_jobs_parent_job_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "PriorityLookupValue")
                         .WithMany()
                         .HasForeignKey("PriorityLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_jobs_lookup_values_priority_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "RecruiterEmployee")
                         .WithMany()
                         .HasForeignKey("RecruiterEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_jobs_employees_recruiter_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_jobs_lookup_values_status_lookup_value_id");
 
                     b.Navigation("ApprovalRequest");
 
                     b.Navigation("ClosedByEmployee");
-
-                    b.Navigation("Currency");
 
                     b.Navigation("Department");
 
@@ -7918,65 +10171,80 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.AllowancesProfile", "AllowancesProfile")
                         .WithMany()
-                        .HasForeignKey("AllowancesProfileId");
+                        .HasForeignKey("AllowancesProfileId")
+                        .HasConstraintName("fk_job_details_allowances_profiles_allowances_profile_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ClosedByEmployee")
                         .WithMany()
-                        .HasForeignKey("ClosedByEmployeeId");
+                        .HasForeignKey("ClosedByEmployeeId")
+                        .HasConstraintName("fk_job_details_employees_closed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.CostCenter", "CostCenter")
                         .WithMany()
-                        .HasForeignKey("CostCenterId");
+                        .HasForeignKey("CostCenterId")
+                        .HasConstraintName("fk_job_details_cost_centers_cost_center_id");
 
                     b.HasOne("Hr.Domain.Entities.Grade", "Grade")
                         .WithMany()
-                        .HasForeignKey("GradeId");
+                        .HasForeignKey("GradeId")
+                        .HasConstraintName("fk_job_details_grades_grade_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFamily", "JobFamily")
                         .WithMany()
-                        .HasForeignKey("JobFamilyId");
+                        .HasForeignKey("JobFamilyId")
+                        .HasConstraintName("fk_job_details_job_families_job_family_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFunction", "JobFunction")
                         .WithMany()
-                        .HasForeignKey("JobFunctionId");
+                        .HasForeignKey("JobFunctionId")
+                        .HasConstraintName("fk_job_details_job_functions_job_function_id");
 
                     b.HasOne("Hr.Domain.Entities.Job", "Job")
                         .WithOne("Detail")
                         .HasForeignKey("Hr.Domain.Entities.JobDetail", "JobId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_job_details_jobs_job_id");
 
                     b.HasOne("Hr.Domain.Entities.JobLocation", "JobLocation")
                         .WithMany()
-                        .HasForeignKey("JobLocationId");
+                        .HasForeignKey("JobLocationId")
+                        .HasConstraintName("fk_job_details_job_locations_job_location_id");
 
                     b.HasOne("Hr.Domain.Entities.JobTemplate", "JobTemplate")
                         .WithMany()
-                        .HasForeignKey("JobTemplateId");
+                        .HasForeignKey("JobTemplateId")
+                        .HasConstraintName("fk_job_details_job_templates_job_template_id");
 
                     b.HasOne("Hr.Domain.Entities.PayScale", "PayScale")
                         .WithMany()
-                        .HasForeignKey("PayScaleId");
+                        .HasForeignKey("PayScaleId")
+                        .HasConstraintName("fk_job_details_pay_scales_pay_scale_id");
 
                     b.HasOne("Hr.Domain.Entities.Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("PositionId")
+                        .HasConstraintName("fk_job_details_positions_position_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ReplacedEmployee")
                         .WithMany()
-                        .HasForeignKey("ReplacedEmployeeId");
+                        .HasForeignKey("ReplacedEmployeeId")
+                        .HasConstraintName("fk_job_details_employees_replaced_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ReportingManagerEmployee")
                         .WithMany()
-                        .HasForeignKey("ReportingManagerEmployeeId");
+                        .HasForeignKey("ReportingManagerEmployeeId")
+                        .HasConstraintName("fk_job_details_employees_reporting_manager_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.ScreeningQuestionnaire", "ScreeningQuestionnaire")
                         .WithMany("JobDetails")
-                        .HasForeignKey("ScreeningQuestionnaireId");
+                        .HasForeignKey("ScreeningQuestionnaireId")
+                        .HasConstraintName("fk_job_details_screening_questionnaires_screening_questionnaire");
 
                     b.HasOne("Hr.Domain.Entities.Shift", "Shift")
                         .WithMany()
-                        .HasForeignKey("ShiftId");
+                        .HasForeignKey("ShiftId")
+                        .HasConstraintName("fk_job_details_shifts_shift_id");
 
                     b.Navigation("AllowancesProfile");
 
@@ -8015,25 +10283,29 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("JobPostingChannels")
                         .HasForeignKey("ChannelTemplateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_job_posting_channels_channel_templates_channel_template_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ChannelTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("ChannelTypeLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_job_posting_channels_lookup_values_channel_type_lookup_value");
 
                     b.HasOne("Hr.Domain.Entities.Job", "Job")
                         .WithMany("PostingChannels")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_job_posting_channels_jobs_job_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_job_posting_channels_lookup_values_status_lookup_value_id");
 
                     b.Navigation("ChannelTemplate");
 
@@ -8048,27 +10320,33 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.Designation", null)
                         .WithMany("JobTemplates")
-                        .HasForeignKey("DesignationId");
+                        .HasForeignKey("DesignationId")
+                        .HasConstraintName("fk_job_templates_designations_designation_id");
 
                     b.HasOne("Hr.Domain.Entities.Grade", null)
                         .WithMany("JobTemplates")
-                        .HasForeignKey("GradeId");
+                        .HasForeignKey("GradeId")
+                        .HasConstraintName("fk_job_templates_grades_grade_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFamily", null)
                         .WithMany("JobTemplates")
-                        .HasForeignKey("JobFamilyId");
+                        .HasForeignKey("JobFamilyId")
+                        .HasConstraintName("fk_job_templates_job_families_job_family_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFunction", null)
                         .WithMany("JobTemplates")
-                        .HasForeignKey("JobFunctionId");
+                        .HasForeignKey("JobFunctionId")
+                        .HasConstraintName("fk_job_templates_job_functions_job_function_id");
 
                     b.HasOne("Hr.Domain.Entities.Position", null)
                         .WithMany("JobTemplates")
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("PositionId")
+                        .HasConstraintName("fk_job_templates_positions_position_id");
 
                     b.HasOne("Hr.Domain.Entities.Shift", null)
                         .WithMany("JobTemplates")
-                        .HasForeignKey("ShiftId");
+                        .HasForeignKey("ShiftId")
+                        .HasConstraintName("fk_job_templates_shifts_shift_id");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.LookupValue", b =>
@@ -8077,12 +10355,14 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Values")
                         .HasForeignKey("LookupTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_lookup_values_lookup_types_lookup_type_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "ParentLookupValue")
                         .WithMany("Children")
                         .HasForeignKey("ParentLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_lookup_values_lookup_values_parent_lookup_value_id");
 
                     b.Navigation("LookupType");
 
@@ -8095,63 +10375,67 @@ namespace Hr.Infrastructure.Migrations
                         .WithOne("Offer")
                         .HasForeignKey("Hr.Domain.Entities.OfferLetter", "ApplicationId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letters_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.ApprovalRequest", "ApprovalRequest")
                         .WithMany()
                         .HasForeignKey("ApprovalRequestId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_offer_letters_approval_requests_approval_request_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letters_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "CandidateResponseLookupValue")
                         .WithMany()
                         .HasForeignKey("CandidateResponseLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letters_lookup_values_candidate_response_lookup_value");
 
                     b.HasOne("Hr.Domain.Entities.CommunicationTemplate", "CommunicationTemplate")
                         .WithMany("OfferLetters")
                         .HasForeignKey("CommunicationTemplateId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Hr.Domain.Entities.Currency", "Currency")
-                        .WithMany("OfferLetters")
-                        .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasConstraintName("fk_offer_letters_communication_templates_communication_templat");
 
                     b.HasOne("Hr.Domain.Entities.Job", "Job")
                         .WithMany()
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letters_jobs_job_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ReportingManagerEmployee")
                         .WithMany()
                         .HasForeignKey("ReportingManagerEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letters_employees_reporting_manager_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "RevokedByEmployee")
                         .WithMany()
                         .HasForeignKey("RevokedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_offer_letters_employees_revoked_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "SentByEmployee")
                         .WithMany()
                         .HasForeignKey("SentByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_offer_letters_employees_sent_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letters_lookup_values_status_lookup_value_id");
 
                     b.Navigation("Application");
 
@@ -8162,8 +10446,6 @@ namespace Hr.Infrastructure.Migrations
                     b.Navigation("CandidateResponseLookupValue");
 
                     b.Navigation("CommunicationTemplate");
-
-                    b.Navigation("Currency");
 
                     b.Navigation("Job");
 
@@ -8180,33 +10462,35 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.AllowancesProfile", "AllowancesProfile")
                         .WithMany("OfferLetterDetails")
-                        .HasForeignKey("AllowancesProfileId");
+                        .HasForeignKey("AllowancesProfileId")
+                        .HasConstraintName("fk_offer_letter_details_allowances_profiles_allowances_profile");
 
                     b.HasOne("Hr.Domain.Entities.BenefitsPlan", "BenefitsPlan")
                         .WithMany("OfferLetterDetails")
-                        .HasForeignKey("BenefitsPlanId");
+                        .HasForeignKey("BenefitsPlanId")
+                        .HasConstraintName("fk_offer_letter_details_benefits_plans_benefits_plan_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "CounterSignedByEmployee")
                         .WithMany()
-                        .HasForeignKey("CounterSignedByEmployeeId");
-
-                    b.HasOne("Hr.Domain.Entities.Currency", null)
-                        .WithMany("OfferLetterDetails")
-                        .HasForeignKey("CurrencyId");
+                        .HasForeignKey("CounterSignedByEmployeeId")
+                        .HasConstraintName("fk_offer_letter_details_employees_counter_signed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Grade", "Grade")
                         .WithMany()
-                        .HasForeignKey("GradeId");
+                        .HasForeignKey("GradeId")
+                        .HasConstraintName("fk_offer_letter_details_grades_grade_id");
 
                     b.HasOne("Hr.Domain.Entities.OfferLetter", "OfferLetter")
                         .WithOne("Detail")
                         .HasForeignKey("Hr.Domain.Entities.OfferLetterDetail", "OfferLetterId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_letter_details_offer_letters_offer_letter_id");
 
                     b.HasOne("Hr.Domain.Entities.PayScale", "PayScale")
                         .WithMany()
-                        .HasForeignKey("PayScaleId");
+                        .HasForeignKey("PayScaleId")
+                        .HasConstraintName("fk_offer_letter_details_pay_scales_pay_scale_id");
 
                     b.Navigation("AllowancesProfile");
 
@@ -8227,23 +10511,27 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Negotiations")
                         .HasForeignKey("OfferId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_negotiations_offer_letters_offer_id");
 
                     b.HasOne("Hr.Domain.Entities.ApprovalRequest", "ReApprovalRequest")
                         .WithMany()
                         .HasForeignKey("ReApprovalRequestId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_offer_negotiations_approval_requests_re_approval_request_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "ResponseByEmployee")
                         .WithMany()
                         .HasForeignKey("ResponseByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_offer_negotiations_employees_response_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_offer_negotiations_lookup_values_status_lookup_value_id");
 
                     b.Navigation("Offer");
 
@@ -8260,59 +10548,70 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("OnboardingTasks")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_onboarding_tasks_applications_application_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "AssignedToEmployee")
                         .WithMany()
                         .HasForeignKey("AssignedToEmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_onboarding_tasks_employees_assigned_to_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "CancelledByEmployee")
                         .WithMany()
                         .HasForeignKey("CancelledByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_employees_cancelled_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_candidates_candidate_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "CompletedByEmployee")
                         .WithMany()
                         .HasForeignKey("CompletedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_employees_completed_by_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.OnboardingTask", "DependsOnTask")
                         .WithMany()
                         .HasForeignKey("DependsOnTaskId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_onboarding_tasks_depends_on_task_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_employees_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "EscalatedToEmployee")
                         .WithMany()
                         .HasForeignKey("EscalatedToEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_employees_escalated_to_employee_id");
 
                     b.HasOne("Hr.Domain.Entities.OnboardingTaskTemplate", "OnboardingTaskTemplate")
                         .WithMany()
                         .HasForeignKey("OnboardingTaskTemplateId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_onboarding_task_templates_onboardi_73068155");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "StatusLookupValue")
                         .WithMany()
                         .HasForeignKey("StatusLookupValueId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_onboarding_tasks_lookup_values_status_lookup_value_id");
 
                     b.HasOne("Hr.Domain.Entities.Employee", "VerifiedByEmployee")
                         .WithMany()
                         .HasForeignKey("VerifiedByEmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_onboarding_tasks_employees_verified_by_employee_id");
 
                     b.Navigation("Application");
 
@@ -8341,19 +10640,23 @@ namespace Hr.Infrastructure.Migrations
                 {
                     b.HasOne("Hr.Domain.Entities.Department", "ApplicableDepartment")
                         .WithMany()
-                        .HasForeignKey("ApplicableDepartmentId");
+                        .HasForeignKey("ApplicableDepartmentId")
+                        .HasConstraintName("fk_onboarding_task_templates_departments_applicable_department");
 
                     b.HasOne("Hr.Domain.Entities.Designation", "ApplicableDesignation")
                         .WithMany()
-                        .HasForeignKey("ApplicableDesignationId");
+                        .HasForeignKey("ApplicableDesignationId")
+                        .HasConstraintName("fk_onboarding_task_templates_designations_applicable_designati");
 
                     b.HasOne("Hr.Domain.Entities.JobLocation", "ApplicableLocation")
                         .WithMany()
-                        .HasForeignKey("ApplicableLocationId");
+                        .HasForeignKey("ApplicableLocationId")
+                        .HasConstraintName("fk_onboarding_task_templates_job_locations_applicable_location");
 
                     b.HasOne("Hr.Domain.Entities.OnboardingTaskTemplate", "DependsOnTemplate")
                         .WithMany("DependentTemplates")
-                        .HasForeignKey("DependsOnTemplateId");
+                        .HasForeignKey("DependsOnTemplateId")
+                        .HasConstraintName("fk_onboarding_task_templates_onboarding_task_templates_depends");
 
                     b.Navigation("ApplicableDepartment");
 
@@ -8364,58 +10667,56 @@ namespace Hr.Infrastructure.Migrations
                     b.Navigation("DependsOnTemplate");
                 });
 
-            modelBuilder.Entity("Hr.Domain.Entities.PayScale", b =>
-                {
-                    b.HasOne("Hr.Domain.Entities.Currency", "Currency")
-                        .WithMany("PayScales")
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Currency");
-                });
-
             modelBuilder.Entity("Hr.Domain.Entities.Position", b =>
                 {
                     b.HasOne("Hr.Domain.Entities.Department", "Department")
                         .WithMany("Positions")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_positions_departments_department_id");
 
                     b.HasOne("Hr.Domain.Entities.Designation", "Designation")
                         .WithMany("Positions")
                         .HasForeignKey("DesignationId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_positions_designations_designation_id");
 
                     b.HasOne("Hr.Domain.Entities.Grade", "Grade")
                         .WithMany("Positions")
                         .HasForeignKey("GradeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_positions_grades_grade_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFamily", "JobFamily")
                         .WithMany("Positions")
                         .HasForeignKey("JobFamilyId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_positions_job_families_job_family_id");
 
                     b.HasOne("Hr.Domain.Entities.JobFunction", "JobFunction")
                         .WithMany()
                         .HasForeignKey("JobFunctionId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_positions_job_functions_job_function_id");
 
                     b.HasOne("Hr.Domain.Entities.PayScale", "PayScale")
                         .WithMany("Positions")
                         .HasForeignKey("PayScaleId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_positions_pay_scales_pay_scale_id");
 
                     b.HasOne("Hr.Domain.Entities.Position", "ReportsToPosition")
                         .WithMany("ChildPositions")
                         .HasForeignKey("ReportsToPositionId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_positions_positions_reports_to_position_id");
 
                     b.HasOne("Hr.Domain.Entities.Shift", null)
                         .WithMany("Positions")
-                        .HasForeignKey("ShiftId");
+                        .HasForeignKey("ShiftId")
+                        .HasConstraintName("fk_positions_shifts_shift_id");
 
                     b.Navigation("Department");
 
@@ -8438,12 +10739,14 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Skills")
                         .HasForeignKey("SkillCategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_skills_skill_categories_skill_category_id");
 
                     b.HasOne("Hr.Domain.Entities.LookupValue", "SkillTypeLookupValue")
                         .WithMany()
                         .HasForeignKey("SkillTypeLookupValueId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_skills_lookup_values_skill_type_lookup_value_id");
 
                     b.Navigation("SkillCategory");
 
@@ -8456,7 +10759,8 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Conditions")
                         .HasForeignKey("WorkflowConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_workflow_conditions_workflow_configs_workflow_config_id");
 
                     b.Navigation("WorkflowConfig");
                 });
@@ -8467,7 +10771,8 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Steps")
                         .HasForeignKey("WorkflowConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_workflow_config_steps_workflow_configs_workflow_config_id");
 
                     b.Navigation("WorkflowConfig");
                 });
@@ -8478,7 +10783,8 @@ namespace Hr.Infrastructure.Migrations
                         .WithMany("Escalations")
                         .HasForeignKey("WorkflowConfigStepId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_workflow_escalations_workflow_config_steps_workflow_config_");
 
                     b.Navigation("WorkflowConfigStep");
                 });
@@ -8565,17 +10871,6 @@ namespace Hr.Infrastructure.Migrations
             modelBuilder.Entity("Hr.Domain.Entities.CompetencyFramework", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Hr.Domain.Entities.Currency", b =>
-                {
-                    b.Navigation("Jobs");
-
-                    b.Navigation("OfferLetterDetails");
-
-                    b.Navigation("OfferLetters");
-
-                    b.Navigation("PayScales");
                 });
 
             modelBuilder.Entity("Hr.Domain.Entities.Department", b =>

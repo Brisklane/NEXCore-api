@@ -65,8 +65,8 @@ public class Company
     public DateTime? UpdatedAt { get; set; }
     public Guid? UpdatedByUserId { get; set; }
 
-    /// <summary>SQL Server rowversion for optimistic concurrency.</summary>
-    public byte[]? RowVersion { get; set; }
+    /// <summary>PostgreSQL <c>xmin</c> system column, used as the optimistic-concurrency token.</summary>
+    public uint RowVersion { get; set; }
 
     // ── Navigation ───────────────────────────────────────────────────────────
     public Tenant? Tenant { get; set; }

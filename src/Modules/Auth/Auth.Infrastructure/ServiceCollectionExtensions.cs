@@ -5,6 +5,7 @@ using Auth.Infrastructure.Persistence;
 using Auth.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Nexcore.SharedKernel.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,13 +23,7 @@ public static class ServiceCollectionExtensions
     {
         // Database
         services.AddDbContext<AuthDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                b =>
-                {
-                    b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                    b.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName);
-                }));
+            options.UseNexcorePostgres(configuration.GetConnectionString("DefaultConnection"), typeof(AuthDbContext).Assembly));
 
         // Domain Services
         services.AddScoped<ITokenService, TokenService>();

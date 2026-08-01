@@ -37,7 +37,7 @@ public sealed class InventoryBalanceService : IInventoryBalanceService
         // Explicit null-aware bin/variant matching — null means "the warehouse/item-level row",
         // NOT "any row". (The previous repository predicate `binId == null || b.BinId == binId`
         // collapsed to TRUE for a null bin and matched an arbitrary row.) Written as separate
-        // Where clauses so it translates correctly on both SQL Server and the in-memory provider.
+        // Where clauses so it translates correctly on both PostgreSQL and the in-memory provider.
         var query = _ctx.InventoryBalances
             .Where(b => b.ItemId == itemId
                      && b.WarehouseId == warehouseId

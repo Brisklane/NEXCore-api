@@ -872,7 +872,7 @@ public class ItemController : ControllerBase
     }
 
     /// <summary>
-    /// Upload one or more images for an item. Bytes are stored in SQL Server and each
+    /// Upload one or more images for an item. Bytes are stored in the database and each
     /// image is persisted with a relative URL (/api/inventory/images/{id}) that serves it.
     ///
     /// Accepts multipart/form-data with one or more files under the key "files".
@@ -920,7 +920,7 @@ public class ItemController : ControllerBase
                     continue;
                 }
 
-                // Store image bytes in SQL Server; returns /api/inventory/images/{id}
+                // Store image bytes in the database; returns /api/inventory/images/{id}
                 await using var stream = file.OpenReadStream();
                 var url = await _blobStorage.UploadInventoryImageAsync(
                     stream,
@@ -991,7 +991,7 @@ public class ItemController : ControllerBase
         }
     }
 
-    /// <summary>Delete an image record and remove its stored bytes from SQL Server.</summary>
+    /// <summary>Delete an image record and remove its stored bytes from the database.</summary>
     [HttpDelete("{id}/images/{imageId}")]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
