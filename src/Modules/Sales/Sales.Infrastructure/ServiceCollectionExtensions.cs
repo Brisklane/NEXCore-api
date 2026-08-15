@@ -72,6 +72,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPosReceiptTemplateRepository, PosReceiptTemplateRepository>();
         services.AddScoped<IPosBarcodeLabelTemplateRepository, PosBarcodeLabelTemplateRepository>();
         services.AddScoped<IPosCashDrawerRepository, PosCashDrawerRepository>();
+        services.AddScoped<IPosReportRepository, PosReportRepository>();
         // Rider
         services.AddScoped<IRiderRepository, RiderRepository>();
         services.AddScoped<IRiderAssignmentRepository, RiderAssignmentRepository>();

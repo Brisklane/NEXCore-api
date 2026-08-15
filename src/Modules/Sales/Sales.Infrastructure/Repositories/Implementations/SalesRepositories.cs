@@ -670,6 +670,30 @@ public class PriceListRepository : TenantAwareRepository<PriceList>, IPriceListR
         return list.OrderBy(p => p.Name).ToList();
     }
 
+    public async Task<List<PriceListItem>> GetItemsAsync(Guid priceListId)
+        => await Context.Set<PriceListItem>()
+            .Where(i => i.PriceListId == priceListId && !i.IsDeleted)
+            .OrderBy(i => i.MinQuantity ?? 0)
+            .ToListAsync();
+
+    public async Task<PriceListItem?> GetItemAsync(Guid itemId)
+        => await Context.Set<PriceListItem>()
+            .FirstOrDefaultAsync(i => i.Id == itemId && !i.IsDeleted);
+
+    public async Task AddItemAsync(PriceListItem item)
+    {
+        await Context.Set<PriceListItem>().AddAsync(item);
+        await Context.SaveChangesAsync();
+    }
+
+    /// <summary>Soft delete — a removed line must not rewrite what past orders were priced at.</summary>
+    public async Task RemoveItemAsync(PriceListItem item)
+    {
+        item.IsDeleted = true;
+        item.DeletedAt = DateTime.UtcNow;
+        await Context.SaveChangesAsync();
+    }
+
     public async Task<PriceList?> GetWithItemsAsync(Guid id)
     {
         var (company, branch, bu) = GetTenantContext();

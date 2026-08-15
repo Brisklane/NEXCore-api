@@ -54,8 +54,10 @@ public class ContactService : IContactService
 
     public async Task<PaginatedResponse<ContactDto>> GetPagedAsync(PaginationParams pagination)
     {
+        // The repository orders inside the query; re-sorting here would only reorder the
+        // page that already came back and hide the fact that paging was unordered.
         var (items, total) = await _repository.SearchPagedAsync(pagination.PageNumber, pagination.PageSize, pagination.SearchTerm);
-        return PaginatedResponse<ContactDto>.Ok(items.OrderBy(x => x.LastName).Select(MapToDto), total, pagination.PageNumber, pagination.PageSize);
+        return PaginatedResponse<ContactDto>.Ok(items.Select(MapToDto), total, pagination.PageNumber, pagination.PageSize);
     }
 
     public async Task<IEnumerable<ContactDto>> GetByAccountIdAsync(Guid accountId)

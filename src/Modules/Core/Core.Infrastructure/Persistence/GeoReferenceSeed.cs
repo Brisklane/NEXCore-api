@@ -50,12 +50,15 @@ public static class GeoReferenceSeed
             await db.SaveChangesAsync();
         }
 
-        // Cities
+        // Cities — the curated list first (it carries CityCode/PostalCode), then the
+        // full GeoNames import so every country has options, not just these nine.
         if (!await db.Cities.AnyAsync())
         {
             db.Cities.AddRange(GetCities());
             await db.SaveChangesAsync();
         }
+
+        await CitySeedImporter.ImportAsync(db);
 
         // Translations
         if (!await db.CountryTranslations.AnyAsync())

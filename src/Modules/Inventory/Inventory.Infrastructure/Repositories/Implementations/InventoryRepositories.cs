@@ -326,6 +326,57 @@ public class ItemRepository : TenantAwareRepository<Item>, IItemRepository
             .Where(img => img.ItemId == itemId && img.IsPrimary)
             .ExecuteUpdateAsync(s => s.SetProperty(img => img.IsPrimary, false));
 
+    public async Task SyncItemVariantsAsync(Guid itemId, IReadOnlyList<ItemVariant> incoming)
+    {
+        var set = Context.Set<ItemVariant>();
+
+        var existing = await set
+            .Where(v => v.ItemId == itemId && !v.IsDeleted)
+            .ToListAsync();
+
+        var keptIds = new HashSet<Guid>();
+
+        foreach (var row in incoming)
+        {
+            var match = row.Id != Guid.Empty
+                ? existing.FirstOrDefault(v => v.Id == row.Id)
+                : null;
+
+            if (match is not null)
+            {
+                match.VariantCode = row.VariantCode;
+                match.VariantName = row.VariantName;
+                match.Barcode = row.Barcode;
+                match.ColorId = row.ColorId;
+                match.SizeId = row.SizeId;
+                match.ExtraDimension = row.ExtraDimension;
+                match.SalePriceOverride = row.SalePriceOverride;
+                match.DisplayOrder = row.DisplayOrder;
+                match.IsActive = row.IsActive;
+                match.UpdatedAt = DateTime.UtcNow;
+                keptIds.Add(match.Id);
+            }
+            else
+            {
+                row.Id = row.Id == Guid.Empty ? Guid.NewGuid() : row.Id;
+                row.ItemId = itemId;
+                row.CreatedAt = DateTime.UtcNow;
+                await set.AddAsync(row);
+                keptIds.Add(row.Id);
+            }
+        }
+
+        // Anything the caller left out is retired, keeping its id intact for history.
+        foreach (var gone in existing.Where(v => !keptIds.Contains(v.Id)))
+        {
+            gone.IsDeleted = true;
+            gone.IsActive = false;
+            gone.DeletedAt = DateTime.UtcNow;
+        }
+
+        await Context.SaveChangesAsync();
+    }
+
     public async Task ReplaceItemBarcodesAsync(Guid itemId, IReadOnlyList<ItemBarcode> barcodes)
     {
         var set = Context.Set<ItemBarcode>();

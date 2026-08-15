@@ -155,11 +155,18 @@ public class GeoReferenceService : IGeoReferenceService
     {
         if (string.IsNullOrWhiteSpace(query)) return [];
 
+        // ILIKE, not StartsWith: LIKE is case-sensitive in PostgreSQL, so "kar" would
+        // never match "Karachi". Matching anywhere in the name also lets people find
+        // "New York" by typing "york", which is how users expect a city box to behave.
+        var pattern = $"%{EscapeLike(query.Trim())}%";
+
         return await _db.Cities
             .Where(c => c.CountryCode == countryCode.ToUpperInvariant()
                      && c.IsActive
-                     && c.Name.StartsWith(query))
-            .OrderByDescending(c => c.Population)
+                     && EF.Functions.ILike(c.Name, pattern, "\\"))
+            // Prefix matches first, then by size — "york" surfaces York before New York.
+            .OrderByDescending(c => EF.Functions.ILike(c.Name, $"{EscapeLike(query.Trim())}%", "\\"))
+            .ThenByDescending(c => c.Population)
             .ThenBy(c => c.Name)
             .Take(limit)
             .Select(c => MapCity(c))
@@ -274,6 +281,13 @@ public class GeoReferenceService : IGeoReferenceService
         PostalCodeLabel   = c.PostalCodeLabel,
         IsActive          = c.IsActive,
     };
+
+    /// <summary>
+    /// Neutralises LIKE wildcards in user input so a query of "%" doesn't match every
+    /// row. Paired with an explicit ESCAPE '\' on the ILike call.
+    /// </summary>
+    private static string EscapeLike(string value) =>
+        value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
 
     private static CityDto MapCity(Core.Domain.Entities.City c) => new()
     {

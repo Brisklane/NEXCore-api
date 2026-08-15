@@ -982,6 +982,53 @@ public class LoyaltyAccountDto
 
 // Price List
 
+/// <summary>
+/// One priced line on a price list. Quantity breaks are expressed by overlapping rows
+/// for the same product with different <see cref="MinQuantity"/> — the pricing service
+/// picks the applicable one, so the entity has always supported tiers even though there
+/// was previously no way to enter them.
+/// </summary>
+public class PriceListItemDto
+{
+    public Guid Id { get; set; }
+    public Guid PriceListId { get; set; }
+    public Guid ProductId { get; set; }
+
+    /// <summary>Resolved from the catalogue for display; not stored on the line.</summary>
+    public string? ProductCode { get; set; }
+    public string? ProductName { get; set; }
+
+    public string? UnitOfMeasure { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal? MinQuantity { get; set; }
+    public decimal? MaxQuantity { get; set; }
+    public DateTime ValidFrom { get; set; }
+    public DateTime? ValidTo { get; set; }
+    public bool IsActive { get; set; }
+}
+
+public class CreatePriceListItemDto
+{
+    public Guid ProductId { get; set; }
+    public string? UnitOfMeasure { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal? MinQuantity { get; set; }
+    public decimal? MaxQuantity { get; set; }
+    public DateTime? ValidFrom { get; set; }
+    public DateTime? ValidTo { get; set; }
+}
+
+public class UpdatePriceListItemDto
+{
+    public decimal? UnitPrice { get; set; }
+    public string? UnitOfMeasure { get; set; }
+    public decimal? MinQuantity { get; set; }
+    public decimal? MaxQuantity { get; set; }
+    public DateTime? ValidFrom { get; set; }
+    public DateTime? ValidTo { get; set; }
+    public bool? IsActive { get; set; }
+}
+
 public class PriceListDto
 {
     public Guid Id { get; set; }

@@ -60,9 +60,22 @@ public class ContactRepository : TenantAwareRepository<Contact>, IContactReposit
     {
         Expression<Func<Contact, bool>>? predicate = null;
         if (!string.IsNullOrWhiteSpace(search))
-            predicate = c => c.FirstName!.Contains(search) || c.LastName.Contains(search)
-                          || (c.Email != null && c.Email.Contains(search));
-        return await GetPagedAsync(page, pageSize, predicate);
+        {
+            // ILike, not Contains: on PostgreSQL `Contains` is a case-sensitive LIKE, so
+            // "khan" would miss "Khan". Phone is included because at a till that is how a
+            // customer is looked up far more often than by spelling out a name.
+            var needle = $"%{search.Trim()}%";
+            predicate = c =>
+                   EF.Functions.ILike(c.FirstName ?? "", needle)
+                || EF.Functions.ILike(c.LastName, needle)
+                || EF.Functions.ILike(c.Email ?? "", needle)
+                || EF.Functions.ILike(c.Phone ?? "", needle);
+        }
+
+        // Ordering belongs in the query: sorting the page after it has been fetched only
+        // shuffles the rows that already came back, which makes paging non-deterministic.
+        return await GetPagedAsync(page, pageSize, predicate,
+            orderBy: q => q.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.Id));
     }
 }
 

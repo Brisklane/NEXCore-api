@@ -225,6 +225,14 @@ public class UpdateItemDto
     /// synced to exactly this list (rows not present are removed, new ones added).
     /// </summary>
     public List<CreateItemBarcodeDto>? Barcodes { get; set; }
+
+    /// <summary>
+    /// Desired set of variants. When non-null the variants are synced to this list:
+    /// rows carrying an <c>Id</c> are updated, rows without one are added, and rows
+    /// absent from the list are retired. Unlike barcodes this is NOT a delete-and-
+    /// reinsert — variant ids are referenced by stock, batches, serials and sales history.
+    /// </summary>
+    public List<UpdateItemVariantDto>? Variants { get; set; }
 }
 
 // ── Brand ─────────────────────────────────────────────────────────────────────
@@ -671,6 +679,26 @@ public class ItemVariantDto
     public decimal? WeightKg { get; set; }
     public bool IsActive { get; set; }
     public int DisplayOrder { get; set; }
+}
+
+/// <summary>
+/// A variant in an update payload. <see cref="Id"/> identifies an existing row to edit;
+/// omit it to add a new one. Variants missing from the list are retired (soft-deleted),
+/// never hard-deleted — stock balances, batches, serials and past POS lines all point at
+/// variant ids, and removing the row would orphan them.
+/// </summary>
+public class UpdateItemVariantDto
+{
+    public Guid? Id { get; set; }
+    public string VariantCode { get; set; } = null!;
+    public string VariantName { get; set; } = null!;
+    public string? Barcode { get; set; }
+    public Guid? ColorId { get; set; }
+    public Guid? SizeId { get; set; }
+    public string? ExtraDimension { get; set; }
+    public decimal? SalePriceOverride { get; set; }
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; } = true;
 }
 
 public class CreateItemVariantDto

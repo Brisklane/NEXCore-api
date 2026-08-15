@@ -402,8 +402,22 @@ public class PosCashierController : ControllerBase
                 ? dto.Denominations.Sum(d => d.Denomination * d.Count)
                 : dto.ClosingFloat;
 
+            // Cash that was banked or paid out mid-shift has to come off the expectation.
+            // Without this a cashier who does a safe drop looks short by exactly the amount
+            // they moved to the safe — which is the one thing a close must never get wrong.
+            var movements = (await _sessions.GetByIdWithMovementsAsync(sessionId))?.CashMovements
+                            ?? new List<PosCashMovement>();
+            var cashIn = movements
+                .Where(m => !m.IsDeleted && m.MovementType == PosCashMovementType.CashIn)
+                .Sum(m => m.Amount);
+            var cashOut = movements
+                .Where(m => !m.IsDeleted && m.MovementType is PosCashMovementType.CashOut
+                                                           or PosCashMovementType.SafeDrop
+                                                           or PosCashMovementType.PettyCash)
+                .Sum(m => m.Amount);
+
             session.ClosingFloat              = closingFloat;
-            session.ExpectedClosingFloat      = session.OpeningFloat + session.CashCollected;
+            session.ExpectedClosingFloat      = session.OpeningFloat + session.CashCollected + cashIn - cashOut;
             session.FloatVariance             = closingFloat - session.ExpectedClosingFloat;
             session.ClosingNotes              = dto.Notes;
             session.ClosingDenominationsJson  = dto.Denominations.Count > 0
