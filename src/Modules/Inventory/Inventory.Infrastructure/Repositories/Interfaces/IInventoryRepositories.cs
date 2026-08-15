@@ -28,6 +28,17 @@ public interface IItemRepository : IRepository<Item>
     Task<Item?> GetWithFullDetailsAsync(Guid id);
 
     /// <summary>
+    /// Bring an item's variants in line with <paramref name="incoming"/>: rows with an Id
+    /// are updated in place, rows without one are inserted, and existing rows absent from
+    /// the list are soft-deleted.
+    ///
+    /// <para>Soft, not hard: variant ids are referenced by inventory balances, documents,
+    /// transactions, batches, serials and POS transaction lines. Deleting the row would
+    /// orphan stock and rewrite history.</para>
+    /// </summary>
+    Task SyncItemVariantsAsync(Guid itemId, IReadOnlyList<ItemVariant> incoming);
+
+    /// <summary>
     /// Same as GetWithFullDetailsAsync but AsNoTracking + AsSplitQuery for read-only use (GetById API).
     /// Avoids cartesian product timeouts on Azure SQL and does not hold a change-tracking scope.
     /// </summary>

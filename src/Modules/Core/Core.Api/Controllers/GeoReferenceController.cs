@@ -183,7 +183,8 @@ public class GeoReferenceController : ControllerBase
     /// Returns up to <c>limit</c> results (default 20), ordered by population.
     /// </summary>
     /// <param name="countryCode">ISO 3166-1 alpha-2 (e.g. "PK")</param>
-    /// <param name="q">Search term — at least 1 character (e.g. "Kar" → Karachi)</param>
+    /// <param name="q">Search term — matched case-insensitively anywhere in the name
+    /// (e.g. "kar" → Karachi, "york" → York and New York)</param>
     /// <param name="limit">Max results (1–100, default 20)</param>
     [HttpGet("countries/{countryCode}/cities/search")]
     [ProducesResponseType(typeof(ApiResponse<List<CityDto>>), StatusCodes.Status200OK)]

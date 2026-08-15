@@ -105,10 +105,100 @@ public class PriceListController : ControllerBase
         catch (InvalidOperationException ex) { return NotFound(new ApiErrorResponse { Message = ex.Message }); }
         catch (Exception ex) { _logger.LogError(ex, "Error deleting price list {Id}", id); return StatusCode(500, new ApiErrorResponse { Message = "Error deleting price list" }); }
     }
+
+    // ── Lines ─────────────────────────────────────────────────────────────
+    // The PriceListItem entity has always existed; without these, a price list could be
+    // created but never populated, so nothing it defined ever reached the till.
+
+    /// <summary>Priced lines on a list, ordered by quantity break.</summary>
+    [HttpGet("{id}/items")]
+    [ProducesResponseType(typeof(ApiResponse<List<PriceListItemDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetItems(Guid id)
+    {
+        try
+        {
+            var items = await _priceListService.GetItemsAsync(id);
+            return Ok(new ApiResponse<List<PriceListItemDto>>
+            {
+                Success = true, Data = items, Message = $"{items.Count} line(s)",
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading price list lines for {Id}", id);
+            return StatusCode(500, new ApiErrorResponse { Message = "Error loading price list lines" });
+        }
+    }
+
+    /// <summary>
+    /// Add a priced line. Quantity bands for the same product may not overlap — the
+    /// pricing engine would otherwise have to choose between them arbitrarily.
+    /// </summary>
+    [HttpPost("{id}/items")]
+    [ProducesResponseType(typeof(ApiResponse<PriceListItemDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddItem(Guid id, [FromBody] CreatePriceListItemDto dto)
+    {
+        try
+        {
+            var item = await _priceListService.AddItemAsync(id, dto);
+            return StatusCode(201, new ApiResponse<PriceListItemDto>
+            {
+                Success = true, Data = item, Message = "Line added",
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ApiErrorResponse { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding a line to price list {Id}", id);
+            return StatusCode(500, new ApiErrorResponse { Message = "Error adding price list line" });
+        }
+    }
+
+    [HttpPut("items/{itemId}")]
+    [ProducesResponseType(typeof(ApiResponse<PriceListItemDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateItem(Guid itemId, [FromBody] UpdatePriceListItemDto dto)
+    {
+        try
+        {
+            var item = await _priceListService.UpdateItemAsync(itemId, dto);
+            return Ok(new ApiResponse<PriceListItemDto>
+            {
+                Success = true, Data = item, Message = "Line updated",
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ApiErrorResponse { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating price list line {ItemId}", itemId);
+            return StatusCode(500, new ApiErrorResponse { Message = "Error updating price list line" });
+        }
+    }
+
+    [HttpDelete("items/{itemId}")]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteItem(Guid itemId)
+    {
+        try
+        {
+            await _priceListService.DeleteItemAsync(itemId);
+            return Ok(new ApiResponse<bool> { Success = true, Data = true, Message = "Line removed" });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ApiErrorResponse { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error removing price list line {ItemId}", itemId);
+            return StatusCode(500, new ApiErrorResponse { Message = "Error removing price list line" });
+        }
+    }
 }
-
-//Sales.PriceList (header)       ← governs which prices apply to a SalesOrder/Customer
-//    └─ Sales.PriceListItem     ← stores override prices per product (optional)
-
-//Inventory.ItemPrice            ← stores the base price per item per PriceList name
-//    .PriceList = "Wholesale"   ← matches by name string to Sales.PriceList.Code

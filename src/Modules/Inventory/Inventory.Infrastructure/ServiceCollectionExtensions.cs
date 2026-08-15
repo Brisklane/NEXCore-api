@@ -85,6 +85,12 @@ public static class ServiceCollectionExtensions
         // shared by inbound (document posting) and outbound (POS/delivery deduction) paths.
         services.AddScoped<IInventoryBalanceService, InventoryBalanceService>();
 
+        // ========== REGISTER CATALOGUE RESOLUTION SERVICE ==========
+        // The one place that turns a scanned/typed code into item + variant + unit + the
+        // quantity that unit represents. Selling surfaces call this instead of querying the
+        // four identifier columns themselves and getting pack/variant handling subtly wrong.
+        services.AddScoped<ICatalogResolutionService, CatalogResolutionService>();
+
         // ========== REGISTER UNIT-LEVEL TRACKING SERVICE ==========
         // Turns posted document lines into Serial / Lot registry changes (identity + lifecycle),
         // alongside the quantity ledger. Shares the scoped DbContext so it commits atomically.

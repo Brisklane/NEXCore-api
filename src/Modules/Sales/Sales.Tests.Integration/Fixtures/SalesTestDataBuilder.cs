@@ -100,6 +100,9 @@ public class SalesTestDataBuilder
         {
             TerminalCode = terminalCode,
             TerminalName = terminalName,
+            // The parameter was accepted but never assigned, so every terminal was written
+            // with an empty store FK and rejected by the database.
+            PosStoreId = storeId,
             BranchId = TestJwtSettings.BranchId,
             IsActive = true,
             IsOnline = false,

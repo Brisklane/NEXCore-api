@@ -15,4 +15,13 @@ public interface IPriceListService
     Task<PriceListDto> CreateAsync(CreatePriceListDto dto);
     Task<PriceListDto> UpdateAsync(Guid id, UpdatePriceListDto dto);
     Task DeleteAsync(Guid id);
+
+    // ── Lines ─────────────────────────────────────────────────────────────
+    // The PriceListItem entity has always existed; these are the first endpoints that
+    // let anyone actually populate a list.
+
+    Task<List<PriceListItemDto>> GetItemsAsync(Guid priceListId);
+    Task<PriceListItemDto> AddItemAsync(Guid priceListId, CreatePriceListItemDto dto);
+    Task<PriceListItemDto> UpdateItemAsync(Guid itemId, UpdatePriceListItemDto dto);
+    Task DeleteItemAsync(Guid itemId);
 }

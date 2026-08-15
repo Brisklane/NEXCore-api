@@ -836,10 +836,52 @@ public class ItemController : ControllerBase
 
             // Reload read-only so the response reflects the freshly-replaced barcodes
             // (the tracked item.Barcodes navigation is stale after the set-based replace).
-            ItemDto responseDto;
-            if (barcodesToPersist != null)
+            // ── Variants — upsert + retire ────────────────────────────────────────
+            // Not a delete-and-reinsert like barcodes: variant ids are referenced by
+            // stock balances, batches, serials and posted sales lines, so rows are updated
+            // in place and omissions are soft-deleted.
+            var variantsSynced = false;
+            if (dto.Variants != null)
             {
-                await _itemRepository.ReplaceItemBarcodesAsync(item.Id, barcodesToPersist);
+                var incoming = dto.Variants
+                    .Where(v => !string.IsNullOrWhiteSpace(v.VariantCode))
+                    .Select(v => new Inventory.Domain.Entities.ItemVariant
+                    {
+                        Id = v.Id ?? Guid.Empty,
+                        ItemId = item.Id,
+                        VariantCode = v.VariantCode.Trim(),
+                        VariantName = v.VariantName?.Trim() ?? v.VariantCode.Trim(),
+                        Barcode = string.IsNullOrWhiteSpace(v.Barcode) ? null : v.Barcode.Trim(),
+                        ColorId = v.ColorId,
+                        SizeId = v.SizeId,
+                        ExtraDimension = v.ExtraDimension,
+                        SalePriceOverride = v.SalePriceOverride,
+                        DisplayOrder = v.DisplayOrder,
+                        IsActive = v.IsActive,
+                        CompanyId = item.CompanyId,
+                        BranchId = item.BranchId,
+                        BusinessUnitId = item.BusinessUnitId,
+                    })
+                    .ToList();
+
+                // Variant codes must stay unique within the item, or scanning one is a coin toss.
+                var dupes = incoming.GroupBy(v => v.VariantCode.ToLowerInvariant())
+                                    .FirstOrDefault(g => g.Count() > 1);
+                if (dupes != null)
+                    return BadRequest(new ApiErrorResponse
+                    {
+                        Message = $"Variant code '{dupes.Key}' is listed more than once"
+                    });
+
+                await _itemRepository.SyncItemVariantsAsync(item.Id, incoming);
+                variantsSynced = true;
+            }
+
+            ItemDto responseDto;
+            if (barcodesToPersist != null || variantsSynced)
+            {
+                if (barcodesToPersist != null)
+                    await _itemRepository.ReplaceItemBarcodesAsync(item.Id, barcodesToPersist);
                 var refreshed = await _itemRepository.GetWithFullDetailsReadOnlyAsync(item.Id);
                 responseDto = MapToDtoWithSas(refreshed ?? item);
             }

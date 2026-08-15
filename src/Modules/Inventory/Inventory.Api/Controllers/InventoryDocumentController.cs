@@ -54,7 +54,8 @@ public class InventoryDocumentController : ControllerBase
     public async Task<IActionResult> GetAll(
         [FromQuery] PaginationParams pagination,
         [FromQuery] string? documentType = null,
-        [FromQuery] string? status = null)
+        [FromQuery] string? status = null,
+        [FromQuery] Guid? warehouseId = null)
     {
         try
         {
@@ -65,12 +66,16 @@ public class InventoryDocumentController : ControllerBase
             var hasStatus   = !string.IsNullOrEmpty(status);
             var typeUpper   = documentType?.Trim().ToUpper();
             var statusUpper = status?.Trim().ToUpper();
+            // A single-store view needs its own documents only, and filtering after paging
+            // would silently drop rows, so the warehouse has to be part of the predicate.
+            var hasWarehouse = warehouseId.HasValue;
 
             var (documents, total) = await _documentRepository.GetPagedAsync(
                 pagination.PageNumber, pagination.PageSize,
                 predicate: d =>
                     (!hasType   || d.DocumentType.ToUpper() == typeUpper!)
                  && (!hasStatus || d.Status.ToUpper() == statusUpper!)
+                 && (!hasWarehouse || d.ToWarehouseId == warehouseId || d.FromWarehouseId == warehouseId)
                  && (!hasTerm   || d.DocumentNumber.Contains(term!) || (d.Description != null && d.Description.Contains(term!))),
                 orderBy: q => q.ApplyOrderNewestFirst(
                     string.IsNullOrWhiteSpace(pagination.SortBy) ? "DocumentDate" : pagination.SortBy,
