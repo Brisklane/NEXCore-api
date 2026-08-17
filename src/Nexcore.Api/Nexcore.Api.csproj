@@ -35,6 +35,8 @@
     <ProjectReference Include="..\Modules\Inventory\Inventory.Infrastructure\Inventory.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Sales\Sales.Api\Sales.Api.csproj" />
     <ProjectReference Include="..\Modules\Sales\Sales.Infrastructure\Sales.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Restaurant\Restaurant.Api\Restaurant.Api.csproj" />
+    <ProjectReference Include="..\Modules\Restaurant\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Procurement.Api\Procurement.Api.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Procurement.Infrastructure\Procurement.Infrastructure.csproj" />
   </ItemGroup>

@@ -31,6 +31,7 @@ public class CoreDbContext : DbContext
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<Branch> Branches => Set<Branch>();
     public DbSet<BusinessUnit> BusinessUnits => Set<BusinessUnit>();
+    public DbSet<CompanyApp> CompanyApps => Set<CompanyApp>();
 
     // Reference data
     public DbSet<Country> Countries => Set<Country>();
@@ -161,6 +162,23 @@ public class CoreDbContext : DbContext
         });
 
         // ── Branch ─────────────────────────────────────────────────────────────
+        modelBuilder.Entity<CompanyApp>(entity =>
+        {
+            entity.ToTable("CompanyApps", "core");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.AppKey).IsRequired().HasMaxLength(64).IsUnicode(false);
+
+            entity.HasOne(e => e.Company)
+                  .WithMany()
+                  .HasForeignKey(e => e.CompanyId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            // One row per app per company. Uninstalling flips IsInstalled rather than
+            // deleting, so a re-install must update the existing row, not race to insert
+            // a second one.
+            entity.HasIndex(e => new { e.CompanyId, e.AppKey }).IsUnique();
+        });
+
         modelBuilder.Entity<Branch>(entity =>
         {
             entity.ToTable("Branches", "core");
