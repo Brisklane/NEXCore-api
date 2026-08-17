@@ -6,6 +6,7 @@ using Accounting.Infrastructure;
 using Hr.Infrastructure;
 using Inventory.Infrastructure;
 using Manufacturing.Infrastructure;
+using Restaurant.Infrastructure;
 using Sales.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -30,6 +31,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(Hr.Api.Controllers.CandidateController).Assembly)
     .AddApplicationPart(typeof(Crm.Api.Controllers.AccountsController).Assembly)
     .AddApplicationPart(typeof(Sales.Api.Controllers.SalesOrderController).Assembly)
+    .AddApplicationPart(typeof(Restaurant.Api.Controllers.OrderController).Assembly)
     .AddApplicationPart(typeof(Procurement.Api.Controllers.VendorController).Assembly);
 
 // ? ADD THIS: Register IHttpContextAccessor for TenantAwareRepository
@@ -47,6 +49,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("hr", new OpenApiInfo { Version = "v1", Title = "HR" });
     options.SwaggerDoc("crm", new OpenApiInfo { Version = "v1", Title = "CRM" });
     options.SwaggerDoc("sales", new OpenApiInfo { Version = "v1", Title = "Sales" });
+    options.SwaggerDoc("restaurant", new OpenApiInfo { Version = "v1", Title = "Restaurant" });
     options.SwaggerDoc("procurement", new OpenApiInfo { Version = "v1", Title = "Procurement" });
 
     // ── Route each controller into its own module doc ─────────────────────────
@@ -65,6 +68,7 @@ builder.Services.AddSwaggerGen(options =>
             "hr" => ns.StartsWith("Hr.Api"),
             "crm" => ns.StartsWith("Crm.Api"),
             "sales" => ns.StartsWith("Sales.Api"),
+            "restaurant" => ns.StartsWith("Restaurant.Api"),
             "procurement" => ns.StartsWith("Procurement.Api"),
             _ => false
         };
@@ -147,6 +151,12 @@ builder.Services.AddSalesInfrastructure(builder.Configuration);
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IEventHandler<OnlineOrderPlacedEvent>, PosOrderNotificationHandler>();
 builder.Services.AddScoped<IEventHandler<OnlineOrderQueueChangedEvent>, PosOrderNotificationHandler>();
+
+// Add Restaurant Infrastructure (outlets, floor plan, menus, kitchen, orders, checks, recipes)
+builder.Services.AddRestaurantInfrastructure(builder.Configuration);
+
+// Live sync for the floor plan, order pad and kitchen display.
+builder.Services.AddScoped<Restaurant.Api.Hubs.IRestaurantNotifier, Restaurant.Api.Hubs.RestaurantNotifier>();
 
 // Add Procurement Infrastructure (Vendors, POs, GRNs, AP Invoices, Payments, Contracts)
 builder.Services.AddProcurementInfrastructure(builder.Configuration);
@@ -324,6 +334,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/hr/swagger.json", "HR");
         options.SwaggerEndpoint("/swagger/crm/swagger.json", "CRM");
         options.SwaggerEndpoint("/swagger/sales/swagger.json", "Sales");
+        options.SwaggerEndpoint("/swagger/restaurant/swagger.json", "Restaurant");
         options.SwaggerEndpoint("/swagger/procurement/swagger.json", "Procurement");
 
         options.RoutePrefix = "swagger";
@@ -350,6 +361,9 @@ app.MapControllers();
 
 // Real-time POS order notifications
 app.MapHub<PosOrderHub>("/hubs/pos-orders");
+
+// Real-time restaurant floor / kitchen sync
+app.MapHub<Restaurant.Api.Hubs.RestaurantHub>("/hubs/restaurant");
 
 app.Run();
 

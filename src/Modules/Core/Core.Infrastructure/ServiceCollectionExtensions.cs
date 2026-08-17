@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<IBusinessUnitService, BusinessUnitService>();
+        services.AddScoped<ICompanyAppService, CompanyAppService>();
         services.AddScoped<ICompanyValidator, CompanyValidator>();
         services.AddMemoryCache();
         services.AddScoped<IGeoReferenceService, GeoReferenceService>();
