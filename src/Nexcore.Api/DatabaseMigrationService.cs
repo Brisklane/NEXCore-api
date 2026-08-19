@@ -1,4 +1,4 @@
-using Auth.Infrastructure.Persistence;
+﻿using Auth.Infrastructure.Persistence;
 using Accounting.Infrastructure.Persistence;
 using Core.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +9,7 @@ using Inventory.Infrastructure.Persistence;
 using Manufacturing.Infrastructure.Persistence;
 using Procurement.Infrastructure.Persistence;
 using Restaurant.Infrastructure.Persistence;
+using Distribution.Infrastructure.Persistence;
 using Sales.Infrastructure.Persistence;
 
 namespace Nexcore.Api;
@@ -32,6 +33,7 @@ public class DatabaseMigrationService(
             var crm = scope.ServiceProvider.GetRequiredService<CrmDbContext>();
             var sales = scope.ServiceProvider.GetRequiredService<SalesDbContext>();
             var restaurant = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
+            var distribution = scope.ServiceProvider.GetRequiredService<DistributionDbContext>();
             var procurement = scope.ServiceProvider.GetRequiredService<ProcurementDbContext>();
 
             // Migrations run automatically on localhost only.
@@ -68,6 +70,9 @@ public class DatabaseMigrationService(
 
                 await restaurant.Database.MigrateAsync(stoppingToken);
                 logger.LogInformation("Restaurant migrations applied.");
+
+                await distribution.Database.MigrateAsync(stoppingToken);
+                logger.LogInformation("Distribution migrations applied.");
 
                 await procurement.Database.MigrateAsync(stoppingToken);
                 logger.LogInformation("Procurement migrations applied.");
