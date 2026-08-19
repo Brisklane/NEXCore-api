@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <UserSecretsId>75eeb947-88ae-4bc9-a45e-bde30ec16582</UserSecretsId>
@@ -36,6 +36,8 @@
     <ProjectReference Include="..\Modules\Sales\Sales.Api\Sales.Api.csproj" />
     <ProjectReference Include="..\Modules\Sales\Sales.Infrastructure\Sales.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Restaurant\Restaurant.Api\Restaurant.Api.csproj" />
+    <ProjectReference Include="..\Modules\Distribution\Distribution.Api\Distribution.Api.csproj" />
+    <ProjectReference Include="..\Modules\Distribution\Distribution.Infrastructure\Distribution.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Restaurant\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Procurement.Api\Procurement.Api.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Procurement.Infrastructure\Procurement.Infrastructure.csproj" />
