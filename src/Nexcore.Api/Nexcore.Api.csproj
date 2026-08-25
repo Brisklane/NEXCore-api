@@ -36,9 +36,11 @@
     <ProjectReference Include="..\Modules\Sales\Sales.Api\Sales.Api.csproj" />
     <ProjectReference Include="..\Modules\Sales\Sales.Infrastructure\Sales.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Restaurant\Restaurant.Api\Restaurant.Api.csproj" />
+    <ProjectReference Include="..\Modules\Fitness\Fitness.Api\Fitness.Api.csproj" />
     <ProjectReference Include="..\Modules\Distribution\Distribution.Api\Distribution.Api.csproj" />
     <ProjectReference Include="..\Modules\Distribution\Distribution.Infrastructure\Distribution.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Restaurant\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Fitness\Fitness.Infrastructure\Fitness.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Procurement.Api\Procurement.Api.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Procurement.Infrastructure\Procurement.Infrastructure.csproj" />
   </ItemGroup>
