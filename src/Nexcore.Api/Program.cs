@@ -6,6 +6,7 @@ using Accounting.Infrastructure;
 using Hr.Infrastructure;
 using Inventory.Infrastructure;
 using Manufacturing.Infrastructure;
+using Fitness.Infrastructure;
 using Restaurant.Infrastructure;
 using Distribution.Infrastructure;
 using Sales.Infrastructure;
@@ -33,6 +34,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(Crm.Api.Controllers.AccountsController).Assembly)
     .AddApplicationPart(typeof(Sales.Api.Controllers.SalesOrderController).Assembly)
     .AddApplicationPart(typeof(Restaurant.Api.Controllers.OrderController).Assembly)
+    .AddApplicationPart(typeof(Fitness.Api.Controllers.MemberController).Assembly)
     .AddApplicationPart(typeof(Distribution.Api.Controllers.OrderController).Assembly)
     .AddApplicationPart(typeof(Procurement.Api.Controllers.VendorController).Assembly);
 
@@ -52,6 +54,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("crm", new OpenApiInfo { Version = "v1", Title = "CRM" });
     options.SwaggerDoc("sales", new OpenApiInfo { Version = "v1", Title = "Sales" });
     options.SwaggerDoc("restaurant", new OpenApiInfo { Version = "v1", Title = "Restaurant" });
+    options.SwaggerDoc("fitness", new OpenApiInfo { Version = "v1", Title = "Fitness" });
     options.SwaggerDoc("distribution", new OpenApiInfo { Version = "v1", Title = "Distribution" });
     options.SwaggerDoc("procurement", new OpenApiInfo { Version = "v1", Title = "Procurement" });
 
@@ -72,6 +75,7 @@ builder.Services.AddSwaggerGen(options =>
             "crm" => ns.StartsWith("Crm.Api"),
             "sales" => ns.StartsWith("Sales.Api"),
             "restaurant" => ns.StartsWith("Restaurant.Api"),
+            "fitness" => ns.StartsWith("Fitness.Api"),
             "distribution" => ns.StartsWith("Distribution.Api"),
             "procurement" => ns.StartsWith("Procurement.Api"),
             _ => false
@@ -161,6 +165,13 @@ builder.Services.AddRestaurantInfrastructure(builder.Configuration);
 
 // Live sync for the floor plan, order pad and kitchen display.
 builder.Services.AddScoped<Restaurant.Api.Hubs.IRestaurantNotifier, Restaurant.Api.Hubs.RestaurantNotifier>();
+
+// Add Fitness Infrastructure (clubs, members, agreements, billing, access control, classes,
+// personal training, retention, staff, facilities, compliance and the pro shop)
+builder.Services.AddFitnessInfrastructure(builder.Configuration);
+
+// Live sync for the front desk, kiosk, class roster and trainer diary.
+builder.Services.AddScoped<Fitness.Api.Hubs.IFitnessNotifier, Fitness.Api.Hubs.FitnessNotifier>();
 
 // Add Distribution Infrastructure (channel network, routes, field force, van sales, trade schemes,
 // claims, settlement and the secondary-sales layer)
@@ -346,6 +357,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/crm/swagger.json", "CRM");
         options.SwaggerEndpoint("/swagger/sales/swagger.json", "Sales");
         options.SwaggerEndpoint("/swagger/restaurant/swagger.json", "Restaurant");
+        options.SwaggerEndpoint("/swagger/fitness/swagger.json", "Fitness");
         options.SwaggerEndpoint("/swagger/distribution/swagger.json", "Distribution");
         options.SwaggerEndpoint("/swagger/procurement/swagger.json", "Procurement");
 
@@ -376,6 +388,9 @@ app.MapHub<PosOrderHub>("/hubs/pos-orders");
 
 // Real-time restaurant floor / kitchen sync
 app.MapHub<Restaurant.Api.Hubs.RestaurantHub>("/hubs/restaurant");
+
+// Real-time front desk, class roster and occupancy sync
+app.MapHub<Fitness.Api.Hubs.FitnessHub>("/hubs/fitness");
 
 // Real-time dispatch, trip and settlement sync
 app.MapHub<Distribution.Api.Hubs.DistributionHub>("/hubs/distribution");
