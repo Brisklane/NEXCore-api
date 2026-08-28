@@ -9,6 +9,7 @@ using Inventory.Infrastructure.Persistence;
 using Manufacturing.Infrastructure.Persistence;
 using Procurement.Infrastructure.Persistence;
 using Fitness.Infrastructure.Persistence;
+using RealEstate.Infrastructure.Persistence;
 using Restaurant.Infrastructure.Persistence;
 using Distribution.Infrastructure.Persistence;
 using Sales.Infrastructure.Persistence;
@@ -35,6 +36,7 @@ public class DatabaseMigrationService(
             var sales = scope.ServiceProvider.GetRequiredService<SalesDbContext>();
             var restaurant = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
             var fitness = scope.ServiceProvider.GetRequiredService<FitnessDbContext>();
+            var realEstate = scope.ServiceProvider.GetRequiredService<RealEstateDbContext>();
             var distribution = scope.ServiceProvider.GetRequiredService<DistributionDbContext>();
             var procurement = scope.ServiceProvider.GetRequiredService<ProcurementDbContext>();
 
@@ -75,6 +77,9 @@ public class DatabaseMigrationService(
 
                 await fitness.Database.MigrateAsync(stoppingToken);
                 logger.LogInformation("Fitness migrations applied.");
+
+                await realEstate.Database.MigrateAsync(stoppingToken);
+                logger.LogInformation("Real Estate migrations applied.");
 
                 await distribution.Database.MigrateAsync(stoppingToken);
                 logger.LogInformation("Distribution migrations applied.");
